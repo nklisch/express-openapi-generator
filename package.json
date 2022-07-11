@@ -1,0 +1,37 @@
+{
+  "name": "express-openapi-tools",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "eslint -c .eslintrc.js --ext .ts src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nklisch/express-openapi-tools.git"
+  },
+  "keywords": [],
+  "author": "Nathan Klisch",
+  "contributors": [],
+  "license": "ISC",
+  "files": "lib/**/*",
+  "bugs": {
+    "url": "https://github.com/nklisch/express-openapi-tools/issues"
+  },
+  "homepage": "https://github.com/nklisch/express-openapi-tools#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.30.6",
+    "@typescript-eslint/parser": "^5.30.6",
+    "eslint": "^8.19.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-jsdoc": "^39.3.3",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "eslint-plugin-react": "^7.30.1",
+    "prettier": "^2.7.1",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.7.4"
+  }
+}
