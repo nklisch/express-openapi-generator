@@ -2,12 +2,18 @@
   "name": "express-openapi-tools",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
+    "test": "jest --config jestconfig.json",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
-    "lint": "eslint -c .eslintrc.js --ext .ts src"
+    "lint": "eslint -c .eslintrc.js --ext .ts src",
+    "prepare" : "npm run build",
+    "prepublishOnly" : "npm test && npm run lint",
+    "preversion" : "npm run lint",
+    "version" : "npm run format && git add -A src",
+    "postversion" : "git push && git push --tags"
   },
   "repository": {
     "type": "git",
@@ -23,6 +29,7 @@
   },
   "homepage": "https://github.com/nklisch/express-openapi-tools#readme",
   "devDependencies": {
+    "@types/jest": "^28.1.4",
     "@typescript-eslint/eslint-plugin": "^5.30.6",
     "@typescript-eslint/parser": "^5.30.6",
     "eslint": "^8.19.0",
@@ -30,7 +37,9 @@
     "eslint-plugin-jsdoc": "^39.3.3",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-react": "^7.30.1",
+    "jest": "^28.1.2",
     "prettier": "^2.7.1",
+    "ts-jest": "^28.0.5",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^4.7.4"
   }
