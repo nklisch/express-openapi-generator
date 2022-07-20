@@ -3,7 +3,7 @@ import { OpenAPIV3 } from "openapi-types";
 import { OpenApiRequestHandler } from "../types/express";
 
 
-export class OpenApiPath {
+export default class OpenApiPath {
     private readonly validate: boolean
     private readonly coerceRequest: boolean
     private readonly document?: OpenAPIV3.Document
@@ -19,7 +19,7 @@ export class OpenApiPath {
     path = (operationId: string, { pathDoc, validate, coerceRequest }: { pathDoc?: OpenAPIV3.OperationObject, validate?: boolean, coerceRequest?: boolean }): OpenApiRequestHandler => {
         validate = validate === undefined ? this.validate : validate;
         coerceRequest = coerceRequest === undefined ? this.coerceRequest : coerceRequest;
-        const m: Middleware = new Middleware(operationId, pathDoc, validate, coerceRequest);
+        const m: Middleware = new Middleware(operationId, validate, coerceRequest, pathDoc);
         //  m.validator = makeValidator();
         return m.middleware;
     }
@@ -34,7 +34,7 @@ class Middleware {
     private readonly operationId: string
     // TODO: add validation step
     // private readonly validator: 
-    constructor(operationId: string, pathDoc?: OpenAPIV3.OperationObject, validate: boolean, coerceRequest: boolean) {
+    constructor(operationId: string, validate: boolean,  coerceRequest: boolean, pathDoc?: OpenAPIV3.OperationObject) {
         this.validate = validate;
         this.coerceRequest = coerceRequest;
         this.pathDoc = pathDoc;
@@ -47,51 +47,51 @@ class Middleware {
         if (!this.validate || !this.pathDoc) {
             next();
         }
-        if (!this.)
+        if (true) //!this
             next();
     }
 }
 
-const makeValidator = () => {
-    const reqSchema = merge({}, BASE_REQ_SCHEMA)
+// const makeValidator = () => {
+//     const reqSchema = merge({}, BASE_REQ_SCHEMA)
 
-    // Compile req schema on first request
-    // Build param validation
-    schema.parameters && schema.parameters.forEach((p) => {
-        switch (p.in) {
-            case 'path':
-                reqSchema.properties.params.properties[p.name] = p.schema
-                p.required && !reqSchema.properties.params.required.includes(p.name) && reqSchema.properties.params.required.push(p.name)
-                break
-            case 'query':
-                reqSchema.properties.query.properties[p.name] = p.schema
-                p.required && !reqSchema.properties.query.required.includes(p.name) && reqSchema.properties.query.required.push(p.name)
-                break
-            case 'header':
-                const name = p.name.toLowerCase()
-                reqSchema.properties.headers.properties[name] = p.schema
-                p.required && !reqSchema.properties.headers.required.includes(p.name) && reqSchema.properties.headers.required.push(name)
-                break
-        }
-    })
+//     // Compile req schema on first request
+//     // Build param validation
+//     schema.parameters && schema.parameters.forEach((p) => {
+//         switch (p.in) {
+//             case 'path':
+//                 reqSchema.properties.params.properties[p.name] = p.schema
+//                 p.required && !reqSchema.properties.params.required.includes(p.name) && reqSchema.properties.params.required.push(p.name)
+//                 break
+//             case 'query':
+//                 reqSchema.properties.query.properties[p.name] = p.schema
+//                 p.required && !reqSchema.properties.query.required.includes(p.name) && reqSchema.properties.query.required.push(p.name)
+//                 break
+//             case 'header':
+//                 const name = p.name.toLowerCase()
+//                 reqSchema.properties.headers.properties[name] = p.schema
+//                 p.required && !reqSchema.properties.headers.required.includes(p.name) && reqSchema.properties.headers.required.push(name)
+//                 break
+//         }
+//     })
 
-    // Compile req body schema
-    schema.requestBody && Object.entries(schema.requestBody.content)
-        .forEach(([contentType, { schema }]) => {
-            switch (contentType) {
-                case 'application/json':
-                    reqSchema.properties.body = schema
-                    break
-                default:
-                    throw new TypeError(`Validation of content type not supported: ${contentType}`)
-            }
-        })
+//     // Compile req body schema
+//     schema.requestBody && Object.entries(schema.requestBody.content)
+//         .forEach(([contentType, { schema }]) => {
+//             switch (contentType) {
+//                 case 'application/json':
+//                     reqSchema.properties.body = schema
+//                     break
+//                 default:
+//                     throw new TypeError(`Validation of content type not supported: ${contentType}`)
+//             }
+//         })
 
-    // Add components for references
-    reqSchema.components = middleware.document && middleware.document.components
+//     // Add components for references
+//     reqSchema.components = middleware.document && middleware.document.components
 
-    return ajv.compile(reqSchema)
-}
+//     return ajv.compile(reqSchema)
+// }
 
 
 const BASE_REQ_SCHEMA = {
