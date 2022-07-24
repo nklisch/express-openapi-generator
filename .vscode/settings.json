@@ -1,0 +1,6 @@
+{
+    "js/ts.implicitProjectConfig.module": "ES6",
+    "js/ts.implicitProjectConfig.target": "ES6",
+    "eslint.alwaysShowStatus": true,
+    "eslint.format.enable": true
+}
