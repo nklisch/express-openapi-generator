@@ -3,10 +3,10 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-import { Express } from 'express';
+import { Express, Router } from 'express';
 import { OpenAPIV3 } from 'openapi-types';
 import { Key } from '../types';
-import { ExpressPath, ExpressRegex, Layer, Router, OpenApiRequestHandler } from '../types';
+import { ExpressPath, ExpressRegex, Layer, Route } from '../types';
 export default class ExpressPathParser {
     private readonly _appPaths: ExpressPath[];
     public get appPaths(): ExpressPath[] {
@@ -61,8 +61,11 @@ export default class ExpressPathParser {
         });
         let openApiDoc: OpenAPIV3.OperationObject | null = null;
         const filtered = layer.route.stack.filter((element) => element.name === 'openApiPathMiddleware');
+        let exclude = false;
         if (filtered.length === 1) {
-            openApiDoc = filtered[0]?.handle?.pathDoc || null;
+            const route = filtered[0]?.handle as Route;
+            openApiDoc = route?.pathDoc || null;
+            exclude = route?.exclude || false;
         } else if (filtered.length > 1) {
             throw Error(
                 `At most one OpenApiPathMiddleware may be on a route: ${basePath + layer.route.path} has ${filtered.length}`,
@@ -74,9 +77,10 @@ export default class ExpressPathParser {
                 pathParams: params,
                 method: lastRequestHandler.method,
                 openApiOperation: openApiDoc,
+                exclude
             };
         }
-        return { path: basePath + layer.route.path, pathParams: params, method: lastRequestHandler.method };
+        return { path: basePath + layer.route.path, pathParams: params, method: lastRequestHandler.method, exclude };
     };
 }
 

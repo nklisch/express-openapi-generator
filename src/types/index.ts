@@ -1,64 +1,44 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import * as ExpressInterfaces from 'express-serve-static-core';
 import { OpenAPIV3 } from 'openapi-types';
-import { JSONSchemaType } from 'ajv'
 import { OpenAPIParametersAsJSONSchema } from 'openapi-jsonschema-parameters';
+import { ErrorObject } from 'ajv';
 
-export interface ExpressRequest {
-  headers: Record<string, any>
-  params: Record<string, any>
-  query: Record<string, any>
-  body: any
-}
 
 export interface OpenApiParameters extends OpenAPIParametersAsJSONSchema {
   components?: OpenAPIV3.ComponentsObject
 }
+export enum Component {
+  schemas = 'schemas',
+  responses = 'responses',
+  parameters = 'parameters',
+  examples = ' examples',
+  requestBodies = 'requestBodies',
+  headers = 'headers',
+  securitySchemes = 'securitySchemes',
+  links = 'links',
+  callbacks = 'callbacks'
+}
 
-export const BASE_REQ_SCHEMA: JSONSchemaType<ExpressRequest> = {
-  type: 'object',
-  required: ['headers', 'params', 'query'],
-  properties: {
-    headers: {
-      type: 'object',
-      required: [],
-      properties: {}
-    },
-    params: {
-      type: 'object',
-      required: [],
-      properties: {}
-    },
-    query: {
-      type: 'object',
-      required: [],
-      properties: {}
-    },
-    body: {
-      '$ref': 'placeholder'
-    },
-  }
-
+export interface ValidationError extends Error {
+  validationErrors: ErrorObject
 }
 
 export type OpenApiRequestHandler = {
   (req: Request, res: Response, next: NextFunction): void
   pathDoc?: OpenAPIV3.OperationObject
+  exclude?: boolean
 }
 
 export interface Route extends ExpressInterfaces.IRoute {
   stack: Layer[];
-}
-
-export interface Router extends ExpressInterfaces.Router {
-  stack: Layer[];
   pathDoc: OpenAPIV3.OperationObject;
+  exclude: boolean;
+  name: string;
 }
-
-
 
 export interface Layer {
-  handle?: Router;
+  handle?: Route | Router;
   stack: Layer[];
   route: Route;
   name: string;
@@ -80,6 +60,7 @@ export interface ExpressPath {
   pathParams: OpenAPIV3.ParameterObject[];
   method: string;
   openApiOperation?: OpenAPIV3.OperationObject | null;
+  exclude: boolean
 }
 
 export interface Key {

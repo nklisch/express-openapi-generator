@@ -3,33 +3,52 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { OpenAPIV3 } from 'openapi-types';
 import { Middleware } from './middleware'
-import Ajv, { ValidateFunction, Options } from 'ajv'
+import Ajv, { ValidateFunction } from 'ajv'
 import { OpenApiRequestHandler, OpenApiParameters } from '../types';
-import { serve, setup } from 'swagger-ui-express'
-import { RequestHandler } from 'express';
 import { convertParametersToJSONSchema } from 'openapi-jsonschema-parameters'
 
 export default class OpenApiPath {
+    private static instance: OpenApiPath;
     private validate: boolean;
-    private ajv?: Ajv;
-    private document?: OpenAPIV3.Document;
     private readonly operations: Map<string, ValidateFunction>;
-    private readonly validatorQueue: string[];
-    constructor() {
+    private validatorQueue: string[];
+
+    private constructor() {
         this.validate = false;
         this.operations = new Map<string, ValidateFunction>();
         this.validatorQueue = [];
     }
+
+    public static initialize({ openApiDoc, validate = false, ajv }: { openApiDoc?: OpenAPIV3.Document, validate?: boolean; ajv?: Ajv; }) {
+        if (!OpenApiPath.instance) {
+            OpenApiPath.instance = new OpenApiPath();
+        }
+        OpenApiPath.instance.initialize({ openApiDoc, validate, ajv });
+    }
+
+    public static path(operationId: string,
+        {
+            pathDoc,
+            validate = false,
+            exclude = false
+        }: { pathDoc?: OpenAPIV3.OperationObject; validate?: boolean, exclude?: boolean }) {
+        if (!OpenApiPath.instance) {
+            OpenApiPath.instance = new OpenApiPath();
+        }
+        return OpenApiPath.instance.path(operationId, { pathDoc, validate, exclude })
+    }
+
     // TODO: Expand this documentation
     /**
      * @param {string} operationId - Required unique Express App wide id representing this specific operation in the open api schema.
      */
-    path = (
+    private path = (
         operationId: string,
         {
             pathDoc,
             validate,
-        }: { pathDoc?: OpenAPIV3.OperationObject; validate?: boolean; coerceRequest?: boolean },
+            exclude
+        }: { pathDoc?: OpenAPIV3.OperationObject, validate: boolean, exclude: boolean },
     ): OpenApiRequestHandler => {
         if (this.operations.has(operationId)) {
             throw new Error('operationId must be unique per express app');
@@ -41,17 +60,12 @@ export default class OpenApiPath {
             }
             this.validatorQueue.push(operationId)
         }
-        return new Middleware(operationId, this.operations, pathDoc).openApiPathMiddleware;
+        return new Middleware(operationId, this.operations, exclude, pathDoc).openApiPathMiddleware;
     };
 
-    swaggerUi = (): RequestHandler[] => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        return this.document ? [serve, setup(this.document)] as RequestHandler[] : []
-    }
 
-    initialize = ({ openApiDoc, validate = false, ajv }: { openApiDoc?: OpenAPIV3.Document, validate?: boolean; ajv?: Ajv; }): void => {
+    private initialize = ({ openApiDoc, validate = false, ajv }: { openApiDoc?: OpenAPIV3.Document, validate?: boolean; ajv?: Ajv; }): void => {
         this.validate = validate;
-        this.ajv = ajv;
         if (!ajv && validate) {
             throw new Error('An Ajv constructed object must be provided for validation')
         }
@@ -59,9 +73,12 @@ export default class OpenApiPath {
             return;
         }
         for (const operationId of this.validatorQueue) {
+            if (this.operations.has(operationId)) {
+                throw new Error(`OperationId ${operationId} is not unique. Must be unique per Express App.`)
+            }
             this.operations.set(operationId, makeValidator(operationId, openApiDoc, ajv));
         }
-        this.document = openApiDoc;
+        this.validatorQueue = [];
     }
 }
 
