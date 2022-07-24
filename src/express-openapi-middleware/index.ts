@@ -7,8 +7,8 @@ import Ajv, { ValidateFunction } from 'ajv';
 import { OpenApiRequestHandler, OpenApiParameters } from '../types';
 import { convertParametersToJSONSchema } from 'openapi-jsonschema-parameters';
 
-export default class OpenApiPath {
-  private static instance: OpenApiPath;
+export default class OpenApiPathMiddleware {
+  private static instance: OpenApiPathMiddleware;
   private validate: boolean;
   private readonly operations: Map<string, ValidateFunction>;
   private validatorQueue: string[];
@@ -25,10 +25,10 @@ export default class OpenApiPath {
    * @param ajv - Ajv validation instance - user configured, provided and defined.
    */
   public static initializeValidation(openApiDoc: OpenAPIV3.Document, ajv: Ajv) {
-    if (!OpenApiPath.instance) {
-      OpenApiPath.instance = new OpenApiPath();
+    if (!OpenApiPathMiddleware.instance) {
+      OpenApiPathMiddleware.instance = new OpenApiPathMiddleware();
     }
-    OpenApiPath.instance.initializeValidation(openApiDoc, ajv);
+    OpenApiPathMiddleware.instance.initializeValidation(openApiDoc, ajv);
   }
   /**
    * Creates an openApiPath middleware that attaches to a route, providing meta-data for the express parser to pick up.
@@ -48,10 +48,10 @@ export default class OpenApiPath {
       exclude = false,
     }: { operationObject?: OpenAPIV3.OperationObject; validate?: boolean; exclude?: boolean },
   ) {
-    if (!OpenApiPath.instance) {
-      OpenApiPath.instance = new OpenApiPath();
+    if (!OpenApiPathMiddleware.instance) {
+      OpenApiPathMiddleware.instance = new OpenApiPathMiddleware();
     }
-    return OpenApiPath.instance.path(operationId, { operationObject, validate, exclude });
+    return OpenApiPathMiddleware.instance.path(operationId, { operationObject, validate, exclude });
   }
 
   private path = (
