@@ -1,5 +1,5 @@
 {
-  "name": "express-openapi-tools",
+  "name": "express-openapi-generator",
   "version": "1.0.0",
   "description": "",
   "main": "lib/index.js",
@@ -24,8 +24,10 @@
     "express",
     "openapi",
     "swagger",
+    "redoc",
     "documentation",
     "generator",
+    "autodoc",
     "tools"
   ],
   "author": "Nathan Klisch",
@@ -50,6 +52,7 @@
     "express": "^4.18.1",
     "jest": "^28.1.2",
     "prettier": "^2.7.1",
+    "supertest": "^6.2.4",
     "ts-jest": "^28.0.5",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^4.7.4"

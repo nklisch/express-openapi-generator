@@ -4,31 +4,31 @@ import { OpenAPIV3 } from 'openapi-types';
 import { OpenAPIParametersAsJSONSchema } from 'openapi-jsonschema-parameters';
 import { ErrorObject } from 'ajv';
 
-
 export interface OpenApiParameters extends OpenAPIParametersAsJSONSchema {
-  components?: OpenAPIV3.ComponentsObject
+  components?: OpenAPIV3.ComponentsObject;
 }
-export enum Component {
+
+export enum ComponentFieldNames {
   schemas = 'schemas',
   responses = 'responses',
   parameters = 'parameters',
-  examples = ' examples',
+  examples = 'examples',
   requestBodies = 'requestBodies',
   headers = 'headers',
   securitySchemes = 'securitySchemes',
   links = 'links',
-  callbacks = 'callbacks'
+  callbacks = 'callbacks',
 }
 
 export interface ValidationError extends Error {
-  validationErrors: ErrorObject
+  validationErrors: ErrorObject;
 }
 
 export type OpenApiRequestHandler = {
-  (req: Request, res: Response, next: NextFunction): void
-  pathDoc?: OpenAPIV3.OperationObject
-  exclude?: boolean
-}
+  (req: Request, res: Response, next: NextFunction): void;
+  pathDoc?: OpenAPIV3.OperationObject;
+  exclude?: boolean;
+};
 
 export interface Route extends ExpressInterfaces.IRoute {
   stack: Layer[];
@@ -59,8 +59,8 @@ export interface ExpressPath {
   path: string;
   pathParams: OpenAPIV3.ParameterObject[];
   method: string;
-  openApiOperation?: OpenAPIV3.OperationObject | null;
-  exclude: boolean
+  openApiOperation?: OpenAPIV3.OperationObject;
+  exclude: boolean;
 }
 
 export interface Key {
