@@ -6,8 +6,9 @@
 /* eslint-disable no-console */
 import express, { Express, Request, RequestHandler, Response, Router } from 'express';
 import { OpenAPIV3 } from 'openapi-types';
-import OpenApiPath from '../express-open-api-middleware/middlewareFactory';
-import ExpressPathParser, { onlyForTesting } from '../express-parser/parser';
+import OpenApiPath from '../express-openapi-middleware';
+import { onlyForTesting } from '../express-parser';
+import { ExpressPathParser } from '../index';
 import { ExpressRegex } from '../types';
 
 const staticPath = /^\/sub-route2\/?(?=\/|$)/i as ExpressRegex;
@@ -133,37 +134,34 @@ describe('it parses an express app with', () => {
     app = express();
   });
 
-  it('a route', (done) => {
+  it('a route', () => {
     app.get('/test/the/endpoint', successResponse);
     const parsed = new ExpressPathParser(app);
     const { path, method, pathParams } = parsed.appPaths[0];
     expect(path).toBe('/test/the/endpoint');
     expect(method).toBe('get');
     expect(pathParams).toEqual([]);
-    done();
   });
 
-  it('a path parameter', (done) => {
+  it('a path parameter', () => {
     app.delete('/test/:id/endpoint', successResponse);
     const parsed = new ExpressPathParser(app);
     const { path, method, pathParams } = parsed.appPaths[0];
     expect(path).toBe('/test/:id/endpoint');
     expect(method).toBe('delete');
     expect(pathParams).toEqual([{ name: 'id', in: 'path', required: true }]);
-    done();
   });
 
-  it('a optional path parameter', (done) => {
+  it('a optional path parameter', () => {
     app.patch('/test/:id?/endpoint', successResponse);
     const parsed = new ExpressPathParser(app);
     const { path, method, pathParams } = parsed.appPaths[0];
     expect(path).toBe('/test/:id?/endpoint');
     expect(method).toBe('patch');
     expect(pathParams).toEqual([{ name: 'id', in: 'path', required: false }]);
-    done();
   });
 
-  it('multiple path parameters', (done) => {
+  it('multiple path parameters', () => {
     app.post('/test/:name/:id/:day', successResponse);
     app.get('/test/:id?/:test?/:cid?', successResponse);
     const parsed = new ExpressPathParser(app);
@@ -183,30 +181,27 @@ describe('it parses an express app with', () => {
       { name: 'test', in: 'path', required: false },
       { name: 'cid', in: 'path', required: false },
     ]);
-    done();
   });
 
-  it('regex path parameters', (done) => {
+  it('regex path parameters', () => {
     app.post(/\/abc|\/xyz/, successResponse);
     const parsed = new ExpressPathParser(app);
     const { path, method, pathParams } = parsed.appPaths[0];
     expect(path).toBe('/\\/abc|\\/xyz/');
     expect(method).toBe('post');
     expect(pathParams).toEqual([]);
-    done();
   });
 
-  it('array of path parameters', (done) => {
+  it('array of path parameters', () => {
     app.get(['/abcd', '/xyza', /\/lmn|\/pqr/], successResponse);
     const parsed = new ExpressPathParser(app);
     const { path, method, pathParams } = parsed.appPaths[0];
     expect(path).toBe('/abcd,/xyza,/\\/lmn|\\/pqr/');
     expect(method).toBe('get');
     expect(pathParams).toEqual([]);
-    done();
   });
 
-  it('paths with *,? and +', (done) => {
+  it('paths with *,? and +', () => {
     app.get('/abc?d', successResponse);
     app.get('/ab*cd', successResponse);
     app.get('/a(bc)?d', successResponse);
@@ -223,10 +218,9 @@ describe('it parses an express app with', () => {
     expect(path).toBe('/a(bc)?d');
     expect(method).toBe('get');
     expect(pathParams).toEqual([{ in: 'path', name: 0, required: true }]);
-    done();
   });
 
-  it('route pattern', (done) => {
+  it('route pattern', () => {
     app
       .route('/test')
       .all((req, res, next) => next())
@@ -236,10 +230,9 @@ describe('it parses an express app with', () => {
     expect(path).toBe('/test');
     expect(method).toBe('get');
     expect(pathParams).toEqual([]);
-    done();
   });
 
-  it('path with middleware', (done) => {
+  it('path with middleware', () => {
     app.use((req, res, next) => next());
     app.get('/test', (req, res, next) => next(), successResponse);
     const parsed = new ExpressPathParser(app);
@@ -247,10 +240,9 @@ describe('it parses an express app with', () => {
     expect(path).toBe('/test');
     expect(method).toBe('get');
     expect(pathParams).toEqual([]);
-    done();
   });
 
-  it('an openApiPath middleware path doc extraction', (done) => {
+  it('an openApiPath middleware path doc extraction', () => {
     app.get('/test', OpenApiPath.path('test', { operationObject }), successResponse);
     const parsed = new ExpressPathParser(app);
     const { path, method, pathParams, openApiOperation } = parsed.appPaths[0];
@@ -258,10 +250,9 @@ describe('it parses an express app with', () => {
     expect(method).toBe('get');
     expect(pathParams).toEqual([]);
     expect(openApiOperation).toEqual(operationObject);
-    done();
   });
 
-  it('too many openApiPath middlewares on a route should fail', (done) => {
+  it('too many openApiPath middlewares on a route should fail', () => {
     app.get(
       '/test',
       OpenApiPath.path('test', { operationObject }),
@@ -269,14 +260,12 @@ describe('it parses an express app with', () => {
       successResponse,
     );
     expect(() => new ExpressPathParser(app)).toThrow();
-    done();
   });
 
-  it('openApiPathMiddleware is on a app use function should fail', (done) => {
+  it('openApiPathMiddleware is on a app use function should fail', () => {
     app.use(OpenApiPath.path('test', { operationObject }));
     app.get('/test', OpenApiPath.path('test', { operationObject }), successResponse);
     expect(() => new ExpressPathParser(app)).toThrow();
-    done();
   });
 });
 
@@ -293,7 +282,7 @@ describe('parses an express app with ', () => {
     subrouter = express.Router();
   });
 
-  it('sub-routes', (done) => {
+  it('sub-routes', () => {
     subrouter.get('/endpoint', successResponse);
     router.use('/sub-route', subrouter);
     app.use('/test', router);
@@ -302,10 +291,9 @@ describe('parses an express app with ', () => {
     expect(path).toBe('/test/sub-route/endpoint');
     expect(method).toBe('get');
     expect(pathParams).toEqual([]);
-    done();
   });
 
-  it('sub-routes with openApiMiddleware', (done) => {
+  it('sub-routes with openApiMiddleware', () => {
     subrouter.get('/endpoint', OpenApiPath.path('test', { operationObject }), successResponse);
     router.use('/sub-route', subrouter);
     app.use('/test', router);
@@ -315,10 +303,9 @@ describe('parses an express app with ', () => {
     expect(method).toBe('get');
     expect(pathParams).toEqual([]);
     expect(openApiOperation).toEqual(operationObject);
-    done();
   });
 
-  it('nested sub-routes with a path parameters Router', (done) => {
+  it('nested sub-routes with a path parameters Router', () => {
     const router2 = express.Router();
     const subrouter2 = express.Router();
 
@@ -356,6 +343,5 @@ describe('parses an express app with ', () => {
       { name: 'id', in: 'path', required: true },
     ]);
     expect(method).toBe('put');
-    done();
   });
 });

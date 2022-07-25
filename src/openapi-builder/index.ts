@@ -20,7 +20,10 @@ export default class OpenApiDocumentBuilder {
 
   private constructor(documentStub: OpenAPIV3.Document) {
     documentStub = deepCopy(documentStub) as OpenAPIV3.Document;
-    verifyBasicOpenApiReqs(documentStub);
+    const missingFields = verifyBasicOpenApiReqs(documentStub);
+    if (missingFields) {
+      throw new Error('Provided Open Api stub document is missing the following fields: ' + missingFields);
+    }
     this._document = documentStub;
     this.components = new Map<string, any>();
   }
@@ -102,13 +105,12 @@ const deepCopy = (obj: any): any => {
   return JSON.parse(JSON.stringify(obj));
 };
 
-const verifyBasicOpenApiReqs = (openApiDoc: OpenAPIV3.Document): void => {
+const verifyBasicOpenApiReqs = (openApiDoc: OpenAPIV3.Document): string => {
   let missingFields = openApiDoc?.openapi ? '' : 'openapi, ';
-  missingFields += openApiDoc?.info?.title ? '' : 'info, title, ';
+  missingFields += openApiDoc?.info ? '' : 'info, ';
+  missingFields += openApiDoc?.info?.title ? '' : 'title ';
   missingFields += openApiDoc?.info?.version ? '' : 'and version.';
-  if (missingFields) {
-    throw new Error('Provided Open Api stub document is missing the following fields: ' + missingFields);
-  }
+  return missingFields;
 };
 
 const buildPathsObject = (
@@ -127,8 +129,8 @@ const buildPathsObject = (
     paths[path.path][path.method] = {};
     let parameters =
       path.openApiOperation?.parameters || ([] as (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[]);
-    mergeParameters(parameters, path);
-    parameters = [...path.pathParams, ...parameters];
+    parameters = mergeParameters(parameters, path);
+
     paths[path.path][path.method] = parameters;
   }
   return paths as OpenAPIV3.PathsObject;
@@ -143,15 +145,16 @@ const transformExpressPathToOpenApi = (path: ExpressPath): void => {
 const mergeParameters = (
   parameters: (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[],
   path: ExpressPath,
-): void => {
+): (OpenAPIV3.ParameterObject | OpenAPIV3.ReferenceObject)[] => {
   for (let i = 0; i < parameters.length; i++) {
     for (let j = 0; j < path.pathParams.length; j++) {
-      if (parameters[i] === path.pathParams[j]) {
+      if ((parameters[i] as OpenAPIV3.ParameterObject)?.name === path.pathParams[j].name) {
         parameters[i] = Object.assign(path.pathParams[i], parameters[i]);
-        path.pathParams = path.pathParams.splice(i, 1);
+        path.pathParams.splice(i, 1);
       }
     }
   }
+  return [...parameters, ...path.pathParams];
 };
 
 export const onlyForTesting = {
