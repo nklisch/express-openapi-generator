@@ -1,4 +1,4 @@
-# express-openapi-gener
+# express-openapi-generator
 
 
 # 
