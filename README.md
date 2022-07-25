@@ -1,4 +1,4 @@
-# express-openapi-tools
+# express-openapi-generator
 
 
 # 
