@@ -57,7 +57,39 @@ export default class OpenApiDocumentBuilder {
     return structuredClone(this._document);
   }
 
+  public allOf = (names: string[]) => {
+    return this.compositeSchema(CompositeSchemaTypes.allOf, names);
+  }
+
+  public oneOf = (names: string[]) => {
+    return this.compositeSchema(CompositeSchemaTypes.oneOf, names);
+  }
+
+  public anyOf = (names: string[]) => {
+    return this.compositeSchema(CompositeSchemaTypes.anyOf, names);
+  }
+
+  public compositeSchema = (type: CompositeSchemaTypes, names: string[]): OpenAPIV3.SchemaObject => {
+    const composite: any = {};
+    composite[type] = names.map((name) => {
+      const ref = this.component(ComponentFieldNames.schemas, { name });
+      if (!ref) {
+        throw new Error(`Provided component name ${name} does not exist on the document`);
+      }
+      return ref;
+    });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    return composite as OpenAPIV3.SchemaObject;
+  };
+
   public component = (field: ComponentFieldNames, { name, component, copy }: ComponentParameter): Component | OpenAPIV3.ReferenceObject | undefined => {
+    if (!Object.values(ComponentFieldNames).includes(field)) {
+      throw new Error(
+        `Provided component fields - ${field} - is invalid, must be one of: ${Object.values(
+          ComponentFieldNames,
+        ).toString()}`,
+      );
+    }
     if (component) {
       component = structuredClone(component);
       this.components.set(`${field}-${name}`, component);
@@ -109,9 +141,6 @@ export default class OpenApiDocumentBuilder {
   };
 }
 
-
-
-
 const verifyBasicOpenApiReqs = (openApiDoc: OpenAPIV3.Document): string => {
   let missingFields = openApiDoc?.openapi ? '' : 'openapi, ';
   missingFields += openApiDoc?.info ? '' : 'info, ';
@@ -133,15 +162,22 @@ const buildPathsObject = (
     }
     transformExpressPathToOpenApi(path);
     paths[path.path] = {};
-    paths[path.path][path.method] = {};
+    paths[path.path][path.method] = path.openApiOperation || {};
+    paths[path.path][path.method].operationId = path.operationId;
     let parameters =
       path.openApiOperation?.parameters || ([] as (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[]);
     parameters = mergeParameters(parameters, path);
+    if (parameters.length > 0) {
+      paths[path.path][path.method].parameters = parameters;
+    }
 
-    paths[path.path][path.method] = parameters;
+    if (!paths[path.path][path.method].responses) {
+      paths[path.path][path.method].responses = { default: { description: 'Responses object not provided for this route' } };
+    }
   }
   return paths as OpenAPIV3.PathsObject;
 };
+
 
 const transformExpressPathToOpenApi = (path: ExpressPath): void => {
   path.pathParams.forEach((param: OpenAPIV3.ParameterObject) => {
@@ -156,8 +192,9 @@ const mergeParameters = (
   for (let i = 0; i < parameters.length; i++) {
     for (let j = 0; j < path.pathParams.length; j++) {
       if ((parameters[i] as OpenAPIV3.ParameterObject)?.name === path.pathParams[j].name) {
-        parameters[i] = Object.assign(path.pathParams[i], parameters[i]);
-        path.pathParams.splice(i, 1);
+        parameters[i] = Object.assign(path.pathParams[j], parameters[i]);
+        path.pathParams.splice(j, 1)
+        break;
       }
     }
   }
