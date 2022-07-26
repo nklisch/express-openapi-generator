@@ -1,3 +1,3 @@
 it('passes', (done) => {
-    done();
+  done();
 });

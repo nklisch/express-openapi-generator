@@ -33,5 +33,6 @@ export class Middleware {
     this.openApiPathMiddleware.bind(this);
     this.openApiPathMiddleware.pathDoc = operationObject;
     this.openApiPathMiddleware.exclude = exclude;
+    this.openApiPathMiddleware.operationId = operationId;
   }
 }
