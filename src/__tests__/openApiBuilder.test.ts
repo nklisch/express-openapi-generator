@@ -5,18 +5,133 @@ import { onlyForTesting } from '../openapi-builder';
 import { OpenApiDocumentBuilder } from '../index';
 import swaggerExampleSchema from '../../resources/swaggerio-example.json';
 import { ExpressPath } from '../types';
+
+
 // import OpenApiPath from '../middleware/openApiPath'
 const document: OpenAPIV3.Document = swaggerExampleSchema as OpenAPIV3.Document;
 
-const stub = JSON.parse(
-  JSON.stringify({
-    openapi: document.openapi,
-    info: document.info,
-    externalDocs: document.externalDocs,
-    servers: document.servers,
-    tags: document.tags,
-  }),
-) as OpenAPIV3.Document;
+const stub = structuredClone({
+  openapi: document.openapi,
+  info: document.info,
+  externalDocs: document.externalDocs,
+  servers: document.servers,
+  tags: document.tags,
+}) as OpenAPIV3.Document;
+
+const pathsObject: OpenAPIV3.PathsObject = {
+  "/test/{id}": {
+    get: {
+      operationId: "getTest",
+      parameters: [
+        {
+          name: "id",
+          in: "path",
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+      responses: {
+        default:
+        {
+          description: "Responses object not provided for this route",
+        },
+      },
+    },
+  },
+  "/test": {
+    get: {
+      operationId: "getTests",
+      responses: {
+        default:
+        {
+          description: "Responses object not provided for this route",
+        },
+      },
+    },
+  },
+  "/test/{name}/{id}": {
+    post: {
+      tags: [
+        "testing",
+      ],
+      summary: "test object",
+      description: "A test",
+      operationId: "createTest",
+      parameters: [
+        {
+          name: "id",
+          in: "path",
+          schema: {
+            type: "integer",
+          },
+        },
+        {
+          name: "name",
+          in: "path",
+          schema: {
+            type: "string",
+          },
+        },
+        {
+          name: "testing",
+          in: "query",
+          schema: {
+            type: "integer",
+          },
+        },
+      ],
+      requestBody: {
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                test: {
+                  type: "string",
+                },
+              },
+            },
+          },
+        },
+      },
+      responses: {
+        "200": {
+          description: "testing response",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  test: {
+                    type: "string",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+
+
+
+const exampleOperation: OpenAPIV3.OperationObject = {
+  tags: ['testing'],
+  summary: 'test object',
+  description: 'A test',
+  operationId: 'createTest',
+  parameters: [{ name: 'id', in: 'path', schema: { type: 'integer' } }, { name: 'name', in: 'path', schema: { type: 'string' } }, { name: 'testing', in: 'query', schema: { type: 'integer' } }],
+  requestBody: { content: { 'application/json': { schema: { type: 'object', properties: { test: { type: 'string' } } } } } },
+  responses: { '200': { description: 'testing response', content: { 'application/json': { schema: { type: 'object', properties: { test: { type: 'string' } } } } } } }
+}
+const parserOutput: ExpressPath[] = [
+  { path: '/test/:id', method: 'get', pathParams: [{ name: 'id', in: 'path', schema: { type: 'string' } }], exclude: false, operationId: 'getTest' },
+  { path: '/test', method: 'get', pathParams: [], exclude: false, operationId: 'getTests' },
+  { path: '/test/:name/:id', method: 'post', pathParams: [{ name: 'id', in: 'path', schema: { type: 'string' } }, { name: 'name', in: 'path', schema: { type: 'string' } }], exclude: false, openApiOperation: exampleOperation, operationId: 'createTest' }
+]
 
 describe('verifyBasicOpenApiReqs handles', () => {
   it('a correct document stub', () => {
@@ -94,6 +209,41 @@ describe('buildPathsObject handles', () => {
   it('')
 })
 
-it('detects the openApiPath middleware', (done) => {
-  done();
+it('an expected input with defaults', () => {
+  expect(onlyForTesting.buildPathsObject(parserOutput, false, false)).toEqual(pathsObject);
 });
+
+it('handles excluding paths', () => {
+  const parserOutputCopy = structuredClone(parserOutput);
+  parserOutputCopy[0].exclude = true;
+  const pathsObjectCopy = structuredClone(pathsObject);
+  delete pathsObjectCopy["/test/{id}"];
+  expect(onlyForTesting.buildPathsObject(parserOutputCopy, false, false)).toEqual(pathsObjectCopy);
+  expect(onlyForTesting.buildPathsObject(parserOutputCopy, false, true)).toEqual(pathsObject);
+});
+
+it('handles excluding paths with no docs', () => {
+  const pathsObjectCopy = structuredClone(pathsObject);
+  delete pathsObjectCopy["/test/{id}"]
+  delete pathsObjectCopy["/test"]
+  expect(onlyForTesting.buildPathsObject(parserOutput, true, false)).toEqual(pathsObjectCopy);
+});
+
+});
+
+describe('OpenApiDocumentBuilder builds documents', () => {
+  it('with a stub and input', () => {
+    const doc = structuredClone(stub);
+    const builder = OpenApiDocumentBuilder.initializeDocument(doc, true);
+    builder.buildPathsObject(parserOutput)
+    doc.paths = pathsObject;
+    expect(builder.document).toEqual(doc);
+  })
+  it('attaches document components', () => {
+    const doc = structuredClone(stub);
+    doc.components = swaggerExampleSchema.components as OpenAPIV3.ComponentsObject;
+    const builder = OpenApiDocumentBuilder.initializeDocument(doc, true);
+    expect(builder.schema({ name: 'user' })).toEqual({ $ref: '#/components/schemas/user' })
+    expect(builder.schema({ name: 'repository', copy: true })).toEqual(swaggerExampleSchema.components.schemas.repository);
+  })
+})
