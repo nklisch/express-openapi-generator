@@ -1,7 +1,7 @@
 # express-openapi-generator
-This project is made of a few independent tools that can be used in conjunction to analyze an Express app project and generate OpenApi v3 documentation.
+This package is unopinionated and made of a independent tools that can be used in unison to analyze an Express app project and generate OpenApi v3 documentation.
 
-*Inspired by [@wesleytodd/express-openapi](https://www.npmjs.com/package/@wesleytodd/openapi). No active development is happening on `@wesleytodd/express-openapi`, and there are some bugs. This project seeks to use the same philosophy of documentation from code, but provide a less opinionated interface and provide improved features and  better express app structure support. See below for specific improvements*
+*Inspired by [@wesleytodd/express-openapi](https://www.npmjs.com/package/@wesleytodd/openapi). No active development is happening on `@wesleytodd/express-openapi`, and there are some bugs. This project seeks to use the same philosophy of documentation from code, but provide a less opinionated interface and provide improved features and  better express app structure support. *
 ### Features
 - **Express Parser**: Parses an express app and creates a list of routes with relevant meta-data attached. Supports multiple nested routers with path parameters, complex routes, multi-page router apps.
 - **Express OpenApi Middleware**: Creates an Express middleware that attaches relevant meta-data to an individual route. Also provides optional request validation when given a complete open api specification.
@@ -29,4 +29,4 @@ These packages are either required for certain functionality or may integrate we
 
 ### express-parser
 ### express-openapi-middleware
-### openapi-buildr
+### openapi-builder

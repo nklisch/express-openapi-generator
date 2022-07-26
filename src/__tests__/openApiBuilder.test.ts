@@ -71,7 +71,10 @@ describe('mergeParameters handles', () => {
     const expressPath: ExpressPath = {
       path: 'test/:id/:endpoint',
       method: 'get',
-      pathParams: [{ name: 'id', in: 'path', schema: { type: 'string' } }, { name: 'endpoint', in: 'path', schema: { type: 'string' } }],
+      pathParams: [
+        { name: 'id', in: 'path', schema: { type: 'string' } },
+        { name: 'endpoint', in: 'path', schema: { type: 'string' } },
+      ],
       exclude: false,
     };
     let parameters: (OpenAPIV3.ParameterObject | OpenAPIV3.ReferenceObject)[] = [
@@ -80,19 +83,22 @@ describe('mergeParameters handles', () => {
     parameters = onlyForTesting.mergeParameters(parameters, expressPath);
     // eslint-disable-next-line no-console
     console.log(parameters);
-    expect(parameters).toEqual([{
-      name: 'id',
-      in: 'path',
-      description: 'Test',
-      schema: { type: 'integer', format: 'int64' },
-    }, { name: 'endpoint', in: 'path', schema: { type: 'string' } }]);
+    expect(parameters).toEqual([
+      {
+        name: 'id',
+        in: 'path',
+        description: 'Test',
+        schema: { type: 'integer', format: 'int64' },
+      },
+      { name: 'endpoint', in: 'path', schema: { type: 'string' } },
+    ]);
     expect(expressPath.pathParams.length).toBe(1);
   });
 });
 
 describe('buildPathsObject handles', () => {
-  it('')
-})
+  it('');
+});
 
 it('detects the openApiPath middleware', (done) => {
   done();
