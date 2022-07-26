@@ -47,13 +47,15 @@ export type OpenApiRequestHandler = {
   (req: Request, res: Response, next: NextFunction): void;
   pathDoc?: OpenAPIV3.OperationObject;
   exclude?: boolean;
+  operationId?: string;
 };
 
 export interface Route extends ExpressInterfaces.IRoute {
   stack: Layer[];
-  pathDoc: OpenAPIV3.OperationObject;
-  exclude: boolean;
+  pathDoc?: OpenAPIV3.OperationObject;
+  exclude?: boolean;
   name: string;
+  operationId?: string;
 }
 
 export interface Layer {
@@ -80,6 +82,7 @@ export interface ExpressPath {
   method: string;
   openApiOperation?: OpenAPIV3.OperationObject;
   exclude: boolean;
+  operationId: string;
 }
 
 export interface Key {

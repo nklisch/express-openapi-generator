@@ -32,8 +32,8 @@ export default class OpenApiDocumentBuilder {
     }
   }
 
-  public static initializeDocument(documentStub: OpenAPIV3.Document): OpenApiDocumentBuilder {
-    if (!OpenApiDocumentBuilder.instance) {
+  public static initializeDocument(documentStub: OpenAPIV3.Document, reinitialize = false): OpenApiDocumentBuilder {
+    if (!OpenApiDocumentBuilder.instance || reinitialize) {
       OpenApiDocumentBuilder.instance = new OpenApiDocumentBuilder(documentStub);
     }
     return OpenApiDocumentBuilder.instance;
@@ -168,12 +168,18 @@ const buildPathsObject = (
     }
     transformExpressPathToOpenApi(path);
     paths[path.path] = {};
-    paths[path.path][path.method] = {};
+    paths[path.path][path.method] = path.openApiOperation || {};
+    paths[path.path][path.method].operationId = path.operationId;
     let parameters =
       path.openApiOperation?.parameters || ([] as (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[]);
     parameters = mergeParameters(parameters, path);
+    if (parameters.length > 0) {
+      paths[path.path][path.method].parameters = parameters;
+    }
 
-    paths[path.path][path.method] = parameters;
+    if (!paths[path.path][path.method].responses) {
+      paths[path.path][path.method].responses = { default: { description: 'Responses object not provided for this route' } };
+    }
   }
   return paths as OpenAPIV3.PathsObject;
 };
@@ -188,11 +194,13 @@ const mergeParameters = (
   parameters: (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[],
   path: ExpressPath,
 ): (OpenAPIV3.ParameterObject | OpenAPIV3.ReferenceObject)[] => {
+  const indexesToRemove: number[] = []
   for (let i = 0; i < parameters.length; i++) {
     for (let j = 0; j < path.pathParams.length; j++) {
       if ((parameters[i] as OpenAPIV3.ParameterObject)?.name === path.pathParams[j].name) {
-        parameters[i] = Object.assign(path.pathParams[i], parameters[i]);
-        path.pathParams.splice(i, 1);
+        parameters[i] = Object.assign(path.pathParams[j], parameters[i]);
+        path.pathParams.splice(j, 1)
+        break;
       }
     }
   }
