@@ -8,6 +8,25 @@ export interface OpenApiParameters extends OpenAPIParametersAsJSONSchema {
   components?: OpenAPIV3.ComponentsObject;
 }
 
+export type Component =
+  | OpenAPIV3.SchemaObject
+  | OpenAPIV3.ResponseObject
+  | OpenAPIV3.ParameterObject
+  | OpenAPIV3.ExampleObject
+  | OpenAPIV3.RequestBodyObject
+  | OpenAPIV3.HeaderObject
+  | OpenAPIV3.SecuritySchemeObject
+  | OpenAPIV3.LinkObject
+  | OpenAPIV3.CallbackObject;
+
+export type ComponentParameter = { name: string, component?: Component, copy?: boolean };
+
+export enum CompositeSchemaTypes {
+  allOf = 'allOf',
+  oneOf = 'oneOf',
+  anyOf = 'anyOf',
+}
+
 export enum ComponentFieldNames {
   schemas = 'schemas',
   responses = 'responses',
@@ -28,13 +47,15 @@ export type OpenApiRequestHandler = {
   (req: Request, res: Response, next: NextFunction): void;
   pathDoc?: OpenAPIV3.OperationObject;
   exclude?: boolean;
+  operationId?: string;
 };
 
 export interface Route extends ExpressInterfaces.IRoute {
   stack: Layer[];
-  pathDoc: OpenAPIV3.OperationObject;
-  exclude: boolean;
+  pathDoc?: OpenAPIV3.OperationObject;
+  exclude?: boolean;
   name: string;
+  operationId?: string;
 }
 
 export interface Layer {
@@ -61,6 +82,7 @@ export interface ExpressPath {
   method: string;
   openApiOperation?: OpenAPIV3.OperationObject;
   exclude: boolean;
+  operationId: string;
 }
 
 export interface Key {

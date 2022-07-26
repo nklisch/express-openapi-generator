@@ -55,16 +55,18 @@ export default class ExpressPathParser {
    */
   parseRouteLayer = (layer: Layer, keys: Key[], basePath: string): ExpressPath => {
     const lastRequestHandler = layer.route.stack[layer.route.stack.length - 1];
-    const params: OpenAPIV3.ParameterObject[] = keys.map((key) => {
+    const pathParams: OpenAPIV3.ParameterObject[] = keys.map((key) => {
       return { name: key.name, in: 'path', required: !key.optional };
     });
     let openApiDoc: OpenAPIV3.OperationObject | null = null;
     const filtered = layer.route.stack.filter((element) => element.name === 'openApiPathMiddleware');
     let exclude = false;
+    let operationId = '';
     if (filtered.length === 1) {
       const route = filtered[0]?.handle as Route;
       openApiDoc = route?.pathDoc || null;
       exclude = route?.exclude || false;
+      operationId = route?.operationId || '';
     } else if (filtered.length > 1) {
       throw Error(
         `At most one OpenApiPathMiddleware may be on a route: ${basePath + layer.route.path} has ${filtered.length}`,
@@ -73,13 +75,14 @@ export default class ExpressPathParser {
     if (openApiDoc) {
       return {
         path: basePath + layer.route.path,
-        pathParams: params,
         method: lastRequestHandler.method,
+        pathParams,
         openApiOperation: openApiDoc,
         exclude,
+        operationId
       };
     }
-    return { path: basePath + layer.route.path, pathParams: params, method: lastRequestHandler.method, exclude };
+    return { path: basePath + layer.route.path, pathParams, method: lastRequestHandler.method, exclude, operationId };
   };
 }
 

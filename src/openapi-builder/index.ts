@@ -57,7 +57,7 @@ export default class OpenApiDocumentBuilder {
     return structuredClone(this._document);
   }
 
-  public component = (field: ComponentFieldNames, name: string, component: Component): Component | undefined => {
+  public component = (field: ComponentFieldNames, { name, component, copy }: ComponentParameter): Component | OpenAPIV3.ReferenceObject | undefined => {
     if (component) {
       component = structuredClone(component);
       this.components.set(`${field}-${name}`, component);
