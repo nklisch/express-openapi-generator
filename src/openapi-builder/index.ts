@@ -31,8 +31,8 @@ export default class OpenApiDocumentBuilder {
     }
   }
 
-  public static initializeDocument(documentStub: OpenAPIV3.Document): OpenApiDocumentBuilder {
-    if (!OpenApiDocumentBuilder.instance) {
+  public static initializeDocument(documentStub: OpenAPIV3.Document, reinitialize = false): OpenApiDocumentBuilder {
+    if (!OpenApiDocumentBuilder.instance || reinitialize) {
       OpenApiDocumentBuilder.instance = new OpenApiDocumentBuilder(documentStub);
     }
     return OpenApiDocumentBuilder.instance;
