@@ -3,20 +3,19 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { OpenAPIV3 } from 'openapi-types';
 import { ComponentFieldNames, CompositeSchemaTypes, ExpressPath, Component, ComponentParameter } from '../types';
-
 export default class OpenApiDocumentBuilder {
   private static instance?: OpenApiDocumentBuilder;
   private readonly _document: OpenAPIV3.Document;
-  private readonly components: Map<string, any>;
+  private readonly components: Map<string, Component>;
 
   private constructor(documentStub: OpenAPIV3.Document) {
-    documentStub = deepCopy(documentStub) as OpenAPIV3.Document;
+    documentStub = structuredClone(documentStub);
     const missingFields = verifyBasicOpenApiReqs(documentStub);
     if (missingFields) {
       throw new Error('Provided Open Api stub document is missing the following fields: ' + missingFields);
     }
     this._document = documentStub;
-    this.components = new Map<string, any>();
+    this.components = new Map<string, Component>();
     this.processComponents();
   }
 
@@ -55,7 +54,7 @@ export default class OpenApiDocumentBuilder {
   }
 
   public get document(): OpenAPIV3.Document {
-    return deepCopy(this._document) as OpenAPIV3.Document;
+    return structuredClone(this._document);
   }
 
   public allOf = (names: string[]) => {
@@ -83,7 +82,7 @@ export default class OpenApiDocumentBuilder {
     return composite as OpenAPIV3.SchemaObject;
   };
 
-  public component = (field: ComponentFieldNames, { component, name, copy }: ComponentParameter): Component | OpenAPIV3.ReferenceObject | undefined => {
+  public component = (field: ComponentFieldNames, { name, component, copy }: ComponentParameter): Component | OpenAPIV3.ReferenceObject | undefined => {
     if (!Object.values(ComponentFieldNames).includes(field)) {
       throw new Error(
         `Provided component fields - ${field} - is invalid, must be one of: ${Object.values(
@@ -92,7 +91,7 @@ export default class OpenApiDocumentBuilder {
       );
     }
     if (component) {
-      component = deepCopy(component) as Component;
+      component = structuredClone(component);
       this.components.set(`${field}-${name}`, component);
     }
     if (!this._document.components) {
@@ -105,7 +104,7 @@ export default class OpenApiDocumentBuilder {
     const key = `${field}-${name}`;
     if (this.components.has(key)) {
       if (copy) {
-        return deepCopy(this.components.get(key)) as Component;
+        return structuredClone(this.components.get(key));
       } else {
         return { $ref: `#/components/${field}/${name}` };
       }
@@ -113,39 +112,34 @@ export default class OpenApiDocumentBuilder {
     return undefined;
   };
 
-  public schema = (params: ComponentParameter) => {
-    return this.component(ComponentFieldNames.schemas, params);
+  public schema = (params: ComponentParameter): OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject | undefined => {
+    return this.component(ComponentFieldNames.schemas, params) as OpenAPIV3.SchemaObject | undefined;
   };
-  public response = (params: ComponentParameter) => {
-    return this.component(ComponentFieldNames.responses, params);
+  public response = (params: ComponentParameter): OpenAPIV3.ResponseObject | OpenAPIV3.ReferenceObject | undefined => {
+    return this.component(ComponentFieldNames.responses, params) as OpenAPIV3.ResponseObject | undefined;
   };
-  public parameter = (params: ComponentParameter) => {
-    return this.component(ComponentFieldNames.parameters, params);
+  public parameter = (params: ComponentParameter): OpenAPIV3.ParameterObject | OpenAPIV3.ReferenceObject | undefined => {
+    return this.component(ComponentFieldNames.parameters, params) as OpenAPIV3.ParameterObject | undefined;
   };
-  public example = (params: ComponentParameter) => {
-    return this.component(ComponentFieldNames.examples, params);
+  public example = (params: ComponentParameter): OpenAPIV3.ExampleObject | OpenAPIV3.ReferenceObject | undefined => {
+    return this.component(ComponentFieldNames.examples, params) as OpenAPIV3.ExampleObject | undefined;
   };
-  public requestBody = (params: ComponentParameter) => {
-    return this.component(ComponentFieldNames.requestBodies, params);
+  public requestBody = (params: ComponentParameter): OpenAPIV3.RequestBodyObject | OpenAPIV3.ReferenceObject | undefined => {
+    return this.component(ComponentFieldNames.requestBodies, params) as OpenAPIV3.RequestBodyObject | undefined;
   };
-  public header = (params: ComponentParameter) => {
-    return this.component(ComponentFieldNames.headers, params);
+  public header = (params: ComponentParameter): OpenAPIV3.HeaderObject | OpenAPIV3.ReferenceObject | undefined => {
+    return this.component(ComponentFieldNames.headers, params) as OpenAPIV3.HeaderObject | undefined;
   };
-  public securityScheme = (params: ComponentParameter) => {
-    return this.component(ComponentFieldNames.securitySchemes, params);
+  public securityScheme = (params: ComponentParameter): OpenAPIV3.SecuritySchemeObject | OpenAPIV3.ReferenceObject | undefined => {
+    return this.component(ComponentFieldNames.securitySchemes, params) as OpenAPIV3.SecuritySchemeObject | undefined;
   };
-  public link = (params: ComponentParameter) => {
-    return this.component(ComponentFieldNames.links, params);
+  public link = (params: ComponentParameter): OpenAPIV3.LinkObject | OpenAPIV3.ReferenceObject | undefined => {
+    return this.component(ComponentFieldNames.links, params) as OpenAPIV3.LinkObject | undefined;
   };
-  public callback = (params: ComponentParameter) => {
-    return this.component(ComponentFieldNames.callbacks, params);
+  public callback = (params: ComponentParameter): OpenAPIV3.CallbackObject | OpenAPIV3.ReferenceObject | undefined => {
+    return this.component(ComponentFieldNames.callbacks, params) as OpenAPIV3.CallbackObject | undefined;
   };
 }
-
-
-const deepCopy = (obj: any): any => {
-  return JSON.parse(JSON.stringify(obj));
-};
 
 const verifyBasicOpenApiReqs = (openApiDoc: OpenAPIV3.Document): string => {
   let missingFields = openApiDoc?.openapi ? '' : 'openapi, ';
@@ -184,6 +178,7 @@ const buildPathsObject = (
   return paths as OpenAPIV3.PathsObject;
 };
 
+
 const transformExpressPathToOpenApi = (path: ExpressPath): void => {
   path.pathParams.forEach((param: OpenAPIV3.ParameterObject) => {
     path.path = path.path.replace(`:${param.name}`, `{${param.name}}`);
@@ -194,7 +189,6 @@ const mergeParameters = (
   parameters: (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[],
   path: ExpressPath,
 ): (OpenAPIV3.ParameterObject | OpenAPIV3.ReferenceObject)[] => {
-  const indexesToRemove: number[] = []
   for (let i = 0; i < parameters.length; i++) {
     for (let j = 0; j < path.pathParams.length; j++) {
       if ((parameters[i] as OpenAPIV3.ParameterObject)?.name === path.pathParams[j].name) {

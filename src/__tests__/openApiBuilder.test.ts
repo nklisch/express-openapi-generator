@@ -8,10 +8,8 @@ import { ExpressPath } from '../types';
 // import OpenApiPath from '../middleware/openApiPath'
 const document: OpenAPIV3.Document = swaggerExampleSchema as OpenAPIV3.Document;
 
-const deepCopy = (obj: any): any => {
-  return JSON.parse(JSON.stringify(obj))
-}
-const stub = deepCopy({
+
+const stub = structuredClone({
   openapi: document.openapi,
   info: document.info,
   externalDocs: document.externalDocs,
@@ -220,16 +218,16 @@ describe('buildPathsObject handles', () => {
   });
 
   it('handles excluding paths', () => {
-    const parserOutputCopy = deepCopy(parserOutput) as ExpressPath[];
+    const parserOutputCopy = structuredClone(parserOutput);
     parserOutputCopy[0].exclude = true;
-    const pathsObjectCopy = deepCopy(pathsObject) as OpenAPIV3.PathsObject;
+    const pathsObjectCopy = structuredClone(pathsObject);
     delete pathsObjectCopy["/test/{id}"];
     expect(onlyForTesting.buildPathsObject(parserOutputCopy, false, false)).toEqual(pathsObjectCopy);
     expect(onlyForTesting.buildPathsObject(parserOutputCopy, false, true)).toEqual(pathsObject);
   });
 
   it('handles excluding paths with no docs', () => {
-    const pathsObjectCopy = deepCopy(pathsObject) as OpenAPIV3.PathsObject;
+    const pathsObjectCopy = structuredClone(pathsObject);
     delete pathsObjectCopy["/test/{id}"]
     delete pathsObjectCopy["/test"]
     expect(onlyForTesting.buildPathsObject(parserOutput, true, false)).toEqual(pathsObjectCopy);
@@ -239,14 +237,14 @@ describe('buildPathsObject handles', () => {
 
 describe('OpenApiDocumentBuilder builds documents', () => {
   it('with a stub and input', () => {
-    const doc = deepCopy(stub) as OpenAPIV3.Document;
+    const doc = structuredClone(stub);
     const builder = OpenApiDocumentBuilder.initializeDocument(doc, true);
     builder.buildPathsObject(parserOutput)
     doc.paths = pathsObject;
     expect(builder.document).toEqual(doc);
   })
   it('attaches document components', () => {
-    const doc = deepCopy(stub) as OpenAPIV3.Document;
+    const doc = structuredClone(stub);
     doc.components = swaggerExampleSchema.components as OpenAPIV3.ComponentsObject;
     const builder = OpenApiDocumentBuilder.initializeDocument(doc, true);
     expect(builder.schema({ name: 'user' })).toEqual({ $ref: '#/components/schemas/user' })
