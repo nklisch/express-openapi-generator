@@ -14,11 +14,13 @@ This package is unopinionated and made of a independent tools that can be used i
 ### Notes
 singleton patterns
 
-### Recommended npm packages
-These packages are either required for certain functionality or may integrate well into this eco-system/philosophy of documentation/validation generated from code. 
-
-*This package has no direct affiliation with any of these packages.*
+### Peer Dependencies
+These packages are required for certain functionality: 
 - [ajv](https://www.npmjs.com/package/ajv): *Required* package for the provided validation structure. It is not a package dependency, instead build a Ajv instance for use with the validator. This allows direct customization of the Ajv client.
+### Recommended npm packages
+These packages may integrate well into this eco-system/philosophy of documentation/validation generated from code. 
+https://www.npmjs.com/package/openapi-schema-validator
+*This package has no direct affiliation with any of these packages.*
 - [swagger-ui-express](https://www.npmjs.com/package/swagger-ui-express): provides a web-served GUI for Swagger UI. 
 - [redoc-express](https://www.npmjs.com/package/redoc-express): provides a web-served GUI for Redoc UI.
 - [express-openapi-validator](https://www.npmjs.com/package/express-openapi-validator): Use instead of provided validation flow and Ajv. This provides validation for your routes based on the generated open api spec. Can be used instead of included validation flow. Ajv is not a direct dependency of this project.
