@@ -19,6 +19,12 @@ export default class OpenApiDocumentBuilder {
     this.processComponents();
   }
 
+  public static deleteDocumentInstance() {
+    if (OpenApiDocumentBuilder.instance) {
+      delete OpenApiDocumentBuilder.instance;
+    }
+  }
+
   private processComponents() {
     if (!this._document.components) {
       return;
@@ -38,7 +44,7 @@ export default class OpenApiDocumentBuilder {
     return OpenApiDocumentBuilder.instance;
   }
 
-  public static getDocumentBuilder(): OpenApiDocumentBuilder {
+  public static get documentBuilder(): OpenApiDocumentBuilder {
     if (!OpenApiDocumentBuilder.instance) {
       throw new Error('Must initialize document before getting builder instance');
     }
@@ -59,15 +65,15 @@ export default class OpenApiDocumentBuilder {
 
   public allOf = (names: string[]) => {
     return this.compositeSchema(CompositeSchemaTypes.allOf, names);
-  }
+  };
 
   public oneOf = (names: string[]) => {
     return this.compositeSchema(CompositeSchemaTypes.oneOf, names);
-  }
+  };
 
   public anyOf = (names: string[]) => {
     return this.compositeSchema(CompositeSchemaTypes.anyOf, names);
-  }
+  };
 
   public compositeSchema = (type: CompositeSchemaTypes, names: string[]): OpenAPIV3.SchemaObject => {
     const composite: any = {};
@@ -82,7 +88,10 @@ export default class OpenApiDocumentBuilder {
     return composite as OpenAPIV3.SchemaObject;
   };
 
-  public component = (field: ComponentFieldNames, { name, component, copy }: ComponentParameter): Component | OpenAPIV3.ReferenceObject | undefined => {
+  public component = (
+    field: ComponentFieldNames,
+    { name, component, copy }: ComponentParameter,
+  ): Component | OpenAPIV3.ReferenceObject | undefined => {
     if (!Object.values(ComponentFieldNames).includes(field)) {
       throw new Error(
         `Provided component fields - ${field} - is invalid, must be one of: ${Object.values(
@@ -118,19 +127,25 @@ export default class OpenApiDocumentBuilder {
   public response = (params: ComponentParameter): OpenAPIV3.ResponseObject | OpenAPIV3.ReferenceObject | undefined => {
     return this.component(ComponentFieldNames.responses, params) as OpenAPIV3.ResponseObject | undefined;
   };
-  public parameter = (params: ComponentParameter): OpenAPIV3.ParameterObject | OpenAPIV3.ReferenceObject | undefined => {
+  public parameter = (
+    params: ComponentParameter,
+  ): OpenAPIV3.ParameterObject | OpenAPIV3.ReferenceObject | undefined => {
     return this.component(ComponentFieldNames.parameters, params) as OpenAPIV3.ParameterObject | undefined;
   };
   public example = (params: ComponentParameter): OpenAPIV3.ExampleObject | OpenAPIV3.ReferenceObject | undefined => {
     return this.component(ComponentFieldNames.examples, params) as OpenAPIV3.ExampleObject | undefined;
   };
-  public requestBody = (params: ComponentParameter): OpenAPIV3.RequestBodyObject | OpenAPIV3.ReferenceObject | undefined => {
+  public requestBody = (
+    params: ComponentParameter,
+  ): OpenAPIV3.RequestBodyObject | OpenAPIV3.ReferenceObject | undefined => {
     return this.component(ComponentFieldNames.requestBodies, params) as OpenAPIV3.RequestBodyObject | undefined;
   };
   public header = (params: ComponentParameter): OpenAPIV3.HeaderObject | OpenAPIV3.ReferenceObject | undefined => {
     return this.component(ComponentFieldNames.headers, params) as OpenAPIV3.HeaderObject | undefined;
   };
-  public securityScheme = (params: ComponentParameter): OpenAPIV3.SecuritySchemeObject | OpenAPIV3.ReferenceObject | undefined => {
+  public securityScheme = (
+    params: ComponentParameter,
+  ): OpenAPIV3.SecuritySchemeObject | OpenAPIV3.ReferenceObject | undefined => {
     return this.component(ComponentFieldNames.securitySchemes, params) as OpenAPIV3.SecuritySchemeObject | undefined;
   };
   public link = (params: ComponentParameter): OpenAPIV3.LinkObject | OpenAPIV3.ReferenceObject | undefined => {
@@ -172,12 +187,13 @@ const buildPathsObject = (
     }
 
     if (!paths[path.path][path.method].responses) {
-      paths[path.path][path.method].responses = { default: { description: 'Responses object not provided for this route' } };
+      paths[path.path][path.method].responses = {
+        default: { description: 'Responses object not provided for this route' },
+      };
     }
   }
   return paths as OpenAPIV3.PathsObject;
 };
-
 
 const transformExpressPathToOpenApi = (path: ExpressPath): void => {
   path.pathParams.forEach((param: OpenAPIV3.ParameterObject) => {
@@ -193,7 +209,7 @@ const mergeParameters = (
     for (let j = 0; j < path.pathParams.length; j++) {
       if ((parameters[i] as OpenAPIV3.ParameterObject)?.name === path.pathParams[j].name) {
         parameters[i] = Object.assign(path.pathParams[j], parameters[i]);
-        path.pathParams.splice(j, 1)
+        path.pathParams.splice(j, 1);
         break;
       }
     }

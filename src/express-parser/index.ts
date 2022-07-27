@@ -79,7 +79,7 @@ export default class ExpressPathParser {
         pathParams,
         openApiOperation: openApiDoc,
         exclude,
-        operationId
+        operationId,
       };
     }
     return { path: basePath + layer.route.path, pathParams, method: lastRequestHandler.method, exclude, operationId };
