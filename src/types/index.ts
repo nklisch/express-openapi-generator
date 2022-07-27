@@ -1,12 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import * as ExpressInterfaces from 'express-serve-static-core';
 import { OpenAPIV3 } from 'openapi-types';
-import { OpenAPIParametersAsJSONSchema } from 'openapi-jsonschema-parameters';
 import { ErrorObject } from 'ajv';
-
-export interface OpenApiParameters extends OpenAPIParametersAsJSONSchema {
-  components?: OpenAPIV3.ComponentsObject;
-}
 
 export type Component =
   | OpenAPIV3.SchemaObject
