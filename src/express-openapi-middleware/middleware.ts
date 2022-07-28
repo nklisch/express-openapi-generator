@@ -6,7 +6,7 @@ import { OpenApiRequestHandler } from '../types';
 export class Middleware {
   private readonly operationId: string;
   private readonly operations: Map<string, ValidateFunction>; // Map for validators instead
-  openApiPathMiddleware: OpenApiRequestHandler;
+  openApiPathMiddlewareNklisch: OpenApiRequestHandler;
   constructor(
     operationId: string,
     operations: Map<string, ValidateFunction>,
@@ -15,7 +15,7 @@ export class Middleware {
   ) {
     this.operationId = operationId;
     this.operations = operations;
-    this.openApiPathMiddleware = function openApiPathMiddleware(req: Request, res: Response, next: NextFunction) {
+    this.openApiPathMiddlewareNklisch = function openApiPathMiddlewareNklisch(req: Request, res: Response, next: NextFunction) {
       if (!req.route) {
         return next(
           new Error(`OpenApiPathMiddleware must be on a route method (get, post, patch, ect) - not on a use`),
@@ -30,9 +30,9 @@ export class Middleware {
       }
       return next();
     };
-    this.openApiPathMiddleware.bind(this);
-    this.openApiPathMiddleware.pathDoc = operationObject;
-    this.openApiPathMiddleware.exclude = exclude;
-    this.openApiPathMiddleware.operationId = operationId;
+    this.openApiPathMiddlewareNklisch.bind(this);
+    this.openApiPathMiddlewareNklisch.pathDoc = operationObject;
+    this.openApiPathMiddlewareNklisch.exclude = exclude;
+    this.openApiPathMiddlewareNklisch.operationId = operationId;
   }
 }

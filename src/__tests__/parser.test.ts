@@ -8,7 +8,7 @@ import express, { Express, Request, RequestHandler, Response, Router } from 'exp
 import { OpenAPIV3 } from 'openapi-types';
 import OpenApiPath from '../express-openapi-middleware';
 import { onlyForTesting } from '../express-parser';
-import { ExpressPathParser } from '../index';
+import { parseExpressApp } from '../index';
 import { ExpressRegex } from '../types';
 
 const staticPath = /^\/sub-route2\/?(?=\/|$)/i as ExpressRegex;
@@ -136,8 +136,8 @@ describe('it parses an express app with', () => {
 
   it('a route', () => {
     app.get('/test/the/endpoint', successResponse);
-    const parsed = new ExpressPathParser(app);
-    const { path, method, pathParams } = parsed.appPaths[0];
+    const parsed = parseExpressApp(app);
+    const { path, method, pathParams } = parsed[0];
     expect(path).toBe('/test/the/endpoint');
     expect(method).toBe('get');
     expect(pathParams).toEqual([]);
@@ -145,8 +145,8 @@ describe('it parses an express app with', () => {
 
   it('a path parameter', () => {
     app.delete('/test/:id/endpoint', successResponse);
-    const parsed = new ExpressPathParser(app);
-    const { path, method, pathParams } = parsed.appPaths[0];
+    const parsed = parseExpressApp(app);
+    const { path, method, pathParams } = parsed[0];
     expect(path).toBe('/test/:id/endpoint');
     expect(method).toBe('delete');
     expect(pathParams).toEqual([{ name: 'id', in: 'path', required: true }]);
@@ -154,8 +154,8 @@ describe('it parses an express app with', () => {
 
   it('a optional path parameter', () => {
     app.patch('/test/:id?/endpoint', successResponse);
-    const parsed = new ExpressPathParser(app);
-    const { path, method, pathParams } = parsed.appPaths[0];
+    const parsed = parseExpressApp(app);
+    const { path, method, pathParams } = parsed[0];
     expect(path).toBe('/test/:id?/endpoint');
     expect(method).toBe('patch');
     expect(pathParams).toEqual([{ name: 'id', in: 'path', required: false }]);
@@ -164,8 +164,8 @@ describe('it parses an express app with', () => {
   it('multiple path parameters', () => {
     app.post('/test/:name/:id/:day', successResponse);
     app.get('/test/:id?/:test?/:cid?', successResponse);
-    const parsed = new ExpressPathParser(app);
-    let { path, method, pathParams } = parsed.appPaths[0];
+    const parsed = parseExpressApp(app);
+    let { path, method, pathParams } = parsed[0];
     expect(path).toBe('/test/:name/:id/:day');
     expect(method).toBe('post');
     expect(pathParams).toEqual([
@@ -173,7 +173,7 @@ describe('it parses an express app with', () => {
       { name: 'id', in: 'path', required: true },
       { name: 'day', in: 'path', required: true },
     ]);
-    ({ path, method, pathParams } = parsed.appPaths[1]);
+    ({ path, method, pathParams } = parsed[1]);
     expect(path).toBe('/test/:id?/:test?/:cid?');
     expect(method).toBe('get');
     expect(pathParams).toEqual([
@@ -185,8 +185,8 @@ describe('it parses an express app with', () => {
 
   it('regex path parameters', () => {
     app.post(/\/abc|\/xyz/, successResponse);
-    const parsed = new ExpressPathParser(app);
-    const { path, method, pathParams } = parsed.appPaths[0];
+    const parsed = parseExpressApp(app);
+    const { path, method, pathParams } = parsed[0];
     expect(path).toBe('/\\/abc|\\/xyz/');
     expect(method).toBe('post');
     expect(pathParams).toEqual([]);
@@ -194,8 +194,8 @@ describe('it parses an express app with', () => {
 
   it('array of path parameters', () => {
     app.get(['/abcd', '/xyza', /\/lmn|\/pqr/], successResponse);
-    const parsed = new ExpressPathParser(app);
-    const { path, method, pathParams } = parsed.appPaths[0];
+    const parsed = parseExpressApp(app);
+    const { path, method, pathParams } = parsed[0];
     expect(path).toBe('/abcd,/xyza,/\\/lmn|\\/pqr/');
     expect(method).toBe('get');
     expect(pathParams).toEqual([]);
@@ -205,16 +205,16 @@ describe('it parses an express app with', () => {
     app.get('/abc?d', successResponse);
     app.get('/ab*cd', successResponse);
     app.get('/a(bc)?d', successResponse);
-    const parsed = new ExpressPathParser(app);
-    let { path, method, pathParams } = parsed.appPaths[0];
+    const parsed = parseExpressApp(app);
+    let { path, method, pathParams } = parsed[0];
     expect(path).toBe('/abc?d');
     expect(method).toBe('get');
     expect(pathParams).toEqual([]);
-    ({ path, method, pathParams } = parsed.appPaths[1]);
+    ({ path, method, pathParams } = parsed[1]);
     expect(path).toBe('/ab*cd');
     expect(method).toBe('get');
     expect(pathParams).toEqual([{ in: 'path', name: 0, required: true }]);
-    ({ path, method, pathParams } = parsed.appPaths[2]);
+    ({ path, method, pathParams } = parsed[2]);
     expect(path).toBe('/a(bc)?d');
     expect(method).toBe('get');
     expect(pathParams).toEqual([{ in: 'path', name: 0, required: true }]);
@@ -225,8 +225,8 @@ describe('it parses an express app with', () => {
       .route('/test')
       .all((req, res, next) => next())
       .get(successResponse);
-    const parsed = new ExpressPathParser(app);
-    const { path, method, pathParams } = parsed.appPaths[0];
+    const parsed = parseExpressApp(app);
+    const { path, method, pathParams } = parsed[0];
     expect(path).toBe('/test');
     expect(method).toBe('get');
     expect(pathParams).toEqual([]);
@@ -235,8 +235,8 @@ describe('it parses an express app with', () => {
   it('path with middleware', () => {
     app.use((req, res, next) => next());
     app.get('/test', (req, res, next) => next(), successResponse);
-    const parsed = new ExpressPathParser(app);
-    const { path, method, pathParams } = parsed.appPaths[0];
+    const parsed = parseExpressApp(app);
+    const { path, method, pathParams } = parsed[0];
     expect(path).toBe('/test');
     expect(method).toBe('get');
     expect(pathParams).toEqual([]);
@@ -244,8 +244,8 @@ describe('it parses an express app with', () => {
 
   it('an openApiPath middleware path doc extraction', () => {
     app.get('/test', OpenApiPath.path('test', { operationObject }), successResponse);
-    const parsed = new ExpressPathParser(app);
-    const { path, method, pathParams, openApiOperation } = parsed.appPaths[0];
+    const parsed = parseExpressApp(app);
+    const { path, method, pathParams, openApiOperation } = parsed[0];
     expect(path).toBe('/test');
     expect(method).toBe('get');
     expect(pathParams).toEqual([]);
@@ -259,13 +259,13 @@ describe('it parses an express app with', () => {
       OpenApiPath.path('test', { operationObject }),
       successResponse,
     );
-    expect(() => new ExpressPathParser(app)).toThrow();
+    expect(() => parseExpressApp(app)).toThrow();
   });
 
   it('openApiPathMiddleware is on a app use function should fail', () => {
     app.use(OpenApiPath.path('test', { operationObject }));
     app.get('/test', OpenApiPath.path('test', { operationObject }), successResponse);
-    expect(() => new ExpressPathParser(app)).toThrow();
+    expect(() => parseExpressApp(app)).toThrow();
   });
 });
 
@@ -286,8 +286,8 @@ describe('parses an express app with ', () => {
     subrouter.get('/endpoint', successResponse);
     router.use('/sub-route', subrouter);
     app.use('/test', router);
-    const parsed = new ExpressPathParser(app);
-    const { path, method, pathParams } = parsed.appPaths[0];
+    const parsed = parseExpressApp(app);
+    const { path, method, pathParams } = parsed[0];
     expect(path).toBe('/test/sub-route/endpoint');
     expect(method).toBe('get');
     expect(pathParams).toEqual([]);
@@ -297,8 +297,8 @@ describe('parses an express app with ', () => {
     subrouter.get('/endpoint', OpenApiPath.path('test', { operationObject }), successResponse);
     router.use('/sub-route', subrouter);
     app.use('/test', router);
-    const parsed = new ExpressPathParser(app);
-    const { path, method, pathParams, openApiOperation } = parsed.appPaths[0];
+    const parsed = parseExpressApp(app);
+    const { path, method, pathParams, openApiOperation } = parsed[0];
     expect(path).toBe('/test/sub-route/endpoint');
     expect(method).toBe('get');
     expect(pathParams).toEqual([]);
@@ -318,8 +318,8 @@ describe('parses an express app with ', () => {
     router2.use('/:test/qualifier', subrouter2);
     subrouter2.put('/:name/endpoint2/:id', successResponse);
 
-    const parsed = new ExpressPathParser(app);
-    let { path, method, pathParams } = parsed.appPaths[0];
+    const parsed = parseExpressApp(app);
+    let { path, method, pathParams } = parsed[0];
     expect(path).toBe('/sub-route/:test1/sub-sub-route/:test2/:test3/endpoint');
     expect(pathParams).toEqual([
       { name: 'test1', in: 'path', required: true },
@@ -327,7 +327,7 @@ describe('parses an express app with ', () => {
       { name: 'test3', in: 'path', required: true },
     ]);
     expect(method).toBe('get');
-    ({ path, method, pathParams } = parsed.appPaths[1]);
+    ({ path, method, pathParams } = parsed[1]);
     expect(path).toBe('/sub-route/:test1/sub-sub-route/:test2/:test3/endpoint2');
     expect(pathParams).toEqual([
       { name: 'test1', in: 'path', required: true },
@@ -335,7 +335,7 @@ describe('parses an express app with ', () => {
       { name: 'test3', in: 'path', required: true },
     ]);
     expect(method).toBe('post');
-    ({ path, method, pathParams } = parsed.appPaths[2]);
+    ({ path, method, pathParams } = parsed[2]);
     expect(path).toBe('/sub-route2/:test/qualifier/:name/endpoint2/:id');
     expect(pathParams).toEqual([
       { name: 'test', in: 'path', required: true },

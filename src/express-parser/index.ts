@@ -6,12 +6,16 @@
 import { Express, Router } from 'express';
 import { OpenAPIV3 } from 'openapi-types';
 import { ExpressPath, ExpressRegex, Key, Layer, Route } from '../types';
-export default class ExpressPathParser {
+
+export const parseExpressApp = (app: Express): ExpressPath[] => {
+  return new ExpressPathParser(app).appPaths;
+}
+
+class ExpressPathParser {
   private readonly _appPaths: ExpressPath[];
-  public get appPaths(): ExpressPath[] {
+  public get appPaths() {
     return this._appPaths;
   }
-
   constructor(app: Express) {
     this._appPaths = [];
     const router: Router = app._router || app.router;
@@ -29,10 +33,10 @@ export default class ExpressPathParser {
    * @param keys The keys for the parameter's in the current path branch of the traversal
    * @returns void - base case saves result to internal object
    */
-  traverse = (path: string, layer: Layer, keys: Key[]): ExpressPath | undefined => {
+  private traverse = (path: string, layer: Layer, keys: Key[]): ExpressPath | undefined => {
     keys = [...keys, ...layer.keys];
-    if (layer.handle?.name === 'openApiPathMiddleware') {
-      throw new Error('openApiPathMiddleware must exist on the final route later');
+    if (layer.handle?.name === 'openApiPathMiddlewareNklisch') {
+      throw new Error('The openApiPathMiddleware must exist on the final route later');
     }
     if (layer.name === 'router' && layer.handle) {
       layer.handle.stack.forEach((l: Layer) => {
@@ -53,20 +57,20 @@ export default class ExpressPathParser {
    * @param basePath The base path as it was initial declared for this route
    * @returns A ExpressPath object holding the meta data for a given route
    */
-  parseRouteLayer = (layer: Layer, keys: Key[], basePath: string): ExpressPath => {
+  private parseRouteLayer = (layer: Layer, keys: Key[], basePath: string): ExpressPath => {
     const lastRequestHandler = layer.route.stack[layer.route.stack.length - 1];
     const pathParams: OpenAPIV3.ParameterObject[] = keys.map((key) => {
       return { name: key.name, in: 'path', required: !key.optional };
     });
     let openApiDoc: OpenAPIV3.OperationObject | null = null;
-    const filtered = layer.route.stack.filter((element) => element.name === 'openApiPathMiddleware');
+    const filtered = layer.route.stack.filter((element) => element.name === 'openApiPathMiddlewareNklisch');
     let exclude = false;
-    let operationId = '';
+    let operationId;
     if (filtered.length === 1) {
       const route = filtered[0]?.handle as Route;
       openApiDoc = route?.pathDoc || null;
       exclude = route?.exclude || false;
-      operationId = route?.operationId || '';
+      operationId = route?.operationId;
     } else if (filtered.length > 1) {
       throw Error(
         `At most one OpenApiPathMiddleware may be on a route: ${basePath + layer.route.path} has ${filtered.length}`,
