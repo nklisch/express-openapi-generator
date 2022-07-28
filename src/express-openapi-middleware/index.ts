@@ -6,7 +6,6 @@ import { Middleware } from './middleware';
 import Ajv, { AnySchema, ValidateFunction } from 'ajv';
 import { OpenApiRequestHandler } from '../types';
 
-
 export default class OpenApiPathMiddleware {
   private static instance: OpenApiPathMiddleware;
   private validate: boolean;
@@ -72,7 +71,7 @@ export default class OpenApiPathMiddleware {
       }
       this.validatorQueue.push(operationId);
     }
-    return new Middleware(operationId, this.operations, exclude, operationObject).openApiPathMiddleware;
+    return new Middleware(operationId, this.operations, exclude, operationObject).openApiPathMiddlewareNklisch;
   };
 
   private initializeValidation = (openApiDoc: OpenAPIV3.Document, ajv: Ajv): void => {
@@ -90,8 +89,6 @@ export default class OpenApiPathMiddleware {
   };
 }
 
-
-
 const makeValidator = (operationId: string, document: OpenAPIV3.Document, ajv: Ajv): ValidateFunction => {
   const operation = selectOperation(operationId, document.paths);
   if (!operation) {
@@ -101,17 +98,19 @@ const makeValidator = (operationId: string, document: OpenAPIV3.Document, ajv: A
   if (operation && operation.parameters) {
     const map: any = { path: 'params', query: 'query', header: 'header' };
     for (let p of operation?.parameters) {
-      if (((p as OpenAPIV3.ReferenceObject)?.$ref)) {
+      if ((p as OpenAPIV3.ReferenceObject)?.$ref) {
         p = resolveReference(document, (p as OpenAPIV3.ReferenceObject).$ref);
       }
       p = p as OpenAPIV3.ParameterObject;
       reqSchema.properties[map[p.in]].properties[p.name] = structuredClone(p.schema);
       if (p.required && !reqSchema.properties[map[p.in]].required.includes(p.name)) {
-        reqSchema.properties[map[p.in]].required.push(p.name)
+        reqSchema.properties[map[p.in]].required.push(p.name);
       }
     }
   }
-  const requestBody = (operation?.requestBody as OpenAPIV3.ReferenceObject)?.$ref ? resolveReference(document, (operation?.requestBody as OpenAPIV3.ReferenceObject).$ref) : operation?.requestBody
+  const requestBody = (operation?.requestBody as OpenAPIV3.ReferenceObject)?.$ref
+    ? resolveReference(document, (operation?.requestBody as OpenAPIV3.ReferenceObject).$ref)
+    : operation?.requestBody;
   const requestBodySchema = (requestBody as OpenAPIV3.RequestBodyObject)?.content['application/json']?.schema;
   if (requestBodySchema) {
     reqSchema.properties.body = { ...requestBodySchema };
@@ -133,15 +132,14 @@ const selectOperation = (operationId: string, paths: OpenAPIV3.PathsObject): Ope
 };
 
 const resolveReference = (document: any, ref: string) => {
-  const selector = ref.split('/')
+  const selector = ref.split('/');
   try {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
-    return structuredClone(document[selector[1]][selector[2]][selector[3]])
+    return structuredClone(document[selector[1]][selector[2]][selector[3]]);
   } catch (e) {
     throw new Error('provided document reference is not in standard format: ' + ref);
   }
-}
-
+};
 
 const BASE_REQ_SCHEMA: any = {
   type: 'object',
@@ -150,19 +148,19 @@ const BASE_REQ_SCHEMA: any = {
     headers: {
       type: 'object',
       required: [],
-      properties: {}
+      properties: {},
     },
     params: {
       type: 'object',
       required: [],
-      properties: {}
+      properties: {},
     },
     query: {
       type: 'object',
       required: [],
-      properties: {}
-    }
+      properties: {},
+    },
   },
-}
+};
 
 export const onlyForTesting = { makeValidator, selectOperation };

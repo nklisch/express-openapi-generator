@@ -56,7 +56,7 @@ export default class OpenApiDocumentBuilder {
     requireOpenApiDocs = false,
     includeExcludedPaths = false,
   ): void {
-    this._document.paths = buildPathsObject(expressParserOutput, requireOpenApiDocs, includeExcludedPaths);
+    this._document.paths = this.buildPaths(expressParserOutput, requireOpenApiDocs, includeExcludedPaths);
   }
 
   public get document(): OpenAPIV3.Document {
@@ -122,18 +122,30 @@ export default class OpenApiDocumentBuilder {
   };
 
   public schema = (params: ComponentParameter): OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject | undefined => {
-    return this.component(ComponentFieldNames.schemas, params) as OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject | undefined;
+    return this.component(ComponentFieldNames.schemas, params) as
+      | OpenAPIV3.SchemaObject
+      | OpenAPIV3.ReferenceObject
+      | undefined;
   };
   public response = (params: ComponentParameter): OpenAPIV3.ResponseObject | OpenAPIV3.ReferenceObject | undefined => {
-    return this.component(ComponentFieldNames.responses, params) as OpenAPIV3.ResponseObject | OpenAPIV3.ReferenceObject | undefined;
+    return this.component(ComponentFieldNames.responses, params) as
+      | OpenAPIV3.ResponseObject
+      | OpenAPIV3.ReferenceObject
+      | undefined;
   };
   public parameter = (
     params: ComponentParameter,
   ): OpenAPIV3.ParameterObject | OpenAPIV3.ReferenceObject | undefined => {
-    return this.component(ComponentFieldNames.parameters, params) as OpenAPIV3.ParameterObject | OpenAPIV3.ReferenceObject | undefined;
+    return this.component(ComponentFieldNames.parameters, params) as
+      | OpenAPIV3.ParameterObject
+      | OpenAPIV3.ReferenceObject
+      | undefined;
   };
   public example = (params: ComponentParameter): OpenAPIV3.ExampleObject | OpenAPIV3.ReferenceObject | undefined => {
-    return this.component(ComponentFieldNames.examples, params) as OpenAPIV3.ExampleObject | OpenAPIV3.ReferenceObject | undefined;
+    return this.component(ComponentFieldNames.examples, params) as
+      | OpenAPIV3.ExampleObject
+      | OpenAPIV3.ReferenceObject
+      | undefined;
   };
   public requestBody = (
     params: ComponentParameter,
@@ -141,18 +153,83 @@ export default class OpenApiDocumentBuilder {
     return this.component(ComponentFieldNames.requestBodies, params) as OpenAPIV3.RequestBodyObject | undefined;
   };
   public header = (params: ComponentParameter): OpenAPIV3.HeaderObject | OpenAPIV3.ReferenceObject | undefined => {
-    return this.component(ComponentFieldNames.headers, params) as OpenAPIV3.HeaderObject | OpenAPIV3.ReferenceObject | undefined;
+    return this.component(ComponentFieldNames.headers, params) as
+      | OpenAPIV3.HeaderObject
+      | OpenAPIV3.ReferenceObject
+      | undefined;
   };
   public securityScheme = (
     params: ComponentParameter,
   ): OpenAPIV3.SecuritySchemeObject | OpenAPIV3.ReferenceObject | undefined => {
-    return this.component(ComponentFieldNames.securitySchemes, params) as OpenAPIV3.SecuritySchemeObject | OpenAPIV3.ReferenceObject | undefined;
+    return this.component(ComponentFieldNames.securitySchemes, params) as
+      | OpenAPIV3.SecuritySchemeObject
+      | OpenAPIV3.ReferenceObject
+      | undefined;
   };
   public link = (params: ComponentParameter): OpenAPIV3.LinkObject | OpenAPIV3.ReferenceObject | undefined => {
-    return this.component(ComponentFieldNames.links, params) as OpenAPIV3.LinkObject | OpenAPIV3.ReferenceObject | undefined;
+    return this.component(ComponentFieldNames.links, params) as
+      | OpenAPIV3.LinkObject
+      | OpenAPIV3.ReferenceObject
+      | undefined;
   };
   public callback = (params: ComponentParameter): OpenAPIV3.CallbackObject | OpenAPIV3.ReferenceObject | undefined => {
-    return this.component(ComponentFieldNames.callbacks, params) as OpenAPIV3.CallbackObject | OpenAPIV3.ReferenceObject | undefined;
+    return this.component(ComponentFieldNames.callbacks, params) as
+      | OpenAPIV3.CallbackObject
+      | OpenAPIV3.ReferenceObject
+      | undefined;
+  };
+
+  private buildPaths = (
+    expressParserOutput: ExpressPath[],
+    requireOpenApiDocs: boolean,
+    includeExcludedPaths: boolean,
+  ): OpenAPIV3.PathsObject => {
+    const paths: any = {};
+    for (const path of expressParserOutput) {
+      const excludeThisPath = (path.exclude && !includeExcludedPaths) || (requireOpenApiDocs && !path.openApiOperation);
+      if (excludeThisPath) {
+        continue;
+      }
+      transformExpressPathToOpenApi(path);
+      paths[path.path] = {};
+      paths[path.path][path.method] = path.openApiOperation || {};
+      if (path.operationId) {
+        paths[path.path][path.method].operationId = path.operationId;
+      }
+      let parameters =
+        path.openApiOperation?.parameters || ([] as (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[]);
+      parameters = this.mergeParameters(parameters, path);
+      if (parameters.length > 0) {
+        paths[path.path][path.method].parameters = parameters;
+      }
+
+      if (!paths[path.path][path.method].responses) {
+        paths[path.path][path.method].responses = {
+          default: { description: 'Responses object not provided for this route' },
+        };
+      }
+    }
+    return paths as OpenAPIV3.PathsObject;
+  };
+
+  private mergeParameters = (
+    parameters: (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[],
+    path: ExpressPath,
+  ): (OpenAPIV3.ParameterObject | OpenAPIV3.ReferenceObject)[] => {
+    for (let i = 0; i < parameters.length; i++) {
+      for (let j = 0; j < path.pathParams.length; j++) {
+        if ((parameters[i] as OpenAPIV3.ReferenceObject).$ref) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
+          parameters[i] = this.parameter({ name: (parameters[i] as OpenAPIV3.ReferenceObject).$ref.split('/')[3], copy: true }) as OpenAPIV3.ParameterObject;
+        }
+        if ((parameters[i] as OpenAPIV3.ParameterObject)?.name === path.pathParams[j].name) {
+          parameters[i] = Object.assign(path.pathParams[j], parameters[i]);
+          path.pathParams.splice(j, 1);
+          break;
+        }
+      }
+    }
+    return [...parameters, ...path.pathParams];
   };
 }
 
@@ -164,36 +241,7 @@ const verifyBasicOpenApiReqs = (openApiDoc: OpenAPIV3.Document): string => {
   return missingFields;
 };
 
-const buildPathsObject = (
-  expressParserOutput: ExpressPath[],
-  requireOpenApiDocs: boolean,
-  includeExcludedPaths: boolean,
-): OpenAPIV3.PathsObject => {
-  const paths: any = {};
-  for (const path of expressParserOutput) {
-    const excludeThisPath = (path.exclude && !includeExcludedPaths) || (requireOpenApiDocs && !path.openApiOperation);
-    if (excludeThisPath) {
-      continue;
-    }
-    transformExpressPathToOpenApi(path);
-    paths[path.path] = {};
-    paths[path.path][path.method] = path.openApiOperation || {};
-    paths[path.path][path.method].operationId = path.operationId;
-    let parameters =
-      path.openApiOperation?.parameters || ([] as (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[]);
-    parameters = mergeParameters(parameters, path);
-    if (parameters.length > 0) {
-      paths[path.path][path.method].parameters = parameters;
-    }
 
-    if (!paths[path.path][path.method].responses) {
-      paths[path.path][path.method].responses = {
-        default: { description: 'Responses object not provided for this route' },
-      };
-    }
-  }
-  return paths as OpenAPIV3.PathsObject;
-};
 
 const transformExpressPathToOpenApi = (path: ExpressPath): void => {
   path.pathParams.forEach((param: OpenAPIV3.ParameterObject) => {
@@ -201,25 +249,8 @@ const transformExpressPathToOpenApi = (path: ExpressPath): void => {
   });
 };
 
-const mergeParameters = (
-  parameters: (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[],
-  path: ExpressPath,
-): (OpenAPIV3.ParameterObject | OpenAPIV3.ReferenceObject)[] => {
-  for (let i = 0; i < parameters.length; i++) {
-    for (let j = 0; j < path.pathParams.length; j++) {
-      if ((parameters[i] as OpenAPIV3.ParameterObject)?.name === path.pathParams[j].name) {
-        parameters[i] = Object.assign(path.pathParams[j], parameters[i]);
-        path.pathParams.splice(j, 1);
-        break;
-      }
-    }
-  }
-  return [...parameters, ...path.pathParams];
-};
 
 export const onlyForTesting = {
   verifyBasicOpenApiReqs,
-  buildPathsObject,
   transformExpressPathToOpenApi,
-  mergeParameters,
 };

@@ -203,145 +203,94 @@ describe('transformExpressPathToOpenApi handles', () => {
   });
 });
 
-describe('mergeParameters handles', () => {
-  it(' merging parameters and path', () => {
-    const expressPath: ExpressPath = {
-      path: 'test/:id/:endpoint',
-      method: 'get',
-      pathParams: [
-        { name: 'id', in: 'path', schema: { type: 'string' } },
-        { name: 'endpoint', in: 'path', schema: { type: 'string' } },
-      ],
-      exclude: false,
-      operationId: 'test',
-    };
-    let parameters: (OpenAPIV3.ParameterObject | OpenAPIV3.ReferenceObject)[] = [
-      { name: 'id', in: 'path', description: 'Test', schema: { type: 'integer', format: 'int64' } },
-    ];
-    parameters = onlyForTesting.mergeParameters(parameters, expressPath);
-    expect(parameters).toEqual([
-      {
-        name: 'id',
-        in: 'path',
-        description: 'Test',
-        schema: { type: 'integer', format: 'int64' },
-      },
-      { name: 'endpoint', in: 'path', schema: { type: 'string' } },
-    ]);
-    expect(expressPath.pathParams.length).toBe(1);
-  });
-});
-
-describe('buildPathsObject handles', () => {
-  it('an expected input with defaults', () => {
-    expect(onlyForTesting.buildPathsObject(parserOutput, false, false)).toEqual(pathsObject);
-  });
-
-  it('handles excluding paths', () => {
-    const parserOutputCopy = structuredClone(parserOutput);
-    parserOutputCopy[0].exclude = true;
-    const pathsObjectCopy = structuredClone(pathsObject);
-    delete pathsObjectCopy['/test/{id}'];
-    expect(onlyForTesting.buildPathsObject(parserOutputCopy, false, false)).toEqual(pathsObjectCopy);
-    expect(onlyForTesting.buildPathsObject(parserOutputCopy, false, true)).toEqual(pathsObject);
-  });
-
-  it('handles excluding paths with no docs', () => {
-    const pathsObjectCopy = structuredClone(pathsObject);
-    delete pathsObjectCopy['/test/{id}'];
-    delete pathsObjectCopy['/test'];
-    expect(onlyForTesting.buildPathsObject(parserOutput, true, false)).toEqual(pathsObjectCopy);
-  });
-});
-
 const responseObject: OpenAPIV3.ResponseObject = {
-  "description": "A complex object array response",
-  "content": {
-    "application/json": {
-      "schema": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/VeryComplexType"
-        }
-      }
-    }
-  }
-}
+  description: 'A complex object array response',
+  content: {
+    'application/json': {
+      schema: {
+        type: 'array',
+        items: {
+          $ref: '#/components/schemas/VeryComplexType',
+        },
+      },
+    },
+  },
+};
 
 const parameterObject: OpenAPIV3.ParameterObject = {
-  "name": "id",
-  "in": "query",
-  "description": "ID of the object to fetch",
-  "required": false,
-  "schema": {
-    "type": "array",
-    "items": {
-      "type": "string"
-    }
+  name: 'id',
+  in: 'query',
+  description: 'ID of the object to fetch',
+  required: false,
+  schema: {
+    type: 'array',
+    items: {
+      type: 'string',
+    },
   },
-  "style": "form",
-  "explode": true
-}
+  style: 'form',
+  explode: true,
+};
 const exampleObject: OpenAPIV3.ExampleObject = {
-  summary: "A foo example",
-  value: { "foo": "bar" }
-}
+  summary: 'A foo example',
+  value: { foo: 'bar' },
+};
 const requestBody: OpenAPIV3.RequestBodyObject = {
-  "description": "user to add to the system",
-  "content": {
-    "application/json": {
-      "schema": {
-        "$ref": "#/components/schemas/User"
+  description: 'user to add to the system',
+  content: {
+    'application/json': {
+      schema: {
+        $ref: '#/components/schemas/User',
       },
-      "examples": {
-        "user": {
-          "summary": "User Example",
-          "externalValue": "http://foo.bar/examples/user-example.json"
-        }
-      }
-    },
-    "application/xml": {
-      "schema": {
-        "$ref": "#/components/schemas/User"
+      examples: {
+        user: {
+          summary: 'User Example',
+          externalValue: 'http://foo.bar/examples/user-example.json',
+        },
       },
-      "examples": {
-        "user": {
-          "summary": "User example in XML",
-          "externalValue": "http://foo.bar/examples/user-example.xml"
-        }
-      }
     },
-    "text/plain": {
-      "examples": {
-        "user": {
-          "summary": "User example in Plain text",
-          "externalValue": "http://foo.bar/examples/user-example.txt"
-        }
-      }
+    'application/xml': {
+      schema: {
+        $ref: '#/components/schemas/User',
+      },
+      examples: {
+        user: {
+          summary: 'User example in XML',
+          externalValue: 'http://foo.bar/examples/user-example.xml',
+        },
+      },
     },
-    "*/*": {
-      "examples": {
-        "user": {
-          "summary": "User example in other format",
-          "externalValue": "http://foo.bar/examples/user-example.whatever"
-        }
-      }
-    }
-  }
-}
+    'text/plain': {
+      examples: {
+        user: {
+          summary: 'User example in Plain text',
+          externalValue: 'http://foo.bar/examples/user-example.txt',
+        },
+      },
+    },
+    '*/*': {
+      examples: {
+        user: {
+          summary: 'User example in other format',
+          externalValue: 'http://foo.bar/examples/user-example.whatever',
+        },
+      },
+    },
+  },
+};
 
 const headerObject: OpenAPIV3.HeaderObject = {
-  "description": "The number of allowed requests in the current period",
-  "schema": {
-    "type": "integer"
-  }
-}
+  description: 'The number of allowed requests in the current period',
+  schema: {
+    type: 'integer',
+  },
+};
 
 const securityObject: OpenAPIV3.SecuritySchemeObject = {
-  "type": "apiKey",
-  "name": "api_key",
-  "in": "header"
-}
+  type: 'apiKey',
+  name: 'api_key',
+  in: 'header',
+};
 
 describe('OpenApiDocumentBuilder', () => {
   it('builds documents with a stub and input', () => {
@@ -366,17 +315,17 @@ describe('OpenApiDocumentBuilder', () => {
     const link = structuredClone(swaggerExampleSchema.components.links.PullRequestMerge);
     const builder = DocumentBuilder.initializeDocument(structuredClone(stub), true);
     builder.schema({ name: 'pullrequest', component: schema as OpenAPIV3.SchemaObject });
-    builder.link({ name: 'PullRequestMerge', component: link })
+    builder.link({ name: 'PullRequestMerge', component: link });
     expect(builder.schema({ name: 'pullrequest' })).toEqual({ $ref: '#/components/schemas/pullrequest' });
     expect(builder.schema({ name: 'pullrequest', copy: true })).toEqual(schema);
     expect(builder.schema({ name: 'nonexisting' })).toBe(undefined);
 
-    expect(builder.link({ name: 'PullRequestMerge' })).toEqual({ $ref: '#/components/links/PullRequestMerge' })
-    expect(builder.link({ name: 'PullRequestMerge', copy: true })).toEqual(link)
+    expect(builder.link({ name: 'PullRequestMerge' })).toEqual({ $ref: '#/components/links/PullRequestMerge' });
+    expect(builder.link({ name: 'PullRequestMerge', copy: true })).toEqual(link);
 
     builder.response({ name: 'testing', component: responseObject });
-    expect(builder.response({ name: 'testing' })).toEqual({ $ref: '#/components/responses/testing' })
-    expect(builder.response({ name: 'testing', copy: true })).toEqual(responseObject)
+    expect(builder.response({ name: 'testing' })).toEqual({ $ref: '#/components/responses/testing' });
+    expect(builder.response({ name: 'testing', copy: true })).toEqual(responseObject);
 
     builder.parameter({ name: 'testing', component: parameterObject });
     expect(builder.parameter({ name: 'testing' })).toEqual({ $ref: '#/components/parameters/testing' });
@@ -401,38 +350,53 @@ describe('OpenApiDocumentBuilder', () => {
     builder.callback({ name: 'testing', component: securityObject });
     expect(builder.callback({ name: 'testing' })).toEqual({ $ref: '#/components/callbacks/testing' });
     expect(builder.callback({ name: 'testing', copy: true })).toEqual(securityObject);
-  })
+  });
 
   it('gets a document instance', () => {
     DocumentBuilder.initializeDocument(stub);
-    DocumentBuilder.documentBuilder.schema({ name: 'testing', component: structuredClone(swaggerExampleSchema.components.schemas.pullrequest) as OpenAPIV3.SchemaObject });
-    expect(DocumentBuilder.documentBuilder.schema({ name: 'testing' })).toEqual({ $ref: '#/components/schemas/testing' })
-  })
+    DocumentBuilder.documentBuilder.schema({
+      name: 'testing',
+      component: structuredClone(swaggerExampleSchema.components.schemas.pullrequest) as OpenAPIV3.SchemaObject,
+    });
+    expect(DocumentBuilder.documentBuilder.schema({ name: 'testing' })).toEqual({
+      $ref: '#/components/schemas/testing',
+    });
+  });
 
   it('throws error on incomplete document', () => {
     const stub2 = { openapi: stub.openapi };
     expect(() => DocumentBuilder.initializeDocument(stub2 as OpenAPIV3.Document, true)).toThrow();
-  })
+  });
 
   it('throws error if getting instances before initialized', () => {
     DocumentBuilder.deleteDocumentInstance();
     expect(() => DocumentBuilder.documentBuilder).toThrow();
-  })
+  });
 
   it('throws error if component field name is wrong', () => {
-    expect(() => DocumentBuilder.initializeDocument(swaggerExampleSchema as OpenAPIV3.Document).component('n/a' as ComponentFieldNames, { name: 'test' })).toThrow();
-  })
+    expect(() =>
+      DocumentBuilder.initializeDocument(swaggerExampleSchema as OpenAPIV3.Document).component(
+        'n/a' as ComponentFieldNames,
+        { name: 'test' },
+      ),
+    ).toThrow();
+  });
 
   it('can create composite schemas', () => {
     const builder = DocumentBuilder.initializeDocument(swaggerExampleSchema as OpenAPIV3.Document, true);
-    expect(builder.allOf(['pullrequest', 'user'])).toEqual({ allOf: [{ $ref: '#/components/schemas/pullrequest' }, { $ref: '#/components/schemas/user' }] });
-    expect(builder.oneOf(['pullrequest', 'user'])).toEqual({ oneOf: [{ $ref: '#/components/schemas/pullrequest' }, { $ref: '#/components/schemas/user' }] });
-    expect(builder.anyOf(['pullrequest', 'user'])).toEqual({ anyOf: [{ $ref: '#/components/schemas/pullrequest' }, { $ref: '#/components/schemas/user' }] });
+    expect(builder.allOf(['pullrequest', 'user'])).toEqual({
+      allOf: [{ $ref: '#/components/schemas/pullrequest' }, { $ref: '#/components/schemas/user' }],
+    });
+    expect(builder.oneOf(['pullrequest', 'user'])).toEqual({
+      oneOf: [{ $ref: '#/components/schemas/pullrequest' }, { $ref: '#/components/schemas/user' }],
+    });
+    expect(builder.anyOf(['pullrequest', 'user'])).toEqual({
+      anyOf: [{ $ref: '#/components/schemas/pullrequest' }, { $ref: '#/components/schemas/user' }],
+    });
+  });
 
-  })
-
-  it('throws error a schema in composite schema doesn\'t exist', () => {
+  it("throws error a schema in composite schema doesn't exist", () => {
     const builder = DocumentBuilder.initializeDocument(swaggerExampleSchema as OpenAPIV3.Document, true);
     expect(() => builder.allOf(['n/a'])).toThrow();
-  })
+  });
 });

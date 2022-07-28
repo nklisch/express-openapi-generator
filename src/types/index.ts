@@ -77,7 +77,7 @@ export interface ExpressPath {
   method: string;
   openApiOperation?: OpenAPIV3.OperationObject;
   exclude: boolean;
-  operationId: string;
+  operationId?: string;
 }
 
 export interface Key {
