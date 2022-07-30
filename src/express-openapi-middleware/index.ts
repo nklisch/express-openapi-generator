@@ -32,12 +32,12 @@ export default class OpenApiPathMiddleware {
     /**
      * Creates an path middleware that attaches to a route, providing meta-data for the express parser to pick up.
      *
-     * @param {string} operationId - Required unique Express App wide id representing this specific operation in the open api schema.
-     * @param {object} param - Object to hold optional parameters
-     * @param {OpenAPIV3.OperationObject} param.operationObject - The Open Api operation object for this route.
-     * @param {boolean} param.validate - Overrides global validation option for this route.
-     * @param {boolean} param.exclude - Indicates if this route should be marked for exclusion when generating OpenApi documents.
-     * @returns {OpenApiRequestHandler}
+     * @param  operationId - Required unique Express App wide id representing this specific operation in the open api schema.
+     * @param  param - Object to hold optional parameters
+     * @param  param.operationObject - The Open Api operation object for this route.
+     * @param  param.validate - Overrides global validation option for this route.
+     * @param  param.exclude - Indicates if this route should be marked for exclusion when generating OpenApi documents.
+     * @returns 
      */
     public static path(
         operationId: string,

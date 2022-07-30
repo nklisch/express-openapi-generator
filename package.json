@@ -63,6 +63,7 @@
     "supertest": "^6.2.4",
     "ts-jest": "^28.0.5",
     "tslint-config-prettier": "^1.18.0",
+    "typedoc": "^0.23.9",
     "typescript": "^4.7.4"
   },
   "peerDependencies": {

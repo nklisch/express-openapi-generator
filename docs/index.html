@@ -1,0 +1,134 @@
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>express-openapi-generator</title><meta name="description" content="Documentation for express-openapi-generator"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script async src="assets/search.js" id="search-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<div class="tsd-toolbar-contents container">
+<div class="table-cell" id="tsd-search" data-base=".">
+<div class="field"><label for="tsd-search-field" class="tsd-widget search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
+<ul class="results">
+<li class="state loading">Preparing search index...</li>
+<li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">express-openapi-generator</a></div>
+<div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="7" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="11" width="14" height="2" fill="var(--color-text)"></rect></svg></a></div></div></header>
+<div class="container container-main">
+<div class="col-8 col-content">
+<div class="tsd-page-title">
+<h2>express-openapi-generator</h2></div>
+<div class="tsd-panel tsd-typography">
+<a href="#express-openapi-generator" id="express-openapi-generator" style="color: inherit; text-decoration: none;">
+  <h1>express-openapi-generator</h1>
+</a>
+<p>This package allows you to analyze an Express app project and generate OpenApi v3 documentation. A middleware is provided to attach additional documentation to routes and optional request validation. </p>
+
+<a href="#features" id="features" style="color: inherit; text-decoration: none;">
+  <h3>Features</h3>
+</a>
+<ul>
+<li><strong>Express Parser</strong>: Leveraging the <a href="https://www.npmjs.com/package/express-route-parser">express-route-parser</a> npm package to parse an Express app&#39;s routes and relevant attached metadata. See the <a href="https://www.npmjs.com/package/express-route-parser">npm package for more information</a>.</li>
+<li><strong>Express OpenApi Middleware</strong>: Creates an Express middleware that attaches relevant meta-data to an individual route. Also provides optional request validation.</li>
+<li><strong>OpenApi-Builder</strong>: Uses the output of the Express Parser to generate OpenApi Path objects. Also helps generate a full OpenApi v3 specification json document. Includes a number of utility/builder methods to improve documentation creation.</li>
+</ul>
+
+<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+  <h2>Installation</h2>
+</a>
+<pre><code><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-0">i</span><span class="hl-1"> </span><span class="hl-0">express</span><span class="hl-1">-</span><span class="hl-0">openapi</span><span class="hl-1">-</span><span class="hl-0">generator</span>
+</code></pre>
+
+<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+  <h2>Usage</h2>
+</a>
+<p>You can use this package to simple generate quick and dirty valid open api specs for every route on your project.</p>
+<p><strong>Warning</strong>: <em>OpenApi does not support exotic route matching, such as <code>/p(ab)th</code>, <code>/p*ath/</code>, or optional path parameters <code>/:name?</code>. If these are in your project the generated document won&#39;t follow the OpenApi v3 spec. It may still work, since the route parser can handle these special routes, but plugins like swagger ui may fail.</em></p>
+
+<a href="#simple" id="simple" style="color: inherit; text-decoration: none;">
+  <h3>Simple</h3>
+</a>
+<pre><code class="language-javascript"><span class="hl-2">import</span><span class="hl-1"> </span><span class="hl-0">express</span><span class="hl-1">, { </span><span class="hl-0">Request</span><span class="hl-1">, </span><span class="hl-0">Response</span><span class="hl-1"> } </span><span class="hl-2">from</span><span class="hl-1"> </span><span class="hl-3">&#39;express&#39;</span><br/><span class="hl-2">import</span><span class="hl-1"> { </span><span class="hl-0">DocumentBuilder</span><span class="hl-1"> } </span><span class="hl-2">from</span><span class="hl-1"> </span><span class="hl-3">&#39;express-openapi-generator&#39;</span><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">app</span><span class="hl-1"> = </span><span class="hl-6">express</span><span class="hl-1">();</span><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">router</span><span class="hl-1"> = </span><span class="hl-0">express</span><span class="hl-1">.</span><span class="hl-6">Router</span><span class="hl-1">();</span><br/><span class="hl-7">// This initializes and creates our document builder interface</span><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">documentBuilder</span><span class="hl-1"> = </span><span class="hl-0">DocumentBuilder</span><span class="hl-1">.</span><span class="hl-6">initializeDocument</span><span class="hl-1">({</span><br/><span class="hl-1">    </span><span class="hl-0">openapi:</span><span class="hl-1"> </span><span class="hl-3">&#39;3.0.1&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">    </span><span class="hl-0">info:</span><span class="hl-1"> {</span><br/><span class="hl-1">        </span><span class="hl-0">title:</span><span class="hl-1"> </span><span class="hl-3">&#39;A example document&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">        </span><span class="hl-0">version:</span><span class="hl-1"> </span><span class="hl-3">&#39;1&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">    },</span><br/><span class="hl-1">    </span><span class="hl-0">paths:</span><span class="hl-1"> {}, </span><span class="hl-7">// You don&#39;t need to include any path objects, those will be generated later</span><br/><span class="hl-1">});</span><br/><span class="hl-0">app</span><span class="hl-1">.</span><span class="hl-6">use</span><span class="hl-1">(</span><span class="hl-3">&#39;/api/v1&#39;</span><span class="hl-1">, </span><span class="hl-0">router</span><span class="hl-1">);</span><br/><br/><span class="hl-0">router</span><span class="hl-1">.</span><span class="hl-6">get</span><span class="hl-1">(</span><span class="hl-3">&#39;/user&#39;</span><span class="hl-1">, (</span><span class="hl-0">req</span><span class="hl-1">: </span><span class="hl-8">Request</span><span class="hl-1">, </span><span class="hl-0">res</span><span class="hl-1">: </span><span class="hl-8">Response</span><span class="hl-1">) </span><span class="hl-4">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-0">res</span><span class="hl-1">.</span><span class="hl-6">status</span><span class="hl-1">(</span><span class="hl-9">200</span><span class="hl-1">).</span><span class="hl-6">json</span><span class="hl-1">([{ </span><span class="hl-0">id:</span><span class="hl-1"> </span><span class="hl-3">&#39;1&#39;</span><span class="hl-1">, </span><span class="hl-0">name:</span><span class="hl-1"> </span><span class="hl-3">&#39;John Smith&#39;</span><span class="hl-1"> }]);</span><br/><span class="hl-1">});</span><br/><span class="hl-0">router</span><span class="hl-1">.</span><span class="hl-6">post</span><span class="hl-1">(</span><span class="hl-3">&#39;/user&#39;</span><span class="hl-1">, (</span><span class="hl-0">req</span><span class="hl-1">: </span><span class="hl-8">Request</span><span class="hl-1">, </span><span class="hl-0">res</span><span class="hl-1">: </span><span class="hl-8">Response</span><span class="hl-1">) </span><span class="hl-4">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">save</span><span class="hl-1"> = </span><span class="hl-0">req</span><span class="hl-1">.</span><span class="hl-0">body</span><span class="hl-1">;</span><br/><span class="hl-1">    </span><span class="hl-0">res</span><span class="hl-1">.</span><span class="hl-6">status</span><span class="hl-1">(</span><span class="hl-9">200</span><span class="hl-1">).</span><span class="hl-6">json</span><span class="hl-1">();</span><br/><span class="hl-1">});</span><br/><br/><span class="hl-7">// Generates our full open api document</span><br/><span class="hl-0">documentBuilder</span><span class="hl-1">.</span><span class="hl-6">buildPathsObject</span><span class="hl-1">(</span><span class="hl-0">app</span><span class="hl-1">);</span><br/><br/><span class="hl-7">// The final document can be found on the read-only property &#39;document&#39;. It returns a deep copy</span><br/><span class="hl-0">console</span><span class="hl-1">.</span><span class="hl-6">log</span><span class="hl-1">(</span><span class="hl-0">documentBuilder</span><span class="hl-1">.</span><span class="hl-0">document</span><span class="hl-1">); </span><br/>
+</code></pre>
+<p><strong>Output</strong></p>
+<pre><code class="language-javascript"><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">exampleDocumentOutput</span><span class="hl-1"> = {</span><br/><span class="hl-1">    </span><span class="hl-0">openapi:</span><span class="hl-1"> </span><span class="hl-3">&#39;3.0.1&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">    </span><span class="hl-0">info:</span><span class="hl-1"> { </span><span class="hl-0">title:</span><span class="hl-1"> </span><span class="hl-3">&#39;A example document&#39;</span><span class="hl-1">, </span><span class="hl-0">version:</span><span class="hl-1"> </span><span class="hl-3">&#39;1&#39;</span><span class="hl-1"> },</span><br/><span class="hl-1">    </span><span class="hl-0">paths:</span><span class="hl-1"> {</span><br/><span class="hl-1">        </span><span class="hl-3">&#39;/api/v1/user&#39;</span><span class="hl-0">:</span><span class="hl-1"> {</span><br/><span class="hl-1">            </span><span class="hl-0">post:</span><span class="hl-1"> {</span><br/><span class="hl-1">                </span><span class="hl-0">responses:</span><span class="hl-1"> {</span><br/><span class="hl-1">                    </span><span class="hl-0">default:</span><span class="hl-1"> { </span><span class="hl-0">description:</span><span class="hl-1"> </span><span class="hl-3">&#39;Responses object not provided for this route&#39;</span><span class="hl-1"> },</span><br/><span class="hl-1">                },</span><br/><span class="hl-1">            },</span><br/><span class="hl-1">            </span><span class="hl-0">get:</span><span class="hl-1"> {</span><br/><span class="hl-1">                </span><span class="hl-0">responses:</span><span class="hl-1"> {</span><br/><span class="hl-1">                    </span><span class="hl-0">default:</span><span class="hl-1"> { </span><span class="hl-0">description:</span><span class="hl-1"> </span><span class="hl-3">&#39;Responses object not provided for this route&#39;</span><span class="hl-1"> }</span><br/><span class="hl-1">                }</span><br/><span class="hl-1">            }</span><br/><span class="hl-1">        },</span><br/><span class="hl-1">    },</span><br/><span class="hl-1">};</span><br/>
+</code></pre>
+
+<a href="#with-added-documentation" id="with-added-documentation" style="color: inherit; text-decoration: none;">
+  <h3>With Added Documentation</h3>
+</a>
+
+<a href="#with-validation" id="with-validation" style="color: inherit; text-decoration: none;">
+  <h3>With Validation</h3>
+</a>
+<p>See other examples:</p>
+
+<a href="#important-notes" id="important-notes" style="color: inherit; text-decoration: none;">
+  <h3>Important Notes</h3>
+</a>
+<p>singleton patterns</p>
+
+<a href="#peer-dependencies" id="peer-dependencies" style="color: inherit; text-decoration: none;">
+  <h2>Peer Dependencies</h2>
+</a>
+<p>These packages are required for certain functionality: </p>
+<ul>
+<li><a href="https://www.npmjs.com/package/ajv">ajv</a>: <em>Required</em> package for the provided validation structure. It is not a package dependency, instead build a Ajv instance for use with the validator. This allows direct customization of the Ajv client.</li>
+</ul>
+
+<a href="#recommended-npm-packages" id="recommended-npm-packages" style="color: inherit; text-decoration: none;">
+  <h3>Recommended npm packages</h3>
+</a>
+<p>These packages may integrate well into this eco-system/philosophy of documentation/validation generated from code. 
+<a href="https://www.npmjs.com/package/openapi-schema-validator">https://www.npmjs.com/package/openapi-schema-validator</a>
+<em>This package has no direct affiliation with any of these packages.</em></p>
+<ul>
+<li><a href="https://www.npmjs.com/package/swagger-ui-express">swagger-ui-express</a>: provides a web-served GUI for Swagger UI. </li>
+<li><a href="https://www.npmjs.com/package/redoc-express">redoc-express</a>: provides a web-served GUI for Redoc UI.</li>
+<li><a href="https://www.npmjs.com/package/express-openapi-validator">express-openapi-validator</a>: Use instead of provided validation flow and Ajv. This provides validation for your routes based on the generated open api spec. Can be used instead of included validation flow. Ajv is not a direct dependency of this project.</li>
+<li><a href="https://www.npmjs.com/package/express-openapi-validator">typescript-json-schema</a>: Generate json-schema&#39;s for your typescript models. Can be used with openapi/jsonschema conversion packages.</li>
+<li><a href="https://www.npmjs.com/package/prisma-json-schema-generator">prisma-json-schema-generator</a>: Generate json schema&#39;s based on your prisma schema.</li>
+<li><a href="https://www.npmjs.com/package/openapi-client-axios">openapi-client-axios</a>: Generates an axios client based on an open-api spec</li>
+</ul>
+
+<a href="#api-documentation" id="api-documentation" style="color: inherit; text-decoration: none;">
+  <h2>API Documentation</h2>
+</a>
+
+<a href="#express-openapi-middleware" id="express-openapi-middleware" style="color: inherit; text-decoration: none;">
+  <h3>express-openapi-middleware</h3>
+</a>
+
+<a href="#openapi-builder" id="openapi-builder" style="color: inherit; text-decoration: none;">
+  <h3>openapi-builder</h3>
+</a>
+
+<a href="#credits" id="credits" style="color: inherit; text-decoration: none;">
+  <h3>Credits</h3>
+</a>
+<p><em>Inspired by <a href="https://www.npmjs.com/package/@wesleytodd/openapi">@wesleytodd/express-openapi</a>. This project seeks to use the same philosophy of documentation from code, but provide a less opinionated interface, improved features and support more complex Express app router structures.</em></p>
+</div></div>
+<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+<div class="tsd-navigation settings">
+<details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
+<h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Settings</h3></summary>
+<div class="tsd-accordion-details">
+<div class="tsd-filter-visibility">
+<h4 class="uppercase">Member Visibility</h4><form>
+<ul id="tsd-filter-options">
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-private" name="private"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Private</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></form></div>
+<div class="tsd-theme-toggle">
+<h4 class="uppercase">Theme</h4><select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
+<nav class="tsd-navigation primary">
+<details class="tsd-index-accordion" open><summary class="tsd-accordion-summary">
+<h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Modules</h3></summary>
+<div class="tsd-accordion-details">
+<ul>
+<li class="current selected"><a href="modules.html">express-<wbr/>openapi-<wbr/>generator</a>
+<ul></ul></li></ul></div></details></nav>
+<nav class="tsd-navigation secondary menu-sticky">
+<ul>
+<li class="tsd-kind-class"><a href="classes/DocumentBuilder.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-class)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-128-path"></rect><path d="M11.898 16.1201C11.098 16.1201 10.466 15.8961 10.002 15.4481C9.53803 15.0001 9.30603 14.3841 9.30603 13.6001V9.64012C9.30603 8.85612 9.53803 8.24012 10.002 7.79212C10.466 7.34412 11.098 7.12012 11.898 7.12012C12.682 7.12012 13.306 7.34812 13.77 7.80412C14.234 8.25212 14.466 8.86412 14.466 9.64012H13.386C13.386 9.14412 13.254 8.76412 12.99 8.50012C12.734 8.22812 12.37 8.09212 11.898 8.09212C11.426 8.09212 11.054 8.22412 10.782 8.48812C10.518 8.75212 10.386 9.13212 10.386 9.62812V13.6001C10.386 14.0961 10.518 14.4801 10.782 14.7521C11.054 15.0161 11.426 15.1481 11.898 15.1481C12.37 15.1481 12.734 15.0161 12.99 14.7521C13.254 14.4801 13.386 14.0961 13.386 13.6001H14.466C14.466 14.3761 14.234 14.9921 13.77 15.4481C13.306 15.8961 12.682 16.1201 11.898 16.1201Z" fill="var(--color-text)" id="icon-128-text"></path></svg>Document<wbr/>Builder</a></li>
+<li class="tsd-kind-class"><a href="classes/OperationBuilder.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Operation<wbr/>Builder</a></li>
+<li class="tsd-kind-class"><a href="classes/PathMiddleware.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Path<wbr/>Middleware</a></li>
+<li class="tsd-kind-class"><a href="classes/ResponseBuilder.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Response<wbr/>Builder</a></li>
+<li class="tsd-kind-type-alias"><a href="types/OperationDefaults.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-4194304-path"></rect><path d="M11.31 16V8.224H8.91V7.24H14.79V8.224H12.39V16H11.31Z" fill="var(--color-text)" id="icon-4194304-text"></path></svg>Operation<wbr/>Defaults</a></li>
+<li class="tsd-kind-type-alias"><a href="types/ResponseDefaults.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-4194304-path"></use><use href="#icon-4194304-text"></use></svg>Response<wbr/>Defaults</a></li></ul></nav></div></div>
+<div class="container tsd-generator">
+<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div>
+<div class="overlay"></div><script src="assets/main.js"></script></body></html>
