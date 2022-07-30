@@ -56,6 +56,7 @@
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-react": "^7.30.1",
     "express": "^4.18.1",
+    "generate-ts-docs": "^0.0.13",
     "jest": "^28.1.2",
     "openapi-schema-validator": "^12.0.0",
     "prettier": "^2.7.1",
