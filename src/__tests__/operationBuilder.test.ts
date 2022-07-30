@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { OpenAPIV3 } from 'openapi-types';
 import { OperationBuilder } from '../index';
-
 const responsesObject: OpenAPIV3.ResponsesObject = {
   '200': {
     description: 'pet response',

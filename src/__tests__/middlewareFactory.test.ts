@@ -29,12 +29,12 @@ test('makeValidator', () => {
 });
 
 test('path middleware is correctly created', () => {
-  const path = PathMiddleware.path('test', {
+  const path: any = PathMiddleware.path('test', {
     operationObject: swaggerEx.paths['/2.0/users/{username}'].get as OpenAPIV3.OperationObject,
   });
-  expect(path.operationId).toBe('test');
-  expect(path.pathDoc).toEqual(swaggerEx.paths['/2.0/users/{username}'].get);
-  expect(path.exclude).toBe(false);
+  expect(path.metadata.operationId).toBe('test');
+  expect(path.metadata.operationObject).toEqual(swaggerEx.paths['/2.0/users/{username}'].get);
+  expect(path.metadata.exclude).toBe(false);
   path({} as Request, {} as Response, () => {
     return;
   });

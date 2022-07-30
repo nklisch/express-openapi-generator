@@ -4,7 +4,8 @@ import { OpenAPIV3 } from 'openapi-types';
 import { onlyForTesting } from '../openapi-builder';
 import { DocumentBuilder } from '../index';
 import swaggerExampleSchema from '../../resources/swaggerio-example.json';
-import { ComponentFieldNames, ExpressPath } from '../types';
+import { ComponentFieldNames } from '../types';
+import { RouteMetaData } from 'express-route-parser';
 // import OpenApiPath from '../middleware/openApiPath'
 const document: OpenAPIV3.Document = swaggerExampleSchema as OpenAPIV3.Document;
 
@@ -27,6 +28,7 @@ const pathsObject: OpenAPIV3.PathsObject = {
           schema: {
             type: 'string',
           },
+          required: true
         },
       ],
       responses: {
@@ -59,6 +61,7 @@ const pathsObject: OpenAPIV3.PathsObject = {
           schema: {
             type: 'integer',
           },
+          required: true
         },
         {
           name: 'name',
@@ -66,13 +69,14 @@ const pathsObject: OpenAPIV3.PathsObject = {
           schema: {
             type: 'string',
           },
+          required: true
         },
         {
           name: 'testing',
           in: 'query',
           schema: {
             type: 'integer',
-          },
+          }
         },
       ],
       requestBody: {
@@ -130,25 +134,22 @@ const exampleOperation: OpenAPIV3.OperationObject = {
     },
   },
 };
-const parserOutput: ExpressPath[] = [
+const parserOutput: RouteMetaData[] = [
   {
     path: '/test/:id',
     method: 'get',
-    pathParams: [{ name: 'id', in: 'path', schema: { type: 'string' } }],
-    exclude: false,
-    operationId: 'getTest',
+    pathParams: [{ name: 'id', in: 'path', schema: { type: 'string' }, required: true }],
+    metadata: { exclude: false, operationId: 'getTest' }
   },
-  { path: '/test', method: 'get', pathParams: [], exclude: false, operationId: 'getTests' },
+  { path: '/test', method: 'get', pathParams: [], metadata: { exclude: false, operationId: 'getTests' } },
   {
     path: '/test/:name/:id',
     method: 'post',
     pathParams: [
-      { name: 'id', in: 'path', schema: { type: 'string' } },
-      { name: 'name', in: 'path', schema: { type: 'string' } },
+      { name: 'id', in: 'path', schema: { type: 'string' }, required: true },
+      { name: 'name', in: 'path', schema: { type: 'string' }, required: true },
     ],
-    exclude: false,
-    openApiOperation: exampleOperation,
-    operationId: 'createTest',
+    metadata: { exclude: false, operationId: 'createTest', openApiOperation: exampleOperation }
   },
 ];
 
@@ -176,27 +177,25 @@ describe('verifyBasicOpenApiReqs handles', () => {
 
 describe('transformExpressPathToOpenApi handles', () => {
   it('an ExpressPath object', () => {
-    const expressPath: ExpressPath = {
+    const expressPath: RouteMetaData = {
       path: 'test/:id/endpoint',
       method: 'get',
-      pathParams: [{ name: 'id', in: 'path' }],
-      exclude: false,
-      operationId: 'test',
+      pathParams: [{ name: 'id', in: 'path', required: true }],
+      metadata: { exclude: false, operationId: 'test' }
     };
     onlyForTesting.transformExpressPathToOpenApi(expressPath);
     expect(expressPath.path).toEqual('test/{id}/endpoint');
   });
   it('multiple parameters', () => {
-    const expressPath: ExpressPath = {
+    const expressPath: RouteMetaData = {
       path: 'test/:id/:endpoint/:name/new',
       method: 'get',
       pathParams: [
-        { name: 'id', in: 'path' },
-        { name: 'endpoint', in: 'path' },
-        { name: 'name', in: 'path' },
+        { name: 'id', in: 'path', required: true },
+        { name: 'endpoint', in: 'path', required: true },
+        { name: 'name', in: 'path', required: true },
       ],
-      exclude: false,
-      operationId: 'test',
+      metadata: { exclude: false, operationId: 'test' }
     };
     onlyForTesting.transformExpressPathToOpenApi(expressPath);
     expect(expressPath.path).toEqual('test/{id}/{endpoint}/{name}/new');

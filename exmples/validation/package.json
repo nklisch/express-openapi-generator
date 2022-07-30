@@ -1,0 +1,11 @@
+{
+  "name": "validation-example",
+  "version": "1.0.0",
+  "description": "Example express app that uses express-openapi-generator validation middleware",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nathan Klisch",
+  "license": "ISC"
+}

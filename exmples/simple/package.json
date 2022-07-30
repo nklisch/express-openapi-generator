@@ -1,0 +1,11 @@
+{
+  "name": "simple-example",
+  "version": "1.0.0",
+  "description": "Example of express app using express-openapi-generator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nathan Klisch",
+  "license": "ISC"
+}

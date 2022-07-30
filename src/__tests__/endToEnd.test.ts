@@ -2,7 +2,7 @@
 import express, { Express, Router, RequestHandler, Request, Response } from 'express';
 import OpenApiSchemaValidator from 'openapi-schema-validator'
 import OpenApiDocumentBuilder from '../openapi-builder';
-import { parseExpressApp } from '../index'
+import { parseExpressApp } from 'express-route-parser'
 const validator = new OpenApiSchemaValidator({ version: 3 });
 const successResponse = (req: Request, res: Response) => {
   res.status(200).send();
