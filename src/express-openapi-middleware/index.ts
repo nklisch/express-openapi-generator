@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { OpenAPIV3 } from 'openapi-types';
-import { Middleware } from './middleware';
+import { middleware } from './middleware';
 import Ajv, { AnySchema, ValidateFunction } from 'ajv';
-import { OpenApiRequestHandler } from '../types';
+import { RequestHandler } from 'express';
 
 export default class OpenApiPathMiddleware {
   private static instance: OpenApiPathMiddleware;
@@ -60,7 +60,7 @@ export default class OpenApiPathMiddleware {
       validate,
       exclude,
     }: { operationObject?: OpenAPIV3.OperationObject; validate: boolean; exclude: boolean },
-  ): OpenApiRequestHandler => {
+  ): RequestHandler => {
     if (this.operations.has(operationId)) {
       throw new Error('operationId must be unique per express app');
     }
@@ -71,7 +71,7 @@ export default class OpenApiPathMiddleware {
       }
       this.validatorQueue.push(operationId);
     }
-    return new Middleware(operationId, this.operations, exclude, operationObject).openApiPathMiddlewareNklisch;
+    return middleware(operationId, this.operations, exclude, operationObject);
   };
 
   private initializeValidation = (openApiDoc: OpenAPIV3.Document, ajv: Ajv): void => {

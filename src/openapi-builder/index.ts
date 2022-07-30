@@ -1,8 +1,10 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable @typescript-eslint/prefer-for-of */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable no-underscore-dangle */
+
 import { OpenAPIV3 } from 'openapi-types';
-import { ComponentFieldNames, CompositeSchemaTypes, ExpressPath, Component, ComponentParameter } from '../types';
+import { ComponentFieldNames, CompositeSchemaTypes, Component, ComponentParameter } from '../types';
+import { Parameter, RouteMetaData } from 'express-route-parser';
+
 export default class OpenApiDocumentBuilder {
   private static instance?: OpenApiDocumentBuilder;
   private readonly _document: OpenAPIV3.Document;
@@ -36,7 +38,12 @@ export default class OpenApiDocumentBuilder {
       }
     }
   }
-
+  /**
+   * 
+   * @param documentStub 
+   * @param reinitialize 
+   * @returns 
+   */
   public static initializeDocument(documentStub: OpenAPIV3.Document, reinitialize = false): OpenApiDocumentBuilder {
     if (!OpenApiDocumentBuilder.instance || reinitialize) {
       OpenApiDocumentBuilder.instance = new OpenApiDocumentBuilder(documentStub);
@@ -50,15 +57,22 @@ export default class OpenApiDocumentBuilder {
     }
     return OpenApiDocumentBuilder.instance;
   }
-
+  /**
+   * 
+   * @param expressParserOutput 
+   * @param requireOpenApiDocs 
+   * @param includeExcludedPaths 
+   */
   public buildPathsObject(
-    expressParserOutput: ExpressPath[],
+    expressParserOutput: RouteMetaData[],
     requireOpenApiDocs = false,
     includeExcludedPaths = false,
   ): void {
     this._document.paths = this.buildPaths(expressParserOutput, requireOpenApiDocs, includeExcludedPaths);
   }
-
+  /**
+   * 
+   */
   public get document(): OpenAPIV3.Document {
     return structuredClone(this._document);
   }
@@ -100,25 +114,22 @@ export default class OpenApiDocumentBuilder {
       );
     }
     if (component) {
+      if (!this._document.components) {
+        this._document.components = {};
+      }
+      if (!this._document.components[field]) {
+        this._document.components[field] = {};
+      }
       component = structuredClone(component);
       this.components.set(`${field}-${name}`, component);
+      (this._document.components as any)[field][name] = component;
     }
-    if (!this._document.components) {
-      this._document.components = {};
-    }
-    if (!this._document.components[field]) {
-      this._document.components[field] = {};
-    }
-    (this._document.components as any)[field][name] = component;
     const key = `${field}-${name}`;
-    if (this.components.has(key)) {
-      if (copy) {
-        return structuredClone(this.components.get(key));
-      } else {
-        return { $ref: `#/components/${field}/${name}` };
-      }
+    if (!this.components.has(key)) {
+      return undefined;
     }
-    return undefined;
+    return copy ? structuredClone(this.components.get(key)) : { $ref: `#/components/${field}/${name}` };
+
   };
 
   public schema = (params: ComponentParameter): OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject | undefined => {
@@ -180,24 +191,24 @@ export default class OpenApiDocumentBuilder {
   };
 
   private buildPaths = (
-    expressParserOutput: ExpressPath[],
+    expressParserOutput: RouteMetaData[],
     requireOpenApiDocs: boolean,
     includeExcludedPaths: boolean,
   ): OpenAPIV3.PathsObject => {
     const paths: any = {};
     for (const path of expressParserOutput) {
-      const excludeThisPath = (path.exclude && !includeExcludedPaths) || (requireOpenApiDocs && !path.openApiOperation);
+      const excludeThisPath: boolean = ((path?.metadata?.exclude && !includeExcludedPaths) || (requireOpenApiDocs && !path?.metadata?.openApiOperation)) as boolean;
       if (excludeThisPath) {
         continue;
       }
       transformExpressPathToOpenApi(path);
       paths[path.path] = {};
-      paths[path.path][path.method] = path.openApiOperation || {};
-      if (path.operationId) {
-        paths[path.path][path.method].operationId = path.operationId;
+      paths[path.path][path.method] = path?.metadata?.openApiOperation as OpenAPIV3.OperationObject || {};
+      if (path?.metadata?.operationId) {
+        paths[path.path][path.method].operationId = path?.metadata?.operationId as string;
       }
       let parameters =
-        path.openApiOperation?.parameters || ([] as (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[]);
+        path?.metadata?.openApiOperation?.parameters as (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[] || ([] as (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[]);
       parameters = this.mergeParameters(parameters, path);
       if (parameters.length > 0) {
         paths[path.path][path.method].parameters = parameters;
@@ -214,7 +225,7 @@ export default class OpenApiDocumentBuilder {
 
   private mergeParameters = (
     parameters: (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[],
-    path: ExpressPath,
+    path: RouteMetaData,
   ): (OpenAPIV3.ParameterObject | OpenAPIV3.ReferenceObject)[] => {
     for (let i = 0; i < parameters.length; i++) {
       for (let j = 0; j < path.pathParams.length; j++) {
@@ -223,13 +234,13 @@ export default class OpenApiDocumentBuilder {
           parameters[i] = this.parameter({ name: (parameters[i] as OpenAPIV3.ReferenceObject).$ref.split('/')[3], copy: true }) as OpenAPIV3.ParameterObject;
         }
         if ((parameters[i] as OpenAPIV3.ParameterObject)?.name === path.pathParams[j].name) {
-          parameters[i] = Object.assign(path.pathParams[j], parameters[i]);
-          path.pathParams.splice(j, 1);
+          parameters[i] = Object.assign(path.pathParams[j], parameters[i]) as (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject);
+          (path.pathParams).splice(j, 1);
           break;
         }
       }
     }
-    return [...parameters, ...path.pathParams];
+    return [...parameters, ...(path.pathParams as (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[])] as (OpenAPIV3.ParameterObject | OpenAPIV3.ReferenceObject)[];
   };
 }
 
@@ -243,8 +254,8 @@ const verifyBasicOpenApiReqs = (openApiDoc: OpenAPIV3.Document): string => {
 
 
 
-const transformExpressPathToOpenApi = (path: ExpressPath): void => {
-  path.pathParams.forEach((param: OpenAPIV3.ParameterObject) => {
+const transformExpressPathToOpenApi = (path: RouteMetaData): void => {
+  (path.pathParams).forEach((param: Parameter) => {
     path.path = path.path.replace(`:${param.name}`, `{${param.name}}`);
   });
 };

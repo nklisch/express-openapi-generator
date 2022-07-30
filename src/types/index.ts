@@ -38,13 +38,6 @@ export interface ValidationError extends Error {
   validationErrors: ErrorObject;
 }
 
-export type OpenApiRequestHandler = {
-  (req: Request, res: Response, next: NextFunction): void;
-  pathDoc?: OpenAPIV3.OperationObject;
-  exclude?: boolean;
-  operationId?: string;
-};
-
 export interface Route extends ExpressInterfaces.IRoute {
   stack: Layer[];
   pathDoc?: OpenAPIV3.OperationObject;
@@ -70,14 +63,6 @@ export interface ExpressRegex extends RegExp {
   fast_slash: boolean;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   fast_star: boolean;
-}
-export interface ExpressPath {
-  path: string;
-  pathParams: OpenAPIV3.ParameterObject[];
-  method: string;
-  openApiOperation?: OpenAPIV3.OperationObject;
-  exclude: boolean;
-  operationId?: string;
 }
 
 export interface Key {

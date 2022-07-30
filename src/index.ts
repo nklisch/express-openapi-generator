@@ -1,4 +1,3 @@
-export { parseExpressApp } from './express-parser';
 export { default as DocumentBuilder } from './openapi-builder';
 export { default as PathMiddleware } from './express-openapi-middleware';
 export { default as OperationBuilder, OperationDefaults } from './openapi-builder/operationBuilder';

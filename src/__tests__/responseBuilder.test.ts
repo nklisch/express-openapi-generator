@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { response } from 'express';
 import { OpenAPIV3 } from 'openapi-types';
 import { ResponseBuilder } from '../index';
 const contentObject: { [media: string]: OpenAPIV3.MediaTypeObject } = {
