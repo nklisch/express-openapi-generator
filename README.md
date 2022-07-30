@@ -2,7 +2,7 @@
 This package allows you to analyze an Express app project and generate OpenApi v3 documentation. A middleware is provided to attach additional documentation to routes and optional request validation. 
 
 ### Features
-- **Express Parser**: Leveraging the [express-route-parser](https://www.npmjs.com/package/express-route-parser) npm package to parse an Express app's routes and relevant attached metadata.. See the [npm package for more information](https://www.npmjs.com/package/express-route-parser).
+- **Express Parser**: Leveraging the [express-route-parser](https://www.npmjs.com/package/express-route-parser) npm package to parse an Express app's routes and relevant attached metadata. See the [npm package for more information](https://www.npmjs.com/package/express-route-parser).
 - **Express OpenApi Middleware**: Creates an Express middleware that attaches relevant meta-data to an individual route. Also provides optional request validation.
 - **OpenApi-Builder**: Uses the output of the Express Parser to generate OpenApi Path objects. Also helps generate a full OpenApi v3 specification json document. Includes a number of utility/builder methods to improve documentation creation.
 
@@ -14,7 +14,7 @@ npm i express-openapi-generator
 ## Usage
 You can use this package to simple generate quick and dirty valid open api specs for every route on your project.
 
-**Warning**: *OpenApi does not support exotic route matching, such as `/p(ab)th`, `/p*ath/`, or optional path parameters `/:name?`, so if these are in your project the generated document won't follow the OpenApi v3 spec. It may still work, since route parser can handle these exotic routes, but plugins like swagger ui may fail.*
+**Warning**: *OpenApi does not support exotic route matching, such as `/p(ab)th`, `/p*ath/`, or optional path parameters `/:name?`. If these are in your project the generated document won't follow the OpenApi v3 spec. It may still work, since the route parser can handle these special routes, but plugins like swagger ui may fail.*
 ### Simple
 ```javascript
 import express, { Request, Response } from 'express'
@@ -40,8 +40,11 @@ router.post('/user', (req: Request, res: Response) => {
     res.status(200).json();
 });
 
-documentBuilder.buildPathsObject(app); // Generates our full open api document
-console.log(documentBuilder.document); // The final document can be found on the read-only property 'document'. It returns a deep copy
+// Generates our full open api document
+documentBuilder.buildPathsObject(app);
+
+// The final document can be found on the read-only property 'document'. It returns a deep copy
+console.log(documentBuilder.document); 
 
 ```
 **Output**
