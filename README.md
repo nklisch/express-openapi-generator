@@ -43,8 +43,8 @@ router.post('/user', (req: Request, res: Response) => {
 // Generates our full open api document
 documentBuilder.buildPathsObject(app);
 
-// The final document can be found on the read-only property 'document'. It returns a deep copy
-console.log(documentBuilder.document); 
+// The final can be retrieved with the build() method. A new deep copy is created each time.
+console.log(documentBuilder.build()); 
 
 ```
 **Output**
