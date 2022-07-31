@@ -18,7 +18,7 @@
 <ul class="tsd-hierarchy">
 <li><span class="target">OperationBuilder</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/2fce564/src/openapi-builder/operationBuilder.ts#L16">src/openapi-builder/operationBuilder.ts:16</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/926b3fc/src/openapi-builder/operationBuilder.ts#L16">src/openapi-builder/operationBuilder.ts:16</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -64,7 +64,7 @@
 <h5>responses: <span class="tsd-signature-type">ResponsesObject</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/2fce564/src/openapi-builder/operationBuilder.ts#L41">src/openapi-builder/operationBuilder.ts:41</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/926b3fc/src/openapi-builder/operationBuilder.ts#L38">src/openapi-builder/operationBuilder.ts:38</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private"><a id="_operation" class="tsd-anchor"></a>
@@ -101,12 +101,12 @@
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> tags<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/2fce564/src/openapi-builder/operationBuilder.ts#L34">src/openapi-builder/operationBuilder.ts:34</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/926b3fc/src/openapi-builder/operationBuilder.ts#L36">src/openapi-builder/operationBuilder.ts:36</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private"><a id="_defaults" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <code class="tsd-tag ts-flagPrivate">Private</code> <code class="tsd-tag ts-flagOptional">Optional</code> <span>_defaults</span><a href="#_defaults" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">_defaults<span class="tsd-signature-symbol">?:</span> <a href="../types/OperationDefaults.html" class="tsd-signature-type" data-tsd-kind="Type alias">OperationDefaults</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/2fce564/src/openapi-builder/operationBuilder.ts#L17">src/openapi-builder/operationBuilder.ts:17</a></li></ul></aside></section></section>
+<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/926b3fc/src/openapi-builder/operationBuilder.ts#L17">src/openapi-builder/operationBuilder.ts:17</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="build" class="tsd-anchor"></a>
@@ -114,6 +114,10 @@
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="build.build-1">build<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>callbacks<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{ </span>[callback: <span class="tsd-signature-type">string</span>]<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ReferenceObject</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">CallbackObject</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>deprecated<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>description<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>externalDocs<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ExternalDocumentationObject</span><span class="tsd-signature-symbol">; </span>operationId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>parameters<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">ReferenceObject</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ParameterObject</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>requestBody<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ReferenceObject</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RequestBodyObject</span><span class="tsd-signature-symbol">; </span>responses<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ResponsesObject</span><span class="tsd-signature-symbol">; </span>security<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">SecurityRequirementObject</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>servers<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ServerObject</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>summary<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>tags<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> }</span><a href="#build.build-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a deep copy of the current state of the operation and returns it.</p>
+
+<h3>Returns</h3><p>A deep copy of the built operation object</p>
+</div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">{ </span>callbacks<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{ </span>[callback: <span class="tsd-signature-type">string</span>]<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ReferenceObject</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">CallbackObject</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>deprecated<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>description<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>externalDocs<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ExternalDocumentationObject</span><span class="tsd-signature-symbol">; </span>operationId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>parameters<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">ReferenceObject</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ParameterObject</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>requestBody<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ReferenceObject</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RequestBodyObject</span><span class="tsd-signature-symbol">; </span>responses<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ResponsesObject</span><span class="tsd-signature-symbol">; </span>security<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">SecurityRequirementObject</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>servers<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ServerObject</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>summary<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>tags<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> }</span></h4>
 <ul class="tsd-parameters">
 <li class="tsd-parameter">
@@ -144,203 +148,256 @@
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> tags<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5></li></ul><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/2fce564/src/openapi-builder/operationBuilder.ts#L48">src/openapi-builder/operationBuilder.ts:48</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/926b3fc/src/openapi-builder/operationBuilder.ts#L47">src/openapi-builder/operationBuilder.ts:47</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="callbacks-2" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>callbacks</span><a href="#callbacks-2" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="callbacks-2.callbacks-3">callbacks<span class="tsd-signature-symbol">(</span>callbacks<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>[callback: <span class="tsd-signature-type">string</span>]<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">OpenAPIV3.ReferenceObject</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">OpenAPIV3.CallbackObject</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span><a href="#callbacks-2.callbacks-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="callbacks-2.callbacks-3">callbacks<span class="tsd-signature-symbol">(</span>callbacks<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>[callback: <span class="tsd-signature-type">string</span>]<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">OpenAPIV3.ReferenceObject</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">OpenAPIV3.CallbackObject</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a><a href="#callbacks-2.callbacks-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography">
-<h3>Returns</h3></div>
+<div class="tsd-comment tsd-typography"><p>Add a callbacks field to the Operation object.</p>
+
+<h3>Returns</h3><p>OperationBuilder instances for method chaining</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
 <h5>callbacks: <span class="tsd-signature-symbol">{ </span>[callback: <span class="tsd-signature-type">string</span>]<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">OpenAPIV3.ReferenceObject</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">OpenAPIV3.CallbackObject</span><span class="tsd-signature-symbol"> }</span></h5>
+<div class="tsd-comment tsd-typography"><p>The callbacks object per OpenApiv3 spec</p>
+</div>
 <ul class="tsd-parameters">
 <li class="tsd-parameter-index-signature">
 <h5><span class="tsd-signature-symbol">[</span>callback: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">OpenAPIV3.ReferenceObject</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">OpenAPIV3.CallbackObject</span></h5></li></ul></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4><aside class="tsd-sources">
+<h4 class="tsd-returns-title">Returns <a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/2fce564/src/openapi-builder/operationBuilder.ts#L127">src/openapi-builder/operationBuilder.ts:127</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/926b3fc/src/openapi-builder/operationBuilder.ts#L136">src/openapi-builder/operationBuilder.ts:136</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="deprecated-2" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>deprecated</span><a href="#deprecated-2" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="deprecated-2.deprecated-3">deprecated<span class="tsd-signature-symbol">(</span>deprecated<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span><a href="#deprecated-2.deprecated-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="deprecated-2.deprecated-3">deprecated<span class="tsd-signature-symbol">(</span>deprecated<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a><a href="#deprecated-2.deprecated-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography">
-<h3>Returns</h3></div>
+<div class="tsd-comment tsd-typography"><p>Add a deprecated field to the Operation object.</p>
+
+<h3>Returns</h3><p>OperationBuilder instances for method chaining</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>deprecated: <span class="tsd-signature-type">boolean</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4><aside class="tsd-sources">
+<h5>deprecated: <span class="tsd-signature-type">boolean</span></h5>
+<div class="tsd-comment tsd-typography"><p>The deprecated boolean per OpenApiv3 spec</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/2fce564/src/openapi-builder/operationBuilder.ts#L137">src/openapi-builder/operationBuilder.ts:137</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/926b3fc/src/openapi-builder/operationBuilder.ts#L147">src/openapi-builder/operationBuilder.ts:147</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="description-2" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>description</span><a href="#description-2" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="description-2.description-3">description<span class="tsd-signature-symbol">(</span>description<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span><a href="#description-2.description-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="description-2.description-3">description<span class="tsd-signature-symbol">(</span>description<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a><a href="#description-2.description-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography">
-<h3>Returns</h3></div>
+<div class="tsd-comment tsd-typography"><p>Add a description field to the Operation object</p>
+
+<h3>Returns</h3><p>OperationBuilder instances for method chaining</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>description: <span class="tsd-signature-type">string</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4><aside class="tsd-sources">
+<h5>description: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The description string per OpenApiv3 spec</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/2fce564/src/openapi-builder/operationBuilder.ts#L77">src/openapi-builder/operationBuilder.ts:77</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/926b3fc/src/openapi-builder/operationBuilder.ts#L79">src/openapi-builder/operationBuilder.ts:79</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="externalDocs-2" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>external<wbr/>Docs</span><a href="#externalDocs-2" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="externalDocs-2.externalDocs-3">external<wbr/>Docs<span class="tsd-signature-symbol">(</span>externalDocObject<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExternalDocumentationObject</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span><a href="#externalDocs-2.externalDocs-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="externalDocs-2.externalDocs-3">external<wbr/>Docs<span class="tsd-signature-symbol">(</span>externalDocObject<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExternalDocumentationObject</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a><a href="#externalDocs-2.externalDocs-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography">
-<h3>Returns</h3></div>
+<div class="tsd-comment tsd-typography"><p>Add a externalDocObject field to the Operation object</p>
+
+<h3>Returns</h3><p>OperationBuilder instances for method chaining</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>externalDocObject: <span class="tsd-signature-type">ExternalDocumentationObject</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4><aside class="tsd-sources">
+<h5>externalDocObject: <span class="tsd-signature-type">ExternalDocumentationObject</span></h5>
+<div class="tsd-comment tsd-typography"><p>The externalDocObject object per OpenApiv3 spec</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/2fce564/src/openapi-builder/operationBuilder.ts#L87">src/openapi-builder/operationBuilder.ts:87</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/926b3fc/src/openapi-builder/operationBuilder.ts#L90">src/openapi-builder/operationBuilder.ts:90</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="operationId-2" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>operation<wbr/>Id</span><a href="#operationId-2" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="operationId-2.operationId-3">operation<wbr/>Id<span class="tsd-signature-symbol">(</span>operationId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span><a href="#operationId-2.operationId-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="operationId-2.operationId-3">operation<wbr/>Id<span class="tsd-signature-symbol">(</span>operationId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a><a href="#operationId-2.operationId-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography">
-<h3>Returns</h3></div>
+<div class="tsd-comment tsd-typography"><p>Add a operationId field to the Operation object.</p>
+<p><strong>Must be unique per document</strong></p>
+
+<h3>Returns</h3><p>OperationBuilder instances for method chaining</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>operationId: <span class="tsd-signature-type">string</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4><aside class="tsd-sources">
+<h5>operationId: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The operationId string per OpenApiv3 spec</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/2fce564/src/openapi-builder/operationBuilder.ts#L97">src/openapi-builder/operationBuilder.ts:97</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/926b3fc/src/openapi-builder/operationBuilder.ts#L103">src/openapi-builder/operationBuilder.ts:103</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="parameters-2" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>parameters</span><a href="#parameters-2" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="parameters-2.parameters-3">parameters<span class="tsd-signature-symbol">(</span>parameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">ReferenceObject</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ParameterObject</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span><a href="#parameters-2.parameters-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="parameters-2.parameters-3">parameters<span class="tsd-signature-symbol">(</span>parameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">ReferenceObject</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ParameterObject</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a><a href="#parameters-2.parameters-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography">
-<h3>Returns</h3></div>
+<div class="tsd-comment tsd-typography"><p>Add a parameters field to the Operation object.</p>
+
+<h3>Returns</h3><p>OperationBuilder instances for method chaining</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>parameters: <span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">ReferenceObject</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ParameterObject</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4><aside class="tsd-sources">
+<h5>parameters: <span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">ReferenceObject</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ParameterObject</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span></h5>
+<div class="tsd-comment tsd-typography"><p>The parameters object per OpenApiv3 spec</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/2fce564/src/openapi-builder/operationBuilder.ts#L107">src/openapi-builder/operationBuilder.ts:107</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/926b3fc/src/openapi-builder/operationBuilder.ts#L114">src/openapi-builder/operationBuilder.ts:114</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="requestBody-2" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>request<wbr/>Body</span><a href="#requestBody-2" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="requestBody-2.requestBody-3">request<wbr/>Body<span class="tsd-signature-symbol">(</span>requestBody<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ReferenceObject</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RequestBodyObject</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span><a href="#requestBody-2.requestBody-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="requestBody-2.requestBody-3">request<wbr/>Body<span class="tsd-signature-symbol">(</span>requestBody<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ReferenceObject</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RequestBodyObject</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a><a href="#requestBody-2.requestBody-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography">
-<h3>Returns</h3></div>
+<div class="tsd-comment tsd-typography"><p>Add a requestBody field to the Operation object.</p>
+
+<h3>Returns</h3><p>OperationBuilder instances for method chaining</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>requestBody: <span class="tsd-signature-type">ReferenceObject</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RequestBodyObject</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4><aside class="tsd-sources">
+<h5>requestBody: <span class="tsd-signature-type">ReferenceObject</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RequestBodyObject</span></h5>
+<div class="tsd-comment tsd-typography"><p>The requestBody object per OpenApiv3 spec</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/2fce564/src/openapi-builder/operationBuilder.ts#L117">src/openapi-builder/operationBuilder.ts:117</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/926b3fc/src/openapi-builder/operationBuilder.ts#L125">src/openapi-builder/operationBuilder.ts:125</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="security-2" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>security</span><a href="#security-2" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="security-2.security-3">security<span class="tsd-signature-symbol">(</span>security<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">SecurityRequirementObject</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span><a href="#security-2.security-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="security-2.security-3">security<span class="tsd-signature-symbol">(</span>security<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">SecurityRequirementObject</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a><a href="#security-2.security-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography">
-<h3>Returns</h3></div>
+<div class="tsd-comment tsd-typography"><p>Add a security field to the Operation object.</p>
+
+<h3>Returns</h3><p>OperationBuilder instances for method chaining</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>security: <span class="tsd-signature-type">SecurityRequirementObject</span><span class="tsd-signature-symbol">[]</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4><aside class="tsd-sources">
+<h5>security: <span class="tsd-signature-type">SecurityRequirementObject</span><span class="tsd-signature-symbol">[]</span></h5>
+<div class="tsd-comment tsd-typography"><p>The security object per OpenApiv3 spec</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/2fce564/src/openapi-builder/operationBuilder.ts#L147">src/openapi-builder/operationBuilder.ts:147</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/926b3fc/src/openapi-builder/operationBuilder.ts#L158">src/openapi-builder/operationBuilder.ts:158</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="servers-2" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>servers</span><a href="#servers-2" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="servers-2.servers-3">servers<span class="tsd-signature-symbol">(</span>servers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ServerObject</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span><a href="#servers-2.servers-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="servers-2.servers-3">servers<span class="tsd-signature-symbol">(</span>servers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ServerObject</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a><a href="#servers-2.servers-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography">
-<h3>Returns</h3></div>
+<div class="tsd-comment tsd-typography"><p>Add a servers field to the Operation object.</p>
+
+<h3>Returns</h3><p>OperationBuilder instances for method chaining</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>servers: <span class="tsd-signature-type">ServerObject</span><span class="tsd-signature-symbol">[]</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4><aside class="tsd-sources">
+<h5>servers: <span class="tsd-signature-type">ServerObject</span><span class="tsd-signature-symbol">[]</span></h5>
+<div class="tsd-comment tsd-typography"><p>The servers object per OpenApiv3 spec</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/2fce564/src/openapi-builder/operationBuilder.ts#L157">src/openapi-builder/operationBuilder.ts:157</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/926b3fc/src/openapi-builder/operationBuilder.ts#L169">src/openapi-builder/operationBuilder.ts:169</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="summary-2" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>summary</span><a href="#summary-2" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="summary-2.summary-3">summary<span class="tsd-signature-symbol">(</span>summary<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span><a href="#summary-2.summary-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="summary-2.summary-3">summary<span class="tsd-signature-symbol">(</span>summary<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a><a href="#summary-2.summary-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography">
-<h3>Returns</h3></div>
+<div class="tsd-comment tsd-typography"><p>Add a summary field to the Operation object</p>
+
+<h3>Returns</h3><p>OperationBuilder instances for method chaining</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>summary: <span class="tsd-signature-type">string</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4><aside class="tsd-sources">
+<h5>summary: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The summary string per OpenApiv3 spec</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/2fce564/src/openapi-builder/operationBuilder.ts#L67">src/openapi-builder/operationBuilder.ts:67</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/926b3fc/src/openapi-builder/operationBuilder.ts#L68">src/openapi-builder/operationBuilder.ts:68</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="tags-2" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>tags</span><a href="#tags-2" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="tags-2.tags-3">tags<span class="tsd-signature-symbol">(</span>tags<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span><a href="#tags-2.tags-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="tags-2.tags-3">tags<span class="tsd-signature-symbol">(</span>tags<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a><a href="#tags-2.tags-3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography">
-<h3>Returns</h3></div>
+<div class="tsd-comment tsd-typography"><p>Add a tags field to the Operation object</p>
+
+<h3>Returns</h3><p>OperationBuilder instances for method chaining</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>tags: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4><aside class="tsd-sources">
+<h5>tags: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+<div class="tsd-comment tsd-typography"><p>The tags object per OpenApiv3 spec</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/2fce564/src/openapi-builder/operationBuilder.ts#L57">src/openapi-builder/operationBuilder.ts:57</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/926b3fc/src/openapi-builder/operationBuilder.ts#L57">src/openapi-builder/operationBuilder.ts:57</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="defaults" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>defaults</span><a href="#defaults" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="defaults.defaults-1">defaults<span class="tsd-signature-symbol">(</span>defaults<span class="tsd-signature-symbol">: </span><a href="../types/OperationDefaults.html" class="tsd-signature-type" data-tsd-kind="Type alias">OperationDefaults</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#defaults.defaults-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Sets defaults for the operation object when using the build interface</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>defaults: <a href="../types/OperationDefaults.html" class="tsd-signature-type" data-tsd-kind="Type alias">OperationDefaults</a></h5></li></ul></div>
+<h5>defaults: <a href="../types/OperationDefaults.html" class="tsd-signature-type" data-tsd-kind="Type alias">OperationDefaults</a></h5>
+<div class="tsd-comment tsd-typography"><p>The defaults to set - these are global to the OperationBuilder class</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/2fce564/src/openapi-builder/operationBuilder.ts#L22">src/openapi-builder/operationBuilder.ts:22</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/926b3fc/src/openapi-builder/operationBuilder.ts#L23">src/openapi-builder/operationBuilder.ts:23</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="new" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>new</span><a href="#new" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="new.new-1">new<span class="tsd-signature-symbol">(</span>responses<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ResponsesObject</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a><a href="#new.new-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography">
-<h3>Returns</h3></div>
+<div class="tsd-comment tsd-typography"><p>Start building a new Operation object</p>
+
+<h3>Returns</h3><p>OperationBuilder instances for method chaining</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>responses: <span class="tsd-signature-type">ResponsesObject</span></h5></li></ul></div>
+<h5>responses: <span class="tsd-signature-type">ResponsesObject</span></h5>
+<div class="tsd-comment tsd-typography"><p>The responses object - required by OpenApiv3</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="OperationBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">OperationBuilder</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/2fce564/src/openapi-builder/operationBuilder.ts#L30">src/openapi-builder/operationBuilder.ts:30</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/nklisch/express-openapi-generator/blob/926b3fc/src/openapi-builder/operationBuilder.ts#L32">src/openapi-builder/operationBuilder.ts:32</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">

@@ -6,8 +6,8 @@ import { ComponentFieldNames, CompositeSchemaTypes, Component, ComponentParamete
 import { Parameter, parseExpressApp } from 'express-route-parser';
 import { RouteMetaData } from '../types';
 import { Express } from 'express';
-export default class OpenApiDocumentBuilder {
-    private static instance?: OpenApiDocumentBuilder;
+export default class DocumentBuilder {
+    private static instance?: DocumentBuilder;
     private readonly _document: OpenAPIV3.Document;
     private readonly components: Map<string, Component>;
 
@@ -22,51 +22,65 @@ export default class OpenApiDocumentBuilder {
         this.processComponents();
     }
     /**
-     *
+     * Deletes the singleton instance, allowing re-initialization if desired.
      */
-    public static deleteDocumentInstance() {
-        if (OpenApiDocumentBuilder.instance) {
-            delete OpenApiDocumentBuilder.instance;
+    public static deleteDocumentInstance(): void {
+        if (DocumentBuilder.instance) {
+            delete DocumentBuilder.instance;
         }
     }
 
     /**
-     *
-     * @param documentStub
-     * @param reinitialize
-     * @returns
+     * Initializes the singleton document. This allows you to import this class from
+     * any module and maintain an global document reference. 
+     * 
+     * @remarks
+     * **Warning**: Each call to this method will override previous instances, loosing the internal document.
+     * Recommended to only call this once per project.
+     * 
+     * @param documentStub The minimum required OpenApiv3 skeleton spec
+     * @returns The document builder object instance
      */
-    public static initializeDocument(documentStub: OpenAPIV3.Document, reinitialize = false): OpenApiDocumentBuilder {
-        if (!OpenApiDocumentBuilder.instance || reinitialize) {
-            OpenApiDocumentBuilder.instance = new OpenApiDocumentBuilder(documentStub);
-        }
-        return OpenApiDocumentBuilder.instance;
+    public static initializeDocument(documentStub: OpenAPIV3.Document): DocumentBuilder {
+        DocumentBuilder.instance = new DocumentBuilder(documentStub);
+        return DocumentBuilder.instance;
     }
-
-    public static get documentBuilder(): OpenApiDocumentBuilder {
-        if (!OpenApiDocumentBuilder.instance) {
+    /**
+     * Retrieves the current document builder instance. 
+     * Used to retrieve references across modules.
+     */
+    public static get documentBuilder(): DocumentBuilder {
+        if (!DocumentBuilder.instance) {
             throw new Error('Must initialize document before getting builder instance');
         }
-        return OpenApiDocumentBuilder.instance;
+        return DocumentBuilder.instance;
     }
     /**
-     *
-     * @param expressParserOutput
-     * @param requireOpenApiDocs
-     * @param includeExcludedPaths
+     * Parses the express app and builds an OpenApiv3 Paths object
+     * 
+     * @remarks 
+     * **Warning**: This must be used after all other routes have been attached 
+     * and processed onto the express app. Suggested to be placed right before app.listen().
+     * 
+     * You may use this, build a document, then build it again with different flags for multiple 
+     * versions of the OpenApi v3 document.
+     * 
+     * @param app The Express App object
+     * @param requireOpenApiDocs Require extended OpenApi middleware documentation to exist to include the route in the final Paths Object
+     * @param includeExcludedPaths Override the exclude flag that was attached by middleware and include those routes in the final Paths Object
      */
-    public addPathsObject(app: Express, requireOpenApiDocs = false, includeExcludedPaths = false): void {
+    public generatePathsObject(app: Express, requireOpenApiDocs = false, includeExcludedPaths = false): void {
         this._document.paths = this.buildPaths(app, requireOpenApiDocs, includeExcludedPaths);
     }
     /**
      *
-     * @returns
+     * @returns A deep copy of the current OpenApi v3 document 
      */
     public build(): OpenAPIV3.Document {
         return structuredClone(this._document);
     }
 
-    private processComponents() {
+    private processComponents(): void {
         if (!this._document.components) {
             return;
         }
@@ -78,34 +92,39 @@ export default class OpenApiDocumentBuilder {
         }
     }
     /**
-     *
-     * @param names
-     * @returns
+     * A builder method to generate allOf schemas.
+     * 
+     * @param names List of names of schemas in the components of this document
+     * @returns A valid allOf schema object, using $ref syntax to reference component schemas
      */
-    public allOf = (names: string[]) => {
+    public allOf = (names: string[]): OpenAPIV3.SchemaObject => {
         return this.compositeSchema(CompositeSchemaTypes.allOf, names);
     };
     /**
+     * A builder method to generate oneOf schemas.
      *
-     * @param names
-     * @returns
+     * @param names List of names of schemas in the components of this document
+     * @returns A valid oneOf schema object, using $ref syntax to reference component schemas
      */
-    public oneOf = (names: string[]) => {
+    public oneOf = (names: string[]): OpenAPIV3.SchemaObject => {
         return this.compositeSchema(CompositeSchemaTypes.oneOf, names);
     };
     /**
-     *
-     * @param names
-     * @returns
+     * A builder method to generate anyOf schemas.
+     * 
+     * @param names List of names of schemas in the components of this document
+     * @returns A valid anyOf schema object, using $ref syntax to reference component schemas
      */
-    public anyOf = (names: string[]) => {
+    public anyOf = (names: string[]): OpenAPIV3.SchemaObject => {
         return this.compositeSchema(CompositeSchemaTypes.anyOf, names);
     };
     /**
-     *
-     * @param type
-     * @param names
-     * @returns
+     * A builder method that can create an allOf, oneOf, anyOf schema objects.
+     * 
+     * @param type One of 'anyOf', 'oneOf', 'allOf', selecting which will be created
+     * @param names List of names of schemas in the components of this document
+     * @returns A valid allOf, oneOf, anyOf schema object, using $ref syntax to reference component schemas
+     * @throws Error if a component name doesn't exist on the document
      */
     public compositeSchema = (type: CompositeSchemaTypes, names: string[]): OpenAPIV3.SchemaObject => {
         const composite: any = {};
@@ -119,12 +138,18 @@ export default class OpenApiDocumentBuilder {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         return composite as OpenAPIV3.SchemaObject;
     };
+
     /**
-     *
-     * @param field
-     * @param name
-     * @param params
-     * @returns
+     * A method for adding and retrieving components from the document
+     * 
+     * @param field The category of the component, based on the OpenApiv3 spec
+     * @param name The name of the component object
+     * @param params Options
+     * @param params.component If this is included, the component will be added to the document, 
+     * overriding existing components with the same name and field
+     * @param params.copy If this is included, return a full copy, not just a $ref of the request component
+     * @returns The component or undefined if it doesn't exist on the document
+     * @throws If the field name is not one of {@link ComponentFieldNames}
      */
     public component = (
         field: ComponentFieldNames,
@@ -156,10 +181,14 @@ export default class OpenApiDocumentBuilder {
         return params?.copy ? structuredClone(this.components.get(key)) : { $ref: `#/components/${field}/${name}` };
     };
     /**
-     *
-     * @param name
-     * @param params
-     * @returns
+     * A method for adding and retrieving schema components from the document
+     * 
+     * @param name The name of the schema component
+     * @param params Options
+     * @param params.component If this is included, the schema will be added to the document, 
+     * overriding existing schema of the same name
+     * @param params.copy If this is included, return a full copy, not just a $ref of the requested schema
+     * @returns The schema or undefined if it doesn't exist on the document
      */
     public schema = (
         name: string,
@@ -171,10 +200,14 @@ export default class OpenApiDocumentBuilder {
             | undefined;
     };
     /**
-     *
-     * @param name
-     * @param params
-     * @returns
+     * A method for adding and retrieving response components from the document
+     * 
+     * @param name The name of the response component
+     * @param params Options
+     * @param params.component If this is included, the response will be added to the document, 
+     * overriding existing response of the same name
+     * @param params.copy If this is included, return a full copy, not just a $ref of the requested response
+     * @returns The response or undefined if it doesn't exist on the document
      */
     public response = (
         name: string,
@@ -186,10 +219,14 @@ export default class OpenApiDocumentBuilder {
             | undefined;
     };
     /**
-     *
-     * @param name
-     * @param params
-     * @returns
+     * A method for adding and retrieving parameter components from the document
+     * 
+     * @param name The name of the parameter component
+     * @param params Options
+     * @param params.component If this is included, the parameter will be added to the document, 
+     * overriding existing parameter of the same name
+     * @param params.copy If this is included, return a full copy, not just a $ref of the requested parameter
+     * @returns The parameter or undefined if it doesn't exist on the document
      */
     public parameter = (
         name: string,
@@ -201,10 +238,14 @@ export default class OpenApiDocumentBuilder {
             | undefined;
     };
     /**
-     *
-     * @param name
-     * @param params
-     * @returns
+     * A method for adding and retrieving example components from the document
+     * 
+     * @param name The name of the example component
+     * @param params Options
+     * @param params.component If this is included, the example will be added to the document, 
+     * overriding existing example of the same name
+     * @param params.copy If this is included, return a full copy, not just a $ref of the requested example
+     * @returns The example or undefined if it doesn't exist on the document
      */
     public example = (
         name: string,
@@ -216,10 +257,14 @@ export default class OpenApiDocumentBuilder {
             | undefined;
     };
     /**
-     *
-     * @param name
-     * @param params
-     * @returns
+     * A method for adding and retrieving requestBody components from the document
+     * 
+     * @param name The name of the requestBody component
+     * @param params Options
+     * @param params.component If this is included, the requestBody will be added to the document, 
+     * overriding existing requestBody of the same name
+     * @param params.copy If this is included, return a full copy, not just a $ref of the requested requestBody
+     * @returns The requestBody or undefined if it doesn't exist on the document
      */
     public requestBody = (
         name: string,
@@ -230,10 +275,14 @@ export default class OpenApiDocumentBuilder {
             | undefined;
     };
     /**
-     *
-     * @param name
-     * @param params
-     * @returns
+     * A method for adding and retrieving header components from the document
+     * 
+     * @param name The name of the header component
+     * @param params Options
+     * @param params.component If this is included, the header will be added to the document, 
+     * overriding existing header of the same name
+     * @param params.copy If this is included, return a full copy, not just a $ref of the requested header
+     * @returns The header or undefined if it doesn't exist on the document
      */
     public header = (
         name: string,
@@ -245,10 +294,14 @@ export default class OpenApiDocumentBuilder {
             | undefined;
     };
     /**
-     *
-     * @param name
-     * @param params
-     * @returns
+     * A method for adding and retrieving securityScheme components from the document
+     * 
+     * @param name The name of the securityScheme component
+     * @param params Options
+     * @param params.component If this is included, the securityScheme will be added to the document, 
+     * overriding existing securityScheme of the same name
+     * @param params.copy If this is included, return a full copy, not just a $ref of the requested securityScheme
+     * @returns The securityScheme or undefined if it doesn't exist on the document
      */
     public securityScheme = (
         name: string,
@@ -260,10 +313,14 @@ export default class OpenApiDocumentBuilder {
             | undefined;
     };
     /**
-     *
-     * @param name
-     * @param params
-     * @returns
+     * A method for adding and retrieving link components from the document
+     * 
+     * @param name The name of the link component
+     * @param params Options
+     * @param params.component If this is included, the link will be added to the document, 
+     * overriding existing link of the same name
+     * @param params.copy If this is included, return a full copy, not just a $ref of the requested link
+     * @returns The link or undefined if it doesn't exist on the document
      */
     public link = (
         name: string,
@@ -275,10 +332,14 @@ export default class OpenApiDocumentBuilder {
             | undefined;
     };
     /**
-     *
-     * @param name
-     * @param params
-     * @returns
+     * A method for adding and retrieving callback components from the document
+     * 
+     * @param name The name of the callback component
+     * @param params Options
+     * @param params.component If this is included, the callback will be added to the document, 
+     * overriding existing callback of the same name
+     * @param params.copy If this is included, return a full copy, not just a $ref of the requested callback
+     * @returns The callback or undefined if it doesn't exist on the document
      */
     public callback = (
         name: string,

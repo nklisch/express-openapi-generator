@@ -87,7 +87,7 @@ describe('ResponseBuilder', () => {
     });
 
     it('uses defaults', () => {
-        ResponseBuilder.defaults({ mediaType: 'application/json' });
+        ResponseBuilder.defaults({ mimeType: 'application/json' });
         expect(ResponseBuilder.new('testing').mediaType(contentObject['*/*']).build()).toEqual({
             description: 'testing',
             content: { 'application/json': contentObject['*/*'] },

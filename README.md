@@ -41,7 +41,7 @@ router.post('/user', (req: Request, res: Response) => {
 });
 
 // Generates our full open api document
-documentBuilder.addPathsObject(app);
+documentBuilder.generatePathsObject(app);
 
 // The final can be retrieved with the build() method. A new deep copy is created each time.
 console.log(documentBuilder.build()); 
@@ -152,7 +152,7 @@ router.get(
 );
 
 // Generates our full open api document
-documentBuilder.addPathsObject(app);
+documentBuilder.generatePathsObject(app);
 
 // The final document can be found on the read-only property 'document'. It returns a deep copy
 console.log(documentBuilder.build());
@@ -210,6 +210,7 @@ const exampleOutputSchema = {
     },
 };
 ```
+### Adding Request Validation
 
 ### Important Notes
 singleton patterns

@@ -159,7 +159,7 @@ describe('OpenApiDocumentBuilder', () => {
     it('attaches document components', () => {
         const doc = structuredClone(stub);
         doc.components = swaggerExampleSchema.components as OpenAPIV3.ComponentsObject;
-        const builder = DocumentBuilder.initializeDocument(doc, true);
+        const builder = DocumentBuilder.initializeDocument(doc);
         expect(builder.schema('user')).toEqual({ $ref: '#/components/schemas/user' });
         expect(builder.schema('repository', { copy: true })).toEqual(
             swaggerExampleSchema.components.schemas.repository,
@@ -169,7 +169,7 @@ describe('OpenApiDocumentBuilder', () => {
     it('saves a component to the document', () => {
         const schema = structuredClone(swaggerExampleSchema.components.schemas.pullrequest);
         const link = structuredClone(swaggerExampleSchema.components.links.PullRequestMerge);
-        const builder = DocumentBuilder.initializeDocument(structuredClone(stub), true);
+        const builder = DocumentBuilder.initializeDocument(structuredClone(stub));
         builder.schema('pullrequest', { component: schema as OpenAPIV3.SchemaObject });
         builder.link('PullRequestMerge', { component: link });
         expect(builder.schema('pullrequest')).toEqual({ $ref: '#/components/schemas/pullrequest' });
@@ -220,7 +220,7 @@ describe('OpenApiDocumentBuilder', () => {
 
     it('throws error on incomplete document', () => {
         const stub2 = { openapi: stub.openapi };
-        expect(() => DocumentBuilder.initializeDocument(stub2 as OpenAPIV3.Document, true)).toThrow();
+        expect(() => DocumentBuilder.initializeDocument(stub2 as OpenAPIV3.Document)).toThrow();
     });
 
     it('throws error if getting instances before initialized', () => {
@@ -238,7 +238,7 @@ describe('OpenApiDocumentBuilder', () => {
     });
 
     it('can create composite schemas', () => {
-        const builder = DocumentBuilder.initializeDocument(swaggerExampleSchema as OpenAPIV3.Document, true);
+        const builder = DocumentBuilder.initializeDocument(swaggerExampleSchema as OpenAPIV3.Document);
         expect(builder.allOf(['pullrequest', 'user'])).toEqual({
             allOf: [{ $ref: '#/components/schemas/pullrequest' }, { $ref: '#/components/schemas/user' }],
         });
@@ -251,7 +251,7 @@ describe('OpenApiDocumentBuilder', () => {
     });
 
     it("throws error a schema in composite schema doesn't exist", () => {
-        const builder = DocumentBuilder.initializeDocument(swaggerExampleSchema as OpenAPIV3.Document, true);
+        const builder = DocumentBuilder.initializeDocument(swaggerExampleSchema as OpenAPIV3.Document);
         expect(() => builder.allOf(['n/a'])).toThrow();
     });
 });

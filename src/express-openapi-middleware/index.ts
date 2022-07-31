@@ -6,8 +6,8 @@ import { middleware } from './middleware';
 import Ajv, { AnySchema, ValidateFunction } from 'ajv';
 import { RequestHandler } from 'express';
 
-export default class OpenApiPathMiddleware {
-    private static instance: OpenApiPathMiddleware;
+export default class PathMiddleware {
+    private static instance: PathMiddleware;
     private validate: boolean;
     private readonly operations: Map<string, ValidateFunction>;
     private validatorQueue: string[];
@@ -23,11 +23,11 @@ export default class OpenApiPathMiddleware {
      * @param openApiDoc - Document that is used to validate routes. OperationId's must match pathMiddleware operationIds
      * @param ajv - Ajv validation instance - user configured, provided and defined.
      */
-    public static initializeValidation(openApiDoc: OpenAPIV3.Document, ajv: Ajv) {
-        if (!OpenApiPathMiddleware.instance) {
-            OpenApiPathMiddleware.instance = new OpenApiPathMiddleware();
+    public static initializeValidation(openApiDoc: OpenAPIV3.Document, ajv: Ajv): void {
+        if (!PathMiddleware.instance) {
+            throw new Error('Instance not initialized, OpenApiPathMiddleware.initializeValidation requires path middleware on at least one route')
         }
-        OpenApiPathMiddleware.instance.initializeValidation(openApiDoc, ajv);
+        PathMiddleware.instance.initializeValidation(openApiDoc, ajv);
     }
     /**
      * Creates an path middleware that attaches to a route, providing meta-data for the express parser to pick up.
@@ -37,7 +37,7 @@ export default class OpenApiPathMiddleware {
      * @param  param.operationObject - The Open Api operation object for this route.
      * @param  param.validate - Overrides global validation option for this route.
      * @param  param.exclude - Indicates if this route should be marked for exclusion when generating OpenApi documents.
-     * @returns
+     * @returns An Express middleware object to attach to a route
      */
     public static path(
         operationId: string,
@@ -46,11 +46,11 @@ export default class OpenApiPathMiddleware {
             validate = false,
             exclude = false,
         }: { operationObject?: OpenAPIV3.OperationObject; validate?: boolean; exclude?: boolean },
-    ) {
-        if (!OpenApiPathMiddleware.instance) {
-            OpenApiPathMiddleware.instance = new OpenApiPathMiddleware();
+    ): RequestHandler {
+        if (!PathMiddleware.instance) {
+            PathMiddleware.instance = new PathMiddleware();
         }
-        return OpenApiPathMiddleware.instance.path(operationId, { operationObject, validate, exclude });
+        return PathMiddleware.instance.path(operationId, { operationObject, validate, exclude });
     }
 
     private path = (

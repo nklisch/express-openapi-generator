@@ -4,7 +4,7 @@
 import express, { Express, Router, Request, Response } from 'express';
 import OpenApiSchemaValidator from 'openapi-schema-validator';
 import { OpenAPIV3 } from 'openapi-types';
-import OpenApiDocumentBuilder from '../openapi-builder';
+import { DocumentBuilder } from '../index';
 
 const validator = new OpenApiSchemaValidator({ version: 3 });
 const successResponse = (req: Request, res: Response) => {
@@ -36,7 +36,7 @@ describe('it parses an Express application and ', () => {
     let app: Express;
     let router: Router;
     let subrouter: Router;
-    let documentBuilder: OpenApiDocumentBuilder;
+    let documentBuilder: DocumentBuilder;
     beforeEach(() => {
         app = express();
         router = express.Router();
@@ -44,23 +44,22 @@ describe('it parses an Express application and ', () => {
     });
     describe('creates an open api document', () => {
         beforeEach(() => {
-            documentBuilder = OpenApiDocumentBuilder.initializeDocument(
-                { openapi: '3.0.1', info: { title: 'testing', version: '1' }, paths: {} },
-                true,
+            documentBuilder = DocumentBuilder.initializeDocument(
+                { openapi: '3.0.1', info: { title: 'testing', version: '1' }, paths: {} }
             );
         });
         test('with single layer routes', () => {
             subrouter.get('/endpoint', successResponse);
             router.use('/sub-route', subrouter);
             app.use('/test', router);
-            documentBuilder.addPathsObject(app);
+            documentBuilder.generatePathsObject(app);
             expect(validator.validate(documentBuilder.build()).errors.length).toEqual(0);
         });
         test('with nested routes', () => {
             subrouter.get('/endpoint', successResponse);
             router.use('/sub-route', subrouter);
             app.use('/test', router);
-            documentBuilder.addPathsObject(app);
+            documentBuilder.generatePathsObject(app);
             expect(validator.validate(documentBuilder.build()).errors.length).toEqual(0);
         });
         test('with complex parameters', () => {
@@ -74,7 +73,7 @@ describe('it parses an Express application and ', () => {
             app.use('/sub-route2', router2);
             router2.use('/:test/qualifier', subrouter2);
             subrouter2.put('/:name/endpoint2/:id', successResponse);
-            documentBuilder.addPathsObject(app);
+            documentBuilder.generatePathsObject(app);
             expect(validator.validate(documentBuilder.build()).errors.length).toEqual(0);
         });
         test('with attached open api documentation', () => {

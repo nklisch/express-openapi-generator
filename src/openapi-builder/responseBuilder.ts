@@ -1,89 +1,96 @@
 /* eslint-disable no-underscore-dangle */
 import { OpenAPIV3 } from 'openapi-types';
 
-/**
- *
- */
 export type ResponseDefaults = {
     headers?: { [header: string]: OpenAPIV3.ReferenceObject | OpenAPIV3.HeaderObject };
     content?: { [media: string]: OpenAPIV3.MediaTypeObject };
     links?: { [link: string]: OpenAPIV3.ReferenceObject | OpenAPIV3.LinkObject };
-    mediaType?: string;
+    mimeType?: string;
 };
 
 export default class ResponseBuilder {
     private _mediaType?: string;
     private static _defaults?: ResponseDefaults;
     /**
-     *
-     * @param defaults
+     * Sets defaults for the response object when using the build interface
+     * 
+     * @param defaults The defaults to set - these are global to the ResponseBuilder class
      */
-    public static defaults(defaults: ResponseDefaults) {
+    public static defaults(defaults: ResponseDefaults): void {
         ResponseBuilder._defaults = structuredClone(defaults);
     }
     /**
-     *
-     * @param description
-     * @returns
+     * Start building a new Response object
+     * 
+     * @param description The description of the response object - only OpenApiv3 required field
+     * @returns ResponseBuilder instances for method chaining
      */
-    public static new(description: string) {
+    public static new(description: string): ResponseBuilder {
         return new ResponseBuilder(description);
     }
     private readonly _response: OpenAPIV3.ResponseObject;
 
     private constructor(description: string) {
         const d = structuredClone(ResponseBuilder._defaults);
-        this._mediaType = ResponseBuilder._defaults?.mediaType;
-        delete d?.mediaType;
+        this._mediaType = ResponseBuilder._defaults?.mimeType;
+        delete d?.mimeType;
         this._response = { description, ...d };
     }
     /**
-     *
+     * Creates a deep copy of the current state of the response and returns it.
+     * 
+     * @returns A deep copy of the built response object
      */
-    public build() {
+    public build(): OpenAPIV3.ResponseObject {
         return structuredClone(this._response);
     }
     /**
-     *
-     * @param headers
-     * @returns
+     * Add a header field to the Response object
+     * 
+     * @param headers The header object per OpenApiv3 spec
+     * @returns ResponseBuilder instances for method chaining
      */
-    public headers = (headers: { [header: string]: OpenAPIV3.ReferenceObject | OpenAPIV3.HeaderObject }) => {
+    public headers = (headers: { [header: string]: OpenAPIV3.ReferenceObject | OpenAPIV3.HeaderObject }): ResponseBuilder => {
         this._response.headers = structuredClone(headers);
         return this;
     };
     /**
-     *
-     * @param content
-     * @returns
+     * Add a content field to the Response object
+     * 
+     * @param content The content object per OpenApiv3 spec
+     * @returns ResponseBuilder instances for method chaining
      */
-    public content = (content: { [media: string]: OpenAPIV3.MediaTypeObject }) => {
+    public content = (content: { [media: string]: OpenAPIV3.MediaTypeObject }): ResponseBuilder => {
         this._response.content = structuredClone(content);
         return this;
     };
     /**
+     * Add the mediaType object to the response object.
+     * Allows for defining the type of media, or inheriting a global default.
      *
-     * @param media
-     * @param mediaType
-     * @returns
+     * @param media The MediaType object per OpenApiv3 spec
+     * @param mimeType The string of a valid MIME type
+     * @returns ResponseBuilder instances for method chaining
+     * @throws A error if there is no default MIME and a mimeType wasn't included locally
      */
-    public mediaType = (media: OpenAPIV3.MediaTypeObject, mediaType?: string) => {
-        if (!mediaType && !this._mediaType) {
+    public mediaType = (media: OpenAPIV3.MediaTypeObject, mimeType?: string): ResponseBuilder => {
+        if (!mimeType && !this._mediaType) {
             throw new Error('A media type must either be select as a default or provided - e.g. application/json');
         }
-        mediaType = mediaType || this._mediaType;
+        mimeType = mimeType || this._mediaType;
         if (!this._response.content) {
             this._response.content = {};
         }
-        this._response.content[mediaType as string] = media;
+        this._response.content[mimeType as string] = media;
         return this;
     };
     /**
-     *
-     * @param links
-     * @returns
+     * Add a links field to the Response object
+     * 
+     * @param links The links object per OpenApiv3 spec
+     * @returns ResponseBuilder instances for method chaining
      */
-    public links = (links: { [link: string]: OpenAPIV3.ReferenceObject | OpenAPIV3.LinkObject }) => {
+    public links = (links: { [link: string]: OpenAPIV3.ReferenceObject | OpenAPIV3.LinkObject }): ResponseBuilder => {
         this._response.links = structuredClone(links);
         return this;
     };

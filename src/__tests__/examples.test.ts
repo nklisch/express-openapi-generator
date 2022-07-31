@@ -45,7 +45,7 @@ test('simple example works', () => {
         res.status(200).json();
     });
 
-    documentBuilder.addPathsObject(app); // Generates our full open api document
+    documentBuilder.generatePathsObject(app); // Generates our full open api document
     console.log(documentBuilder.build()); // The final document can be found on the read-only property 'document'. It returns a deep copy
     expect(documentBuilder.build()).toEqual(exampleDocumentOutput);
 });
@@ -153,7 +153,7 @@ test('example with added documentation works', () => {
     // ** As an alternative to passing the full operation object, there are some helper builder classes provided **
 
     // Setup re-usable defaults for our ResponseBuilder object, useful if your application sends mostly json
-    ResponseBuilder.defaults({ mediaType: 'application/json' });
+    ResponseBuilder.defaults({ mimeType: 'application/json' });
 
     // Build our open api operation object for this route, using the builder method
     const getUserOperation: OpenAPIV3.OperationObject = OperationBuilder.new({
@@ -175,7 +175,7 @@ test('example with added documentation works', () => {
     );
 
     // Generates our full open api document
-    documentBuilder.addPathsObject(app);
+    documentBuilder.generatePathsObject(app);
 
     // The final document can be found on the read-only property 'document'. It returns a deep copy
     console.log(documentBuilder.build());
