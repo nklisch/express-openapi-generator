@@ -1,5 +1,7 @@
 # express-openapi-generator
-This package allows you to analyze an Express app project and generate OpenApi v3 documentation. A middleware is provided to attach additional documentation to routes and optional request validation. 
+This package analyzes an Express app project, generating OpenApi v3 documentation. The optional middleware attaches additional documentation to routes and provides optional request validation. 
+
+*This project takes a minimalist, un-opinionated approach with only a single dependency, express-route-parser, a dependency free package developed and maintained by me.*
 
 ### Features
 - **Express Parser**: Leveraging the [express-route-parser](https://www.npmjs.com/package/express-route-parser) npm package to parse an Express app's routes and relevant attached metadata. See the [npm package for more information](https://www.npmjs.com/package/express-route-parser).
@@ -13,6 +15,8 @@ npm i express-openapi-generator
 
 ## Usage
 You can use this package to generate quick and dirty valid open api specs for every route on your project.
+
+API Documentation: [TS Docs](https://nklisch.github.io/express-openapi-generator/)
 
 **Warning**: *OpenApi does not support exotic route matching, such as `/p(ab)th`, `/p*ath/`, or optional path parameters `/:name?`. If these are in your project the generated document won't follow the OpenApi v3 spec. It may still work, since the route parser can handle these special routes, but plugins like swagger ui may fail.*
 ### Basic

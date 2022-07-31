@@ -47,7 +47,7 @@ export default class PathMiddleware {
      * @returns An Express middleware object to attach to a route
      * @throws
      * - If operationId is not unique per express app,
-     * - If validation is selected and an no OpenApi document is provided.
+     * - If validation is selected and no OpenApi document is provided.
      */
     public static path(
         operationId: string,
