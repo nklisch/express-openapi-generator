@@ -41,7 +41,7 @@ router.post('/user', (req: Request, res: Response) => {
 });
 
 // Generates our full open api document
-documentBuilder.buildPathsObject(app);
+documentBuilder.addPathsObject(app);
 
 // The final can be retrieved with the build() method. A new deep copy is created each time.
 console.log(documentBuilder.build()); 
