@@ -15,7 +15,7 @@ npm i express-openapi-generator
 You can use this package to simple generate quick and dirty valid open api specs for every route on your project.
 
 **Warning**: *OpenApi does not support exotic route matching, such as `/p(ab)th`, `/p*ath/`, or optional path parameters `/:name?`. If these are in your project the generated document won't follow the OpenApi v3 spec. It may still work, since the route parser can handle these special routes, but plugins like swagger ui may fail.*
-### Simple
+### Basic
 ```typescript
 import express, { Request, Response } from 'express'
 import { DocumentBuilder } from 'express-openapi-generator'
@@ -126,7 +126,7 @@ router.post(
 );
 
 // ** As an alternative to passing the full operation object **
-// ** there are some helper builder classes provided         **
+// ** there are some builder classes provided, with more planned  **
 
 // Setup re-usable defaults for our ResponseBuilder object, 
 // useful if your application sends mostly json
