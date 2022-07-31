@@ -22,10 +22,17 @@ export default class PathMiddleware {
      *
      * @param openApiDoc - Document that is used to validate routes. OperationId's must match pathMiddleware operationIds
      * @param ajv - Ajv validation instance - user configured, provided and defined.
+     * @throws
+     * - If no path middleware have been created (attached to at least one route)
+     * - If open api document or ajv instances is missing
+     * - If an operationId is not unique
+     * - If an operation object on the OpenApiv3 document was not found with one of the operationIds
      */
     public static initializeValidation(openApiDoc: OpenAPIV3.Document, ajv: Ajv): void {
         if (!PathMiddleware.instance) {
-            throw new Error('Instance not initialized, OpenApiPathMiddleware.initializeValidation requires path middleware on at least one route')
+            throw new Error(
+                'Instance not initialized, OpenApiPathMiddleware.initializeValidation requires path middleware on at least one route',
+            );
         }
         PathMiddleware.instance.initializeValidation(openApiDoc, ajv);
     }
@@ -38,6 +45,9 @@ export default class PathMiddleware {
      * @param  param.validate - Overrides global validation option for this route.
      * @param  param.exclude - Indicates if this route should be marked for exclusion when generating OpenApi documents.
      * @returns An Express middleware object to attach to a route
+     * @throws
+     * - If operationId is not unique per express app,
+     * - If validation is selected and an no OpenApi document is provided.
      */
     public static path(
         operationId: string,

@@ -12,7 +12,7 @@ npm i express-openapi-generator
 ```
 
 ## Usage
-You can use this package to simple generate quick and dirty valid open api specs for every route on your project.
+You can use this package to generate quick and dirty valid open api specs for every route on your project.
 
 **Warning**: *OpenApi does not support exotic route matching, such as `/p(ab)th`, `/p*ath/`, or optional path parameters `/:name?`. If these are in your project the generated document won't follow the OpenApi v3 spec. It may still work, since the route parser can handle these special routes, but plugins like swagger ui may fail.*
 ### Basic
@@ -51,7 +51,7 @@ console.log(documentBuilder.build());
 ```typescript
 const exampleDocumentOutput = {
     openapi: '3.0.1',
-    info: { title: 'A example document', version: '1' },
+    info: { title: 'An example document', version: '1' },
     paths: {
         '/api/v1/user': {
             post: {
@@ -163,7 +163,7 @@ console.log(documentBuilder.build());
 ```typescript
 const exampleOutputSchema = {
     openapi: '3.0.1',
-    info: { title: 'A example document', version: '1' },
+    info: { title: 'An example document', version: '1' },
     paths: {
         '/api/v1/user': {
             post: {
@@ -213,14 +213,14 @@ const exampleOutputSchema = {
 ### Adding Request Validation
 
 ### Important Notes
-singleton patterns
+Both DocumentBuilder and PathMiddleware use singleton patterns. This allows you to initialize the underlying objects and then import the classes in other modules directly from the package. This allows the required state to be maintained throughout the project.
 
 ## Peer Dependencies
 These packages are required for certain functionality: 
 - [ajv](https://www.npmjs.com/package/ajv): *Required* package for the provided validation structure. It is not a package dependency, instead build a Ajv instance for use with the validator. This allows direct customization of the Ajv client.
 ### Recommended npm packages
 These packages may integrate well into this eco-system/philosophy of documentation/validation generated from code. 
-https://www.npmjs.com/package/openapi-schema-validator
+
 *This package has no direct affiliation with any of these packages.*
 - [swagger-ui-express](https://www.npmjs.com/package/swagger-ui-express): provides a web-served GUI for Swagger UI. 
 - [redoc-express](https://www.npmjs.com/package/redoc-express): provides a web-served GUI for Redoc UI.
@@ -230,11 +230,7 @@ https://www.npmjs.com/package/openapi-schema-validator
 - [openapi-client-axios](https://www.npmjs.com/package/openapi-client-axios): Generates an axios client based on an open-api spec
 
 ## API Documentation
-
-### express-openapi-middleware
-
-### openapi-builder
-
+See the [TS Docs](https://nklisch.github.io/express-openapi-generator/)
 
 ### Credits
 *Inspired by [@wesleytodd/express-openapi](https://www.npmjs.com/package/@wesleytodd/openapi). This project seeks to use the same philosophy of documentation from code, but provide a less opinionated interface, improved features and support more complex Express app router structures.*

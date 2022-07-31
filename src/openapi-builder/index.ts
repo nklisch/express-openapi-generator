@@ -32,12 +32,12 @@ export default class DocumentBuilder {
 
     /**
      * Initializes the singleton document. This allows you to import this class from
-     * any module and maintain an global document reference. 
-     * 
+     * any module and maintain an global document reference.
+     *
      * @remarks
      * **Warning**: Each call to this method will override previous instances, loosing the internal document.
      * Recommended to only call this once per project.
-     * 
+     *
      * @param documentStub The minimum required OpenApiv3 skeleton spec
      * @returns The document builder object instance
      */
@@ -46,7 +46,7 @@ export default class DocumentBuilder {
         return DocumentBuilder.instance;
     }
     /**
-     * Retrieves the current document builder instance. 
+     * Retrieves the current document builder instance.
      * Used to retrieve references across modules.
      */
     public static get documentBuilder(): DocumentBuilder {
@@ -57,14 +57,16 @@ export default class DocumentBuilder {
     }
     /**
      * Parses the express app and builds an OpenApiv3 Paths object
-     * 
-     * @remarks 
-     * **Warning**: This must be used after all other routes have been attached 
+     *
+     * @remarks
+     * **Warning**: This must be used after all other routes have been attached
      * and processed onto the express app. Suggested to be placed right before app.listen().
-     * 
-     * You may use this, build a document, then build it again with different flags for multiple 
+     *
+     * You may use this, build a document, then use this method with different flags and build again for multiple
      * versions of the OpenApi v3 document.
-     * 
+     *
+     * This allows you to remove routes you don't want documented on one doc, but include it on another.
+     *
      * @param app The Express App object
      * @param requireOpenApiDocs Require extended OpenApi middleware documentation to exist to include the route in the final Paths Object
      * @param includeExcludedPaths Override the exclude flag that was attached by middleware and include those routes in the final Paths Object
@@ -74,7 +76,7 @@ export default class DocumentBuilder {
     }
     /**
      *
-     * @returns A deep copy of the current OpenApi v3 document 
+     * @returns A deep copy of the current OpenApi v3 document
      */
     public build(): OpenAPIV3.Document {
         return structuredClone(this._document);
@@ -93,7 +95,7 @@ export default class DocumentBuilder {
     }
     /**
      * A builder method to generate allOf schemas.
-     * 
+     *
      * @param names List of names of schemas in the components of this document
      * @returns A valid allOf schema object, using $ref syntax to reference component schemas
      */
@@ -111,7 +113,7 @@ export default class DocumentBuilder {
     };
     /**
      * A builder method to generate anyOf schemas.
-     * 
+     *
      * @param names List of names of schemas in the components of this document
      * @returns A valid anyOf schema object, using $ref syntax to reference component schemas
      */
@@ -120,7 +122,7 @@ export default class DocumentBuilder {
     };
     /**
      * A builder method that can create an allOf, oneOf, anyOf schema objects.
-     * 
+     *
      * @param type One of 'anyOf', 'oneOf', 'allOf', selecting which will be created
      * @param names List of names of schemas in the components of this document
      * @returns A valid allOf, oneOf, anyOf schema object, using $ref syntax to reference component schemas
@@ -141,11 +143,11 @@ export default class DocumentBuilder {
 
     /**
      * A method for adding and retrieving components from the document
-     * 
+     *
      * @param field The category of the component, based on the OpenApiv3 spec
      * @param name The name of the component object
      * @param params Options
-     * @param params.component If this is included, the component will be added to the document, 
+     * @param params.component If this is included, the component will be added to the document,
      * overriding existing components with the same name and field
      * @param params.copy If this is included, return a full copy, not just a $ref of the request component
      * @returns The component or undefined if it doesn't exist on the document
@@ -182,10 +184,10 @@ export default class DocumentBuilder {
     };
     /**
      * A method for adding and retrieving schema components from the document
-     * 
+     *
      * @param name The name of the schema component
      * @param params Options
-     * @param params.component If this is included, the schema will be added to the document, 
+     * @param params.component If this is included, the schema will be added to the document,
      * overriding existing schema of the same name
      * @param params.copy If this is included, return a full copy, not just a $ref of the requested schema
      * @returns The schema or undefined if it doesn't exist on the document
@@ -201,10 +203,10 @@ export default class DocumentBuilder {
     };
     /**
      * A method for adding and retrieving response components from the document
-     * 
+     *
      * @param name The name of the response component
      * @param params Options
-     * @param params.component If this is included, the response will be added to the document, 
+     * @param params.component If this is included, the response will be added to the document,
      * overriding existing response of the same name
      * @param params.copy If this is included, return a full copy, not just a $ref of the requested response
      * @returns The response or undefined if it doesn't exist on the document
@@ -220,10 +222,10 @@ export default class DocumentBuilder {
     };
     /**
      * A method for adding and retrieving parameter components from the document
-     * 
+     *
      * @param name The name of the parameter component
      * @param params Options
-     * @param params.component If this is included, the parameter will be added to the document, 
+     * @param params.component If this is included, the parameter will be added to the document,
      * overriding existing parameter of the same name
      * @param params.copy If this is included, return a full copy, not just a $ref of the requested parameter
      * @returns The parameter or undefined if it doesn't exist on the document
@@ -239,10 +241,10 @@ export default class DocumentBuilder {
     };
     /**
      * A method for adding and retrieving example components from the document
-     * 
+     *
      * @param name The name of the example component
      * @param params Options
-     * @param params.component If this is included, the example will be added to the document, 
+     * @param params.component If this is included, the example will be added to the document,
      * overriding existing example of the same name
      * @param params.copy If this is included, return a full copy, not just a $ref of the requested example
      * @returns The example or undefined if it doesn't exist on the document
@@ -258,10 +260,10 @@ export default class DocumentBuilder {
     };
     /**
      * A method for adding and retrieving requestBody components from the document
-     * 
+     *
      * @param name The name of the requestBody component
      * @param params Options
-     * @param params.component If this is included, the requestBody will be added to the document, 
+     * @param params.component If this is included, the requestBody will be added to the document,
      * overriding existing requestBody of the same name
      * @param params.copy If this is included, return a full copy, not just a $ref of the requested requestBody
      * @returns The requestBody or undefined if it doesn't exist on the document
@@ -276,10 +278,10 @@ export default class DocumentBuilder {
     };
     /**
      * A method for adding and retrieving header components from the document
-     * 
+     *
      * @param name The name of the header component
      * @param params Options
-     * @param params.component If this is included, the header will be added to the document, 
+     * @param params.component If this is included, the header will be added to the document,
      * overriding existing header of the same name
      * @param params.copy If this is included, return a full copy, not just a $ref of the requested header
      * @returns The header or undefined if it doesn't exist on the document
@@ -295,10 +297,10 @@ export default class DocumentBuilder {
     };
     /**
      * A method for adding and retrieving securityScheme components from the document
-     * 
+     *
      * @param name The name of the securityScheme component
      * @param params Options
-     * @param params.component If this is included, the securityScheme will be added to the document, 
+     * @param params.component If this is included, the securityScheme will be added to the document,
      * overriding existing securityScheme of the same name
      * @param params.copy If this is included, return a full copy, not just a $ref of the requested securityScheme
      * @returns The securityScheme or undefined if it doesn't exist on the document
@@ -314,10 +316,10 @@ export default class DocumentBuilder {
     };
     /**
      * A method for adding and retrieving link components from the document
-     * 
+     *
      * @param name The name of the link component
      * @param params Options
-     * @param params.component If this is included, the link will be added to the document, 
+     * @param params.component If this is included, the link will be added to the document,
      * overriding existing link of the same name
      * @param params.copy If this is included, return a full copy, not just a $ref of the requested link
      * @returns The link or undefined if it doesn't exist on the document
@@ -333,10 +335,10 @@ export default class DocumentBuilder {
     };
     /**
      * A method for adding and retrieving callback components from the document
-     * 
+     *
      * @param name The name of the callback component
      * @param params Options
-     * @param params.component If this is included, the callback will be added to the document, 
+     * @param params.component If this is included, the callback will be added to the document,
      * overriding existing callback of the same name
      * @param params.copy If this is included, return a full copy, not just a $ref of the requested callback
      * @returns The callback or undefined if it doesn't exist on the document

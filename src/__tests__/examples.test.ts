@@ -52,7 +52,7 @@ test('simple example works', () => {
 
 const exampleOutputSchema = {
     openapi: '3.0.1',
-    info: { title: 'A example document', version: '1' },
+    info: { title: 'An example document', version: '1' },
     paths: {
         '/api/v1/user': {
             post: {
@@ -106,7 +106,7 @@ test('example with added documentation works', () => {
     const documentBuilder = DocumentBuilder.initializeDocument({
         openapi: '3.0.1',
         info: {
-            title: 'A example document',
+            title: 'An example document',
             version: '1',
         },
         paths: {}, // You don't need to include any path objects, those will be generated later

@@ -16,7 +16,6 @@ export type Component =
 
 export type ComponentParameter = { component?: Component; copy?: boolean };
 
-
 export enum CompositeSchemaTypes {
     allOf = 'allOf',
     oneOf = 'oneOf',

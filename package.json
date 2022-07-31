@@ -45,7 +45,7 @@
   "bugs": {
     "url": "https://github.com/nklisch/express-openapi-generator/issues"
   },
-  "homepage": "https://github.com/nklisch/express-openapi-generator#readme",
+  "homepage": "https://nklisch.github.io/express-openapi-generator/",
   "devDependencies": {
     "@types/jest": "^28.1.4",
     "@types/supertest": "^2.0.12",

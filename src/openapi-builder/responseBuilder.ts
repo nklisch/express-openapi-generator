@@ -13,7 +13,7 @@ export default class ResponseBuilder {
     private static _defaults?: ResponseDefaults;
     /**
      * Sets defaults for the response object when using the build interface
-     * 
+     *
      * @param defaults The defaults to set - these are global to the ResponseBuilder class
      */
     public static defaults(defaults: ResponseDefaults): void {
@@ -21,7 +21,7 @@ export default class ResponseBuilder {
     }
     /**
      * Start building a new Response object
-     * 
+     *
      * @param description The description of the response object - only OpenApiv3 required field
      * @returns ResponseBuilder instances for method chaining
      */
@@ -38,7 +38,7 @@ export default class ResponseBuilder {
     }
     /**
      * Creates a deep copy of the current state of the response and returns it.
-     * 
+     *
      * @returns A deep copy of the built response object
      */
     public build(): OpenAPIV3.ResponseObject {
@@ -46,17 +46,19 @@ export default class ResponseBuilder {
     }
     /**
      * Add a header field to the Response object
-     * 
+     *
      * @param headers The header object per OpenApiv3 spec
      * @returns ResponseBuilder instances for method chaining
      */
-    public headers = (headers: { [header: string]: OpenAPIV3.ReferenceObject | OpenAPIV3.HeaderObject }): ResponseBuilder => {
+    public headers = (headers: {
+        [header: string]: OpenAPIV3.ReferenceObject | OpenAPIV3.HeaderObject;
+    }): ResponseBuilder => {
         this._response.headers = structuredClone(headers);
         return this;
     };
     /**
      * Add a content field to the Response object
-     * 
+     *
      * @param content The content object per OpenApiv3 spec
      * @returns ResponseBuilder instances for method chaining
      */
@@ -86,7 +88,7 @@ export default class ResponseBuilder {
     };
     /**
      * Add a links field to the Response object
-     * 
+     *
      * @param links The links object per OpenApiv3 spec
      * @returns ResponseBuilder instances for method chaining
      */

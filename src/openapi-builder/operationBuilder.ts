@@ -17,7 +17,7 @@ export default class OperationBuilder {
     private static _defaults?: OperationDefaults;
     /**
      * Sets defaults for the operation object when using the build interface
-     * 
+     *
      * @param defaults The defaults to set - these are global to the OperationBuilder class
      */
     public static defaults(defaults: OperationDefaults) {
@@ -25,7 +25,7 @@ export default class OperationBuilder {
     }
     /**
      * Start building a new Operation object
-     * 
+     *
      * @param responses The responses object - required by OpenApiv3
      * @returns OperationBuilder instances for method chaining
      */
@@ -41,7 +41,7 @@ export default class OperationBuilder {
 
     /**
      * Creates a deep copy of the current state of the operation and returns it.
-     * 
+     *
      * @returns A deep copy of the built operation object
      */
     public build(): OpenAPIV3.OperationObject {
@@ -50,7 +50,7 @@ export default class OperationBuilder {
 
     /**
      * Add a tags field to the Operation object
-     * 
+     *
      * @param tags The tags object per OpenApiv3 spec
      * @returns OperationBuilder instances for method chaining
      */
@@ -61,7 +61,7 @@ export default class OperationBuilder {
 
     /**
      * Add a summary field to the Operation object
-     * 
+     *
      * @param summary The summary string per OpenApiv3 spec
      * @returns OperationBuilder instances for method chaining
      */
@@ -72,7 +72,7 @@ export default class OperationBuilder {
 
     /**
      * Add a description field to the Operation object
-     * 
+     *
      * @param description The description string per OpenApiv3 spec
      * @returns OperationBuilder instances for method chaining
      */
@@ -83,7 +83,7 @@ export default class OperationBuilder {
 
     /**
      * Add a externalDocObject field to the Operation object
-     * 
+     *
      * @param externalDocObject The externalDocObject object per OpenApiv3 spec
      * @returns OperationBuilder instances for method chaining
      */
@@ -94,9 +94,9 @@ export default class OperationBuilder {
 
     /**
      * Add a operationId field to the Operation object.
-     * 
+     *
      * **Must be unique per document**
-     * 
+     *
      * @param operationId The operationId string per OpenApiv3 spec
      * @returns OperationBuilder instances for method chaining
      */
@@ -118,7 +118,7 @@ export default class OperationBuilder {
 
     /**
      * Add a requestBody field to the Operation object.
-     * 
+     *
      * @param requestBody The requestBody object per OpenApiv3 spec
      * @returns OperationBuilder instances for method chaining
      */
@@ -129,18 +129,20 @@ export default class OperationBuilder {
 
     /**
      * Add a callbacks field to the Operation object.
-     * 
+     *
      * @param callbacks The callbacks object per OpenApiv3 spec
      * @returns OperationBuilder instances for method chaining
      */
-    public callbacks = (callbacks: { [callback: string]: OpenAPIV3.ReferenceObject | OpenAPIV3.CallbackObject }): OperationBuilder => {
+    public callbacks = (callbacks: {
+        [callback: string]: OpenAPIV3.ReferenceObject | OpenAPIV3.CallbackObject;
+    }): OperationBuilder => {
         this._operation.callbacks = structuredClone(callbacks);
         return this;
     };
 
     /**
      * Add a deprecated field to the Operation object.
-     * 
+     *
      * @param deprecated The deprecated boolean per OpenApiv3 spec
      * @returns OperationBuilder instances for method chaining
      */
@@ -151,7 +153,7 @@ export default class OperationBuilder {
 
     /**
      * Add a security field to the Operation object.
-     * 
+     *
      * @param security The security object per OpenApiv3 spec
      * @returns OperationBuilder instances for method chaining
      */
@@ -162,7 +164,7 @@ export default class OperationBuilder {
 
     /**
      * Add a servers field to the Operation object.
-     * 
+     *
      * @param servers The servers object per OpenApiv3 spec
      * @returns OperationBuilder instances for method chaining
      */

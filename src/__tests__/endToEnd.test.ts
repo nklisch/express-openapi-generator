@@ -44,9 +44,11 @@ describe('it parses an Express application and ', () => {
     });
     describe('creates an open api document', () => {
         beforeEach(() => {
-            documentBuilder = DocumentBuilder.initializeDocument(
-                { openapi: '3.0.1', info: { title: 'testing', version: '1' }, paths: {} }
-            );
+            documentBuilder = DocumentBuilder.initializeDocument({
+                openapi: '3.0.1',
+                info: { title: 'testing', version: '1' },
+                paths: {},
+            });
         });
         test('with single layer routes', () => {
             subrouter.get('/endpoint', successResponse);
