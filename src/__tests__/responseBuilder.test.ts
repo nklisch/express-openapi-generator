@@ -78,8 +78,7 @@ const securityObject: OpenAPIV3.SecuritySchemeObject = {
 };
 describe('ResponseBuilder', () => {
     it('builds an operation', () => {
-        const builder = new ResponseBuilder('testing').content(contentObject).headers({}).links({});
-        expect(builder.responseObject).toEqual({
+        expect(ResponseBuilder.new('testing').content(contentObject).headers({}).links({}).build()).toEqual({
             description: 'testing',
             headers: {},
             content: contentObject,
@@ -88,16 +87,15 @@ describe('ResponseBuilder', () => {
     });
 
     it('uses defaults', () => {
-        const builder = new ResponseBuilder('testing', { mediaType: 'application/json' }).mediaType(
-            contentObject['*/*'],
-        );
-        expect(builder.responseObject).toEqual({
+        ResponseBuilder.defaults({ mediaType: 'application/json' });
+        expect(ResponseBuilder.new('testing').mediaType(contentObject['*/*']).build()).toEqual({
             description: 'testing',
             content: { 'application/json': contentObject['*/*'] },
         });
     });
 
     it('throws error if mediaType is not provided', () => {
-        expect(() => new ResponseBuilder('testing').mediaType(contentObject['*/*'])).toThrow();
+        ResponseBuilder.defaults({});
+        expect(() => ResponseBuilder.new('testing').mediaType(contentObject['*/*'])).toThrow();
     });
 });

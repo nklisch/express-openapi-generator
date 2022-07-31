@@ -53,15 +53,15 @@ describe('it parses an Express application and ', () => {
             subrouter.get('/endpoint', successResponse);
             router.use('/sub-route', subrouter);
             app.use('/test', router);
-            documentBuilder.buildPathsObject(app);
-            expect(validator.validate(documentBuilder.document).errors.length).toEqual(0);
+            documentBuilder.addPathsObject(app);
+            expect(validator.validate(documentBuilder.build()).errors.length).toEqual(0);
         });
         test('with nested routes', () => {
             subrouter.get('/endpoint', successResponse);
             router.use('/sub-route', subrouter);
             app.use('/test', router);
-            documentBuilder.buildPathsObject(app);
-            expect(validator.validate(documentBuilder.document).errors.length).toEqual(0);
+            documentBuilder.addPathsObject(app);
+            expect(validator.validate(documentBuilder.build()).errors.length).toEqual(0);
         });
         test('with complex parameters', () => {
             const router2 = express.Router();
@@ -74,8 +74,8 @@ describe('it parses an Express application and ', () => {
             app.use('/sub-route2', router2);
             router2.use('/:test/qualifier', subrouter2);
             subrouter2.put('/:name/endpoint2/:id', successResponse);
-            documentBuilder.buildPathsObject(app);
-            expect(validator.validate(documentBuilder.document).errors.length).toEqual(0);
+            documentBuilder.addPathsObject(app);
+            expect(validator.validate(documentBuilder.build()).errors.length).toEqual(0);
         });
         test('with attached open api documentation', () => {
             //

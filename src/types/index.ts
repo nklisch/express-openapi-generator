@@ -14,7 +14,7 @@ export type Component =
     | OpenAPIV3.LinkObject
     | OpenAPIV3.CallbackObject;
 
-export type ComponentParameter = { name: string; component?: Component; copy?: boolean };
+export type ComponentParameter = { component?: Component; copy?: boolean };
 
 export enum CompositeSchemaTypes {
     allOf = 'allOf',

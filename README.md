@@ -16,7 +16,7 @@ You can use this package to simple generate quick and dirty valid open api specs
 
 **Warning**: *OpenApi does not support exotic route matching, such as `/p(ab)th`, `/p*ath/`, or optional path parameters `/:name?`. If these are in your project the generated document won't follow the OpenApi v3 spec. It may still work, since the route parser can handle these special routes, but plugins like swagger ui may fail.*
 ### Simple
-```javascript
+```typescript
 import express, { Request, Response } from 'express'
 import { DocumentBuilder } from 'express-openapi-generator'
 const app = express();
@@ -48,7 +48,7 @@ console.log(documentBuilder.document);
 
 ```
 **Output**
-```javascript
+```typescript
 const exampleDocumentOutput = {
     openapi: '3.0.1',
     info: { title: 'A example document', version: '1' },
@@ -71,10 +71,145 @@ const exampleDocumentOutput = {
 ```
 
 ### With Added Documentation
+```typescript
+import express, { Request, Response } from 'express';
+import { OpenAPIV3 } from 'openapi-types';
+import { DocumentBuilder, PathMiddleware, ResponseBuilder, OperationBuilder } from '../index';
+const app = express();
+const router = express.Router();
+// This initializes and creates our document builder interface
+const documentBuilder = DocumentBuilder.initializeDocument({
+    openapi: '3.0.1',
+    info: {
+        title: 'A example document',
+        version: '1',
+    },
+    paths: {}, // You don't need to include any path objects, those will be generated later
+});
+const userSchema: OpenAPIV3.SchemaObject = {
+    title: 'A user object',
+    type: 'object',
+    properties: {
+        id: { type: 'integer' },
+        name: { type: 'string' },
+    },
+};
+documentBuilder.schema('user', { component: userSchema });
 
-### With Validation
+app.use('/api/v1', router);
 
-See other examples:
+// Create our open api operation object following OpenApiv3 specification
+const createUserOperation: OpenAPIV3.OperationObject = {
+    operationId: 'createUser',
+    tags: ['users'],
+    responses: {
+        '200': {
+            description: 'Create a User',
+            content: {
+                'application/json': {
+                    schema: documentBuilder.schema('user'),
+                },
+            },
+        },
+    },
+    requestBody: { content: { 'application/json': { schema: documentBuilder.schema('user') } } }
+};
+
+// Attach our middleware
+router.post(
+    '/user',
+    PathMiddleware.path('createUser', { operationObject: createUserOperation }),
+    (req: Request, res: Response): void => {
+        const save = req.body;
+        res.status(200).json();
+    },
+);
+
+// ** As an alternative to passing the full operation object **
+// ** there are some helper builder classes provided         **
+
+// Setup re-usable defaults for our ResponseBuilder object, 
+// useful if your application sends mostly json
+ResponseBuilder.defaults({ mediaType: 'application/json' });
+
+// Build our open api operation object for this route, using the builder method
+const getUserOperation: OpenAPIV3.OperationObject = OperationBuilder.new({
+    '200': ResponseBuilder.new('Gets all users')
+        .mediaType({ schema: documentBuilder.schema('user') })
+        .build(),
+})
+    .operationId('getUsers')
+    .tags(['users'])
+    .build();
+
+// Attach our operation object to the route with the path middleware
+router.get(
+    '/user',
+    PathMiddleware.path('getUsers', { operationObject: getUserOperation }),
+    (req: Request, res: Response) => {
+        res.status(200).json([{ id: '1', name: 'John Smith' }]);
+    },
+);
+
+// Generates our full open api document
+documentBuilder.addPathsObject(app);
+
+// The final document can be found on the read-only property 'document'. It returns a deep copy
+console.log(documentBuilder.build());
+
+```
+
+**Output**
+```typescript
+const exampleOutputSchema = {
+    openapi: '3.0.1',
+    info: { title: 'A example document', version: '1' },
+    paths: {
+        '/api/v1/user': {
+            post: {
+                operationId: 'createUser',
+                tags: ['users'],
+                requestBody: {
+                    content: {
+                        'application/json': {
+                            schema: { $ref: '#/components/schemas/user' },
+                        },
+                    },
+                },
+                responses: {
+                    '200': {
+                        description: 'Create a User',
+                        content: {
+                            'application/json': { schema: { $ref: '#/components/schemas/user' } },
+                        },
+                    },
+                },
+            },
+            get: {
+                responses: {
+                    '200': {
+                        description: 'Gets all users',
+                        content: {
+                            'application/json': { schema: { $ref: '#/components/schemas/user' } },
+                        },
+                    },
+                },
+                operationId: 'getUsers',
+                tags: ['users'],
+            },
+        },
+    },
+    components: {
+        schemas: {
+            user: {
+                title: 'A user object',
+                type: 'object',
+                properties: { id: { type: 'integer' }, name: { type: 'string' } },
+            },
+        },
+    },
+};
+```
 
 ### Important Notes
 singleton patterns

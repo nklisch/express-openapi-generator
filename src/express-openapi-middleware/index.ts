@@ -37,7 +37,7 @@ export default class OpenApiPathMiddleware {
      * @param  param.operationObject - The Open Api operation object for this route.
      * @param  param.validate - Overrides global validation option for this route.
      * @param  param.exclude - Indicates if this route should be marked for exclusion when generating OpenApi documents.
-     * @returns 
+     * @returns
      */
     public static path(
         operationId: string,

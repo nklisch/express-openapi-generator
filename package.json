@@ -1,19 +1,20 @@
 {
   "name": "express-openapi-generator",
   "version": "1.0.0",
-  "description": "An unopinionated Express plugin and middleware that can list the path and route endpoints of an Express app. It can generate OpenApiv3 document based on this data. It also provides a request validation middleware based on the generated open api spec.",
+  "description": "An Express plugin that can parse an app and generate OpenApiv3 document.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "jest --collectCoverage --config jestconfig.json",
     "build": "tsc",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint -c .eslintrc.js --ext .ts src",
     "lint-fix": "eslint -c .eslintrc.js --ext .ts src --fix",
+    "gen-docs": "typedoc",
     "prepare": "npm run build",
-    "prepublishOnly": "npm test && npm run lint",
+    "prepublishOnly": "npm test && npm run gen-docs && npm run lint",
     "preversion": "npm run lint",
-    "version": "npm run format && git add -A src",
+    "version": "npm run format && npm && git add -A src",
     "postversion": "git push && git push --tags"
   },
   "repository": {

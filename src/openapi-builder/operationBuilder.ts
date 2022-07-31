@@ -14,20 +14,38 @@ export type OperationDefaults = {
 };
 
 export default class OperationBuilder {
+    private static _defaults?: OperationDefaults;
+    /**
+     *
+     * @param defaults
+     */
+    public static defaults(defaults: OperationDefaults) {
+        OperationBuilder._defaults = structuredClone(defaults);
+    }
+    /**
+     *
+     * @param responses
+     * @returns
+     */
+    public static new(responses: OpenAPIV3.ResponsesObject) {
+        return new OperationBuilder(responses);
+    }
+
     private readonly _operation: OpenAPIV3.OperationObject;
     /**
      *
      * @param responses
      * @param defaults
      */
-    constructor(responses: OpenAPIV3.ResponsesObject, defaults?: OperationDefaults) {
-        this._operation = { responses: structuredClone(responses), ...structuredClone(defaults) };
+
+    private constructor(responses: OpenAPIV3.ResponsesObject) {
+        this._operation = { responses: structuredClone(responses), ...structuredClone(OperationBuilder._defaults) };
     }
 
     /**
      *
      */
-    public get operationObject(): OpenAPIV3.OperationObject {
+    public build(): OpenAPIV3.OperationObject {
         return structuredClone(this._operation);
     }
 

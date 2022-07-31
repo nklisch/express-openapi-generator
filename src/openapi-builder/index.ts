@@ -22,7 +22,7 @@ export default class OpenApiDocumentBuilder {
         this.processComponents();
     }
     /**
-     * 
+     *
      */
     public static deleteDocumentInstance() {
         if (OpenApiDocumentBuilder.instance) {
@@ -55,13 +55,14 @@ export default class OpenApiDocumentBuilder {
      * @param requireOpenApiDocs
      * @param includeExcludedPaths
      */
-    public buildPathsObject(app: Express, requireOpenApiDocs = false, includeExcludedPaths = false): void {
+    public addPathsObject(app: Express, requireOpenApiDocs = false, includeExcludedPaths = false): void {
         this._document.paths = this.buildPaths(app, requireOpenApiDocs, includeExcludedPaths);
     }
     /**
      *
+     * @returns
      */
-    public get document(): OpenAPIV3.Document {
+    public build(): OpenAPIV3.Document {
         return structuredClone(this._document);
     }
 
@@ -72,44 +73,44 @@ export default class OpenApiDocumentBuilder {
         for (const [field, components] of Object.entries(this._document.components)) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             for (const [name, component] of Object.entries(components)) {
-                this.component(field as ComponentFieldNames, { name, component: component as Component });
+                this.component(field as ComponentFieldNames, name, { component: component as Component });
             }
         }
     }
     /**
-     * 
-     * @param names 
-     * @returns 
+     *
+     * @param names
+     * @returns
      */
     public allOf = (names: string[]) => {
         return this.compositeSchema(CompositeSchemaTypes.allOf, names);
     };
     /**
-     * 
-     * @param names 
-     * @returns 
+     *
+     * @param names
+     * @returns
      */
     public oneOf = (names: string[]) => {
         return this.compositeSchema(CompositeSchemaTypes.oneOf, names);
     };
     /**
-     * 
-     * @param names 
-     * @returns 
+     *
+     * @param names
+     * @returns
      */
     public anyOf = (names: string[]) => {
         return this.compositeSchema(CompositeSchemaTypes.anyOf, names);
     };
     /**
-     * 
-     * @param type 
-     * @param names 
-     * @returns 
+     *
+     * @param type
+     * @param names
+     * @returns
      */
     public compositeSchema = (type: CompositeSchemaTypes, names: string[]): OpenAPIV3.SchemaObject => {
         const composite: any = {};
         composite[type] = names.map((name) => {
-            const ref = this.component(ComponentFieldNames.schemas, { name });
+            const ref = this.schema(name);
             if (!ref) {
                 throw new Error(`Provided component name ${name} does not exist on the document`);
             }
@@ -119,14 +120,16 @@ export default class OpenApiDocumentBuilder {
         return composite as OpenAPIV3.SchemaObject;
     };
     /**
-     * 
-     * @param field 
-     * @param param1 
-     * @returns 
+     *
+     * @param field
+     * @param name
+     * @param params
+     * @returns
      */
     public component = (
         field: ComponentFieldNames,
-        { name, component, copy }: ComponentParameter,
+        name: string,
+        params?: ComponentParameter,
     ): Component | OpenAPIV3.ReferenceObject | undefined => {
         if (!Object.values(ComponentFieldNames).includes(field)) {
             throw new Error(
@@ -135,125 +138,153 @@ export default class OpenApiDocumentBuilder {
                 ).toString()}`,
             );
         }
-        if (component) {
+        if (params?.component) {
             if (!this._document.components) {
                 this._document.components = {};
             }
             if (!this._document.components[field]) {
                 this._document.components[field] = {};
             }
-            component = structuredClone(component);
-            this.components.set(`${field}-${name}`, component);
-            (this._document.components as any)[field][name] = component;
+            params.component = structuredClone(params.component);
+            this.components.set(`${field}-${name}`, params.component);
+            (this._document.components as any)[field][name] = params.component;
         }
         const key = `${field}-${name}`;
         if (!this.components.has(key)) {
             return undefined;
         }
-        return copy ? structuredClone(this.components.get(key)) : { $ref: `#/components/${field}/${name}` };
+        return params?.copy ? structuredClone(this.components.get(key)) : { $ref: `#/components/${field}/${name}` };
     };
     /**
-     * 
-     * @param params 
-     * @returns 
+     *
+     * @param name
+     * @param params
+     * @returns
      */
-    public schema = (params: ComponentParameter): OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject | undefined => {
-        return this.component(ComponentFieldNames.schemas, params) as
+    public schema = (
+        name: string,
+        params?: ComponentParameter,
+    ): OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject | undefined => {
+        return this.component(ComponentFieldNames.schemas, name, params) as
             | OpenAPIV3.SchemaObject
             | OpenAPIV3.ReferenceObject
             | undefined;
     };
     /**
-     * 
-     * @param params 
-     * @returns 
+     *
+     * @param name
+     * @param params
+     * @returns
      */
     public response = (
-        params: ComponentParameter,
+        name: string,
+        params?: ComponentParameter,
     ): OpenAPIV3.ResponseObject | OpenAPIV3.ReferenceObject | undefined => {
-        return this.component(ComponentFieldNames.responses, params) as
+        return this.component(ComponentFieldNames.responses, name, params) as
             | OpenAPIV3.ResponseObject
             | OpenAPIV3.ReferenceObject
             | undefined;
     };
     /**
-     * 
-     * @param params 
-     * @returns 
+     *
+     * @param name
+     * @param params
+     * @returns
      */
     public parameter = (
-        params: ComponentParameter,
+        name: string,
+        params?: ComponentParameter,
     ): OpenAPIV3.ParameterObject | OpenAPIV3.ReferenceObject | undefined => {
-        return this.component(ComponentFieldNames.parameters, params) as
+        return this.component(ComponentFieldNames.parameters, name, params) as
             | OpenAPIV3.ParameterObject
             | OpenAPIV3.ReferenceObject
             | undefined;
     };
     /**
-     * 
-     * @param params 
-     * @returns 
+     *
+     * @param name
+     * @param params
+     * @returns
      */
-    public example = (params: ComponentParameter): OpenAPIV3.ExampleObject | OpenAPIV3.ReferenceObject | undefined => {
-        return this.component(ComponentFieldNames.examples, params) as
+    public example = (
+        name: string,
+        params?: ComponentParameter,
+    ): OpenAPIV3.ExampleObject | OpenAPIV3.ReferenceObject | undefined => {
+        return this.component(ComponentFieldNames.examples, name, params) as
             | OpenAPIV3.ExampleObject
             | OpenAPIV3.ReferenceObject
             | undefined;
     };
     /**
-     * 
-     * @param params 
-     * @returns 
+     *
+     * @param name
+     * @param params
+     * @returns
      */
     public requestBody = (
-        params: ComponentParameter,
+        name: string,
+        params?: ComponentParameter,
     ): OpenAPIV3.RequestBodyObject | OpenAPIV3.ReferenceObject | undefined => {
-        return this.component(ComponentFieldNames.requestBodies, params) as OpenAPIV3.RequestBodyObject | undefined;
+        return this.component(ComponentFieldNames.requestBodies, name, params) as
+            | OpenAPIV3.RequestBodyObject
+            | undefined;
     };
     /**
-     * 
-     * @param params 
-     * @returns 
+     *
+     * @param name
+     * @param params
+     * @returns
      */
-    public header = (params: ComponentParameter): OpenAPIV3.HeaderObject | OpenAPIV3.ReferenceObject | undefined => {
-        return this.component(ComponentFieldNames.headers, params) as
+    public header = (
+        name: string,
+        params?: ComponentParameter,
+    ): OpenAPIV3.HeaderObject | OpenAPIV3.ReferenceObject | undefined => {
+        return this.component(ComponentFieldNames.headers, name, params) as
             | OpenAPIV3.HeaderObject
             | OpenAPIV3.ReferenceObject
             | undefined;
     };
     /**
-     * 
-     * @param params 
-     * @returns 
+     *
+     * @param name
+     * @param params
+     * @returns
      */
     public securityScheme = (
-        params: ComponentParameter,
+        name: string,
+        params?: ComponentParameter,
     ): OpenAPIV3.SecuritySchemeObject | OpenAPIV3.ReferenceObject | undefined => {
-        return this.component(ComponentFieldNames.securitySchemes, params) as
+        return this.component(ComponentFieldNames.securitySchemes, name, params) as
             | OpenAPIV3.SecuritySchemeObject
             | OpenAPIV3.ReferenceObject
             | undefined;
     };
     /**
-     * 
-     * @param params 
-     * @returns 
+     *
+     * @param name
+     * @param params
+     * @returns
      */
-    public link = (params: ComponentParameter): OpenAPIV3.LinkObject | OpenAPIV3.ReferenceObject | undefined => {
-        return this.component(ComponentFieldNames.links, params) as
+    public link = (
+        name: string,
+        params?: ComponentParameter,
+    ): OpenAPIV3.LinkObject | OpenAPIV3.ReferenceObject | undefined => {
+        return this.component(ComponentFieldNames.links, name, params) as
             | OpenAPIV3.LinkObject
             | OpenAPIV3.ReferenceObject
             | undefined;
     };
     /**
-     * 
-     * @param params 
-     * @returns 
+     *
+     * @param name
+     * @param params
+     * @returns
      */
     public callback = (
-        params: ComponentParameter,
+        name: string,
+        params?: ComponentParameter,
     ): OpenAPIV3.CallbackObject | OpenAPIV3.ReferenceObject | undefined => {
-        return this.component(ComponentFieldNames.callbacks, params) as
+        return this.component(ComponentFieldNames.callbacks, name, params) as
             | OpenAPIV3.CallbackObject
             | OpenAPIV3.ReferenceObject
             | undefined;
@@ -307,8 +338,7 @@ export default class OpenApiDocumentBuilder {
         for (let i = 0; i < parameters.length; i++) {
             for (let j = 0; j < path.pathParams.length; j++) {
                 if ((parameters[i] as OpenAPIV3.ReferenceObject).$ref) {
-                    parameters[i] = this.parameter({
-                        name: (parameters[i] as OpenAPIV3.ReferenceObject).$ref.split('/')[3],
+                    parameters[i] = this.parameter((parameters[i] as OpenAPIV3.ReferenceObject).$ref.split('/')[3], {
                         copy: true,
                     }) as OpenAPIV3.ParameterObject;
                 }

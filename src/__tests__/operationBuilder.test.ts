@@ -83,7 +83,7 @@ const securityObject: OpenAPIV3.SecuritySchemeObject = {
 };
 
 it('builds an operation', () => {
-    const builder = new OperationBuilder(responsesObject)
+    const operation = OperationBuilder.new(responsesObject)
         .tags(['test'])
         .operationId('testing')
         .requestBody(requestBody)
@@ -94,9 +94,10 @@ it('builds an operation', () => {
         .security([])
         .deprecated(false)
         .externalDocs({ url: 'testing' })
-        .servers([]);
+        .servers([])
+        .build();
 
-    expect(builder.operationObject).toEqual({
+    expect(operation).toEqual({
         responses: responsesObject,
         tags: ['test'],
         operationId: 'testing',
@@ -113,6 +114,6 @@ it('builds an operation', () => {
 });
 
 it('uses defaults', () => {
-    const builder = new OperationBuilder(responsesObject, { tags: ['testing'] });
-    expect(builder.operationObject).toEqual({ responses: responsesObject, tags: ['testing'] });
+    OperationBuilder.defaults({ tags: ['testing'] });
+    expect(OperationBuilder.new(responsesObject).build()).toEqual({ responses: responsesObject, tags: ['testing'] });
 });

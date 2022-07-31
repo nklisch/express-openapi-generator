@@ -160,8 +160,8 @@ describe('OpenApiDocumentBuilder', () => {
         const doc = structuredClone(stub);
         doc.components = swaggerExampleSchema.components as OpenAPIV3.ComponentsObject;
         const builder = DocumentBuilder.initializeDocument(doc, true);
-        expect(builder.schema({ name: 'user' })).toEqual({ $ref: '#/components/schemas/user' });
-        expect(builder.schema({ name: 'repository', copy: true })).toEqual(
+        expect(builder.schema('user')).toEqual({ $ref: '#/components/schemas/user' });
+        expect(builder.schema('repository', { copy: true })).toEqual(
             swaggerExampleSchema.components.schemas.repository,
         );
     });
@@ -170,51 +170,50 @@ describe('OpenApiDocumentBuilder', () => {
         const schema = structuredClone(swaggerExampleSchema.components.schemas.pullrequest);
         const link = structuredClone(swaggerExampleSchema.components.links.PullRequestMerge);
         const builder = DocumentBuilder.initializeDocument(structuredClone(stub), true);
-        builder.schema({ name: 'pullrequest', component: schema as OpenAPIV3.SchemaObject });
-        builder.link({ name: 'PullRequestMerge', component: link });
-        expect(builder.schema({ name: 'pullrequest' })).toEqual({ $ref: '#/components/schemas/pullrequest' });
-        expect(builder.schema({ name: 'pullrequest', copy: true })).toEqual(schema);
-        expect(builder.schema({ name: 'nonexisting' })).toBe(undefined);
+        builder.schema('pullrequest', { component: schema as OpenAPIV3.SchemaObject });
+        builder.link('PullRequestMerge', { component: link });
+        expect(builder.schema('pullrequest')).toEqual({ $ref: '#/components/schemas/pullrequest' });
+        expect(builder.schema('pullrequest', { copy: true })).toEqual(schema);
+        expect(builder.schema('nonexisting')).toBe(undefined);
 
-        expect(builder.link({ name: 'PullRequestMerge' })).toEqual({ $ref: '#/components/links/PullRequestMerge' });
-        expect(builder.link({ name: 'PullRequestMerge', copy: true })).toEqual(link);
+        expect(builder.link('PullRequestMerge')).toEqual({ $ref: '#/components/links/PullRequestMerge' });
+        expect(builder.link('PullRequestMerge', { copy: true })).toEqual(link);
 
-        builder.response({ name: 'testing', component: responseObject });
-        expect(builder.response({ name: 'testing' })).toEqual({ $ref: '#/components/responses/testing' });
-        expect(builder.response({ name: 'testing', copy: true })).toEqual(responseObject);
+        builder.response('testing', { component: responseObject });
+        expect(builder.response('testing')).toEqual({ $ref: '#/components/responses/testing' });
+        expect(builder.response('testing', { copy: true })).toEqual(responseObject);
 
-        builder.parameter({ name: 'testing', component: parameterObject });
-        expect(builder.parameter({ name: 'testing' })).toEqual({ $ref: '#/components/parameters/testing' });
-        expect(builder.parameter({ name: 'testing', copy: true })).toEqual(parameterObject);
+        builder.parameter('testing', { component: parameterObject });
+        expect(builder.parameter('testing')).toEqual({ $ref: '#/components/parameters/testing' });
+        expect(builder.parameter('testing', { copy: true })).toEqual(parameterObject);
 
-        builder.example({ name: 'testing', component: exampleObject });
-        expect(builder.example({ name: 'testing' })).toEqual({ $ref: '#/components/examples/testing' });
-        expect(builder.example({ name: 'testing', copy: true })).toEqual(exampleObject);
+        builder.example('testing', { component: exampleObject });
+        expect(builder.example('testing')).toEqual({ $ref: '#/components/examples/testing' });
+        expect(builder.example('testing', { copy: true })).toEqual(exampleObject);
 
-        builder.requestBody({ name: 'testing', component: requestBody });
-        expect(builder.requestBody({ name: 'testing' })).toEqual({ $ref: '#/components/requestBodies/testing' });
-        expect(builder.requestBody({ name: 'testing', copy: true })).toEqual(requestBody);
+        builder.requestBody('testing', { component: requestBody });
+        expect(builder.requestBody('testing')).toEqual({ $ref: '#/components/requestBodies/testing' });
+        expect(builder.requestBody('testing', { copy: true })).toEqual(requestBody);
 
-        builder.header({ name: 'testing', component: headerObject });
-        expect(builder.header({ name: 'testing' })).toEqual({ $ref: '#/components/headers/testing' });
-        expect(builder.header({ name: 'testing', copy: true })).toEqual(headerObject);
+        builder.header('testing', { component: headerObject });
+        expect(builder.header('testing')).toEqual({ $ref: '#/components/headers/testing' });
+        expect(builder.header('testing', { copy: true })).toEqual(headerObject);
 
-        builder.securityScheme({ name: 'testing', component: securityObject });
-        expect(builder.securityScheme({ name: 'testing' })).toEqual({ $ref: '#/components/securitySchemes/testing' });
-        expect(builder.securityScheme({ name: 'testing', copy: true })).toEqual(securityObject);
+        builder.securityScheme('testing', { component: securityObject });
+        expect(builder.securityScheme('testing')).toEqual({ $ref: '#/components/securitySchemes/testing' });
+        expect(builder.securityScheme('testing', { copy: true })).toEqual(securityObject);
 
-        builder.callback({ name: 'testing', component: securityObject });
-        expect(builder.callback({ name: 'testing' })).toEqual({ $ref: '#/components/callbacks/testing' });
-        expect(builder.callback({ name: 'testing', copy: true })).toEqual(securityObject);
+        builder.callback('testing', { component: securityObject });
+        expect(builder.callback('testing')).toEqual({ $ref: '#/components/callbacks/testing' });
+        expect(builder.callback('testing', { copy: true })).toEqual(securityObject);
     });
 
     it('gets a document instance', () => {
         DocumentBuilder.initializeDocument(stub);
-        DocumentBuilder.documentBuilder.schema({
-            name: 'testing',
+        DocumentBuilder.documentBuilder.schema('testing', {
             component: structuredClone(swaggerExampleSchema.components.schemas.pullrequest) as OpenAPIV3.SchemaObject,
         });
-        expect(DocumentBuilder.documentBuilder.schema({ name: 'testing' })).toEqual({
+        expect(DocumentBuilder.documentBuilder.schema('testing')).toEqual({
             $ref: '#/components/schemas/testing',
         });
     });
@@ -233,7 +232,7 @@ describe('OpenApiDocumentBuilder', () => {
         expect(() =>
             DocumentBuilder.initializeDocument(swaggerExampleSchema as OpenAPIV3.Document).component(
                 'n/a' as ComponentFieldNames,
-                { name: 'test' },
+                'test',
             ),
         ).toThrow();
     });

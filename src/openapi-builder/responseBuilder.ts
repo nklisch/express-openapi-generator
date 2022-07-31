@@ -13,21 +13,34 @@ export type ResponseDefaults = {
 
 export default class ResponseBuilder {
     private _mediaType?: string;
-    private readonly _response: OpenAPIV3.ResponseObject;
+    private static _defaults?: ResponseDefaults;
+    /**
+     *
+     * @param defaults
+     */
+    public static defaults(defaults: ResponseDefaults) {
+        ResponseBuilder._defaults = structuredClone(defaults);
+    }
     /**
      *
      * @param description
-     * @param defaults
+     * @returns
      */
-    constructor(description: string, defaults?: ResponseDefaults) {
-        this._mediaType = defaults?.mediaType;
-        delete defaults?.mediaType;
-        this._response = { description, ...structuredClone(defaults) };
+    public static new(description: string) {
+        return new ResponseBuilder(description);
+    }
+    private readonly _response: OpenAPIV3.ResponseObject;
+
+    private constructor(description: string) {
+        const d = structuredClone(ResponseBuilder._defaults);
+        this._mediaType = ResponseBuilder._defaults?.mediaType;
+        delete d?.mediaType;
+        this._response = { description, ...d };
     }
     /**
      *
      */
-    public get responseObject() {
+    public build() {
         return structuredClone(this._response);
     }
     /**
