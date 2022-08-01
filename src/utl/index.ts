@@ -1,4 +1,3 @@
-
 let clone = <Type>(obj: Type): Type => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     if (obj === undefined || obj === null) {

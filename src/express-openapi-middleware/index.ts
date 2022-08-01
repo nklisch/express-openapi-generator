@@ -5,7 +5,7 @@ import { OpenAPIV3 } from 'openapi-types';
 import { middleware } from './middleware';
 import Ajv, { AnySchema, ValidateFunction } from 'ajv';
 import { RequestHandler } from 'express';
-import clone from '../utl'
+import clone from '../utl';
 export default class PathMiddleware {
     private static instance: PathMiddleware;
     private validate: boolean;
