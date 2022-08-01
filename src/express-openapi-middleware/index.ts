@@ -21,7 +21,7 @@ export default class PathMiddleware {
      * Initializes the validation feature for the path middlewares. Must be placed right before starting Express app.
      *
      * @param openApiDoc - Document that is used to validate routes. OperationId's must match pathMiddleware operationIds
-     * @param ajv - Ajv validation instance - user configured, provided and defined.
+     * @param ajv - Ajv client instance - user configured, provided and defined.
      * @throws
      * - If no path middleware have been created (attached to at least one route)
      * - If open api document or ajv instances is missing
@@ -37,7 +37,7 @@ export default class PathMiddleware {
         PathMiddleware.instance.initializeValidation(openApiDoc, ajv);
     }
     /**
-     * Creates an path middleware that attaches to a route, providing meta-data for the express parser to pick up.
+     * Creates a path middleware that attaches to a route, providing meta-data for the express parser to pick up.
      *
      * @param  operationId - Required unique Express App wide id representing this specific operation in the open api schema.
      * @param  param - Object to hold optional parameters
@@ -89,6 +89,15 @@ export default class PathMiddleware {
         if (!openApiDoc || !ajv) {
             throw new Error('OpenApi document and Ajv instance required for path validation');
         }
+        if (openApiDoc.components) {
+            for (const field of Object.keys(openApiDoc.components)) {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                for (const [name, component] of Object.entries((openApiDoc.components as any)[field])) {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                    ajv.addSchema(component as AnySchema, `#/components/${field}/${name}`);
+                }
+            }
+        }
         for (const operationId of this.validatorQueue) {
             if (this.operations.has(operationId)) {
                 throw new Error(`OperationId ${operationId} is not unique. Must be unique per Express App.`);
@@ -99,8 +108,8 @@ export default class PathMiddleware {
     };
 }
 
-const makeValidator = (operationId: string, document: OpenAPIV3.Document, ajv: Ajv): ValidateFunction => {
-    const operation = selectOperation(operationId, document.paths);
+const makeValidator = (operationId: string, doc: OpenAPIV3.Document, ajv: Ajv): ValidateFunction => {
+    const operation = selectOperation(operationId, doc.paths);
     if (!operation) {
         throw new Error(`provided operationId: ${operationId} is not in provided open api document`);
     }
@@ -109,7 +118,7 @@ const makeValidator = (operationId: string, document: OpenAPIV3.Document, ajv: A
         const map: any = { path: 'params', query: 'query', header: 'header' };
         for (let p of operation?.parameters) {
             if ((p as OpenAPIV3.ReferenceObject)?.$ref) {
-                p = resolveReference(document, (p as OpenAPIV3.ReferenceObject).$ref);
+                p = resolveReference(doc, (p as OpenAPIV3.ReferenceObject).$ref);
             }
             p = p as OpenAPIV3.ParameterObject;
             reqSchema.properties[map[p.in]].properties[p.name] = structuredClone(p.schema);
@@ -119,13 +128,15 @@ const makeValidator = (operationId: string, document: OpenAPIV3.Document, ajv: A
         }
     }
     const requestBody = (operation?.requestBody as OpenAPIV3.ReferenceObject)?.$ref
-        ? resolveReference(document, (operation?.requestBody as OpenAPIV3.ReferenceObject).$ref)
+        ? resolveReference(doc, (operation?.requestBody as OpenAPIV3.ReferenceObject).$ref)
         : operation?.requestBody;
     const requestBodySchema = (requestBody as OpenAPIV3.RequestBodyObject)?.content['application/json']?.schema;
     if (requestBodySchema) {
         reqSchema.properties.body = { ...requestBodySchema };
+        if (requestBody.required) {
+            reqSchema.required.push('body');
+        }
     }
-    ajv.addSchema(document.components as AnySchema);
     return ajv.compile(reqSchema);
 };
 

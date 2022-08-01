@@ -4,9 +4,12 @@ This package analyzes an Express app project, generating OpenApi v3 documentatio
 *This project takes a minimalist, un-opinionated approach with only a single dependency, express-route-parser, a dependency free package developed and maintained by me.*
 
 ### Features
-- **Express Parser**: Leveraging the [express-route-parser](https://www.npmjs.com/package/express-route-parser) npm package to parse an Express app's routes and relevant attached metadata. See the [npm package for more information](https://www.npmjs.com/package/express-route-parser).
-- **Express OpenApi Middleware**: Creates an Express middleware that attaches relevant meta-data to an individual route. Also provides optional request validation.
-- **OpenApi-Builder**: Uses the output of the Express Parser to generate OpenApi Path objects. Also helps generate a full OpenApi v3 specification json document. Includes a number of utility/builder methods to improve documentation creation.
+- Parses your project routes with [express-route-parser](https://www.npmjs.com/package/express-route-parser) and generates a valid OpenApiv3 Document.
+- Minimal dependencies - 1 package that is dependency free and created by myself
+- Middleware to attach additional documentation to any route.
+- Optional request validation with middleware using fully configurable [ajv](https://www.npmjs.com/package/ajv) client
+- Easily exclude/include each route based on configurable flags, allowing public/private api docs to be generated
+- OpenApiv3 builder classes allow creating open api components with reduced boiler plate
 
 ## Installation
 ```
@@ -19,7 +22,8 @@ You can use this package to generate quick and dirty valid open api specs for ev
 API Documentation: [TS Docs](https://nklisch.github.io/express-openapi-generator/)
 
 **Warning**: *OpenApi does not support exotic route matching, such as `/p(ab)th`, `/p*ath/`, or optional path parameters `/:name?`. If these are in your project the generated document won't follow the OpenApi v3 spec. It may still work, since the route parser can handle these special routes, but plugins like swagger ui may fail.*
-### Basic
+
+### Quick
 ```typescript
 import express, { Request, Response } from 'express'
 import { DocumentBuilder } from 'express-openapi-generator'
@@ -34,14 +38,15 @@ const documentBuilder = DocumentBuilder.initializeDocument({
     },
     paths: {}, // You don't need to include any path objects, those will be generated later
 });
+app.use(express.json())
 app.use('/api/v1', router);
 
 router.get('/user', (req: Request, res: Response) => {
-    res.status(200).json([{ id: '1', name: 'John Smith' }]);
+    res.json([{ id: '1', name: 'John Smith' }]);
 });
 router.post('/user', (req: Request, res: Response) => {
     const save = req.body;
-    res.status(200).json();
+    res.json(save);
 });
 
 // Generates our full open api document
@@ -99,7 +104,7 @@ const userSchema: OpenAPIV3.SchemaObject = {
     },
 };
 documentBuilder.schema('user', { component: userSchema });
-
+app.use(express.json())
 app.use('/api/v1', router);
 
 // Create our open api operation object following OpenApiv3 specification
@@ -125,7 +130,7 @@ router.post(
     PathMiddleware.path('createUser', { operationObject: createUserOperation }),
     (req: Request, res: Response): void => {
         const save = req.body;
-        res.status(200).json();
+        res.json(save);
     },
 );
 
@@ -151,7 +156,7 @@ router.get(
     '/user',
     PathMiddleware.path('getUsers', { operationObject: getUserOperation }),
     (req: Request, res: Response) => {
-        res.status(200).json([{ id: '1', name: 'John Smith' }]);
+        res.json([{ id: '1', name: 'John Smith' }]);
     },
 );
 
@@ -215,7 +220,26 @@ const exampleOutputSchema = {
 };
 ```
 ### Adding Request Validation
+This is a incomplete code snippet, with just the changes needed from the prior example to work.
+```typescript
+// ... prior imports here
+import Ajv from 'ajv';
+import addFormats from 'ajv-formats'
 
+// .... previous example here .... ///
+
+documentBuilder.generatePathsObject(app); // generate open api doc
+
+const ajv = new Ajv({ coerceTypes: true }) // choose any Ajv options
+
+// For example, included coerceTypes: true and it will convert the path params, headers, query and body into the correct types.
+
+addFormats(ajv); // Apply any desired ajv plugins
+
+// build and provide the document and ajv client to the validation middlewares
+PathMiddleware.initializeValidation(documentBuilder.build(), ajv);
+
+```
 ### Important Notes
 Both DocumentBuilder and PathMiddleware use singleton patterns. This allows you to initialize the underlying objects and then import the classes in other modules directly from the package. This allows the required state to be maintained throughout the project.
 
@@ -228,8 +252,8 @@ These packages may integrate well into this eco-system/philosophy of documentati
 *This package has no direct affiliation with any of these packages.*
 - [swagger-ui-express](https://www.npmjs.com/package/swagger-ui-express): provides a web-served GUI for Swagger UI. 
 - [redoc-express](https://www.npmjs.com/package/redoc-express): provides a web-served GUI for Redoc UI.
-- [express-openapi-validator](https://www.npmjs.com/package/express-openapi-validator): Use instead of provided validation flow and Ajv. This provides validation for your routes based on the generated open api spec. Can be used instead of included validation flow. Ajv is not a direct dependency of this project.
-- [typescript-json-schema](https://www.npmjs.com/package/express-openapi-validator): Generate json-schema's for your typescript models. Can be used with openapi/jsonschema conversion packages.
+- [express-openapi-validator](https://www.npmjs.com/package/express-openapi-validator): may be used instead of provided validation with Ajv. This provides validation for your routes based on the generated open api spec with a single middleware.
+- [typescript-json-schema](https://www.npmjs.com/package/express-openapi-validator): Generate json-schemas for your typescript models. Can be used with openapi/jsonschema conversion packages to create schema's for your request/response bodies.
 - [prisma-json-schema-generator](https://www.npmjs.com/package/prisma-json-schema-generator): Generate json schema's based on your prisma schema.
 - [openapi-client-axios](https://www.npmjs.com/package/openapi-client-axios): Generates an axios client based on an open-api spec
 
