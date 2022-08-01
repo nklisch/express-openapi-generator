@@ -6,7 +6,7 @@ import express, { Request, Response } from 'express';
 import { OpenAPIV3 } from 'openapi-types';
 import { DocumentBuilder, PathMiddleware, ResponseBuilder, OperationBuilder } from '../index';
 import Ajv from 'ajv';
-import addFormats from 'ajv-formats'
+import addFormats from 'ajv-formats';
 import supertest from 'supertest';
 
 const exampleDocumentOutput = {
@@ -186,7 +186,6 @@ test('example with added documentation works', () => {
     expect(documentBuilder.build()).toEqual(exampleOutputSchema);
 });
 
-
 test('example with added documentation works', async () => {
     const app = express();
     const router = express.Router();
@@ -208,7 +207,7 @@ test('example with added documentation works', async () => {
         },
     };
     documentBuilder.schema('user', { component: userSchema });
-    app.use(express.json())
+    app.use(express.json());
     app.use('/api/v1', router);
 
     // Create our open api operation object following OpenApiv3 specification
@@ -225,7 +224,7 @@ test('example with added documentation works', async () => {
                 },
             },
         },
-        requestBody: { content: { 'application/json': { schema: documentBuilder.schema('user') }, }, required: true },
+        requestBody: { content: { 'application/json': { schema: documentBuilder.schema('user') } }, required: true },
     };
 
     // Attach our middleware
@@ -264,7 +263,7 @@ test('example with added documentation works', async () => {
 
     // Generates our full open api document
     documentBuilder.generatePathsObject(app);
-    const ajv = new Ajv({ coerceTypes: true }) // choose any options you would like
+    const ajv = new Ajv({ coerceTypes: true }); // choose any options you would like
 
     // For example, included coerceTypes: true and it will convert the path params, headers, query and body into the correct types.
 
@@ -273,8 +272,10 @@ test('example with added documentation works', async () => {
     // build and provide the document and ajv client to the validation middlewares
     PathMiddleware.initializeValidation(documentBuilder.build(), ajv);
 
-    const response = await supertest(app).post('/api/v1/user').send({ id: '2', name: 'Jane Smith' }).set('Accept', 'application/json');
+    const response = await supertest(app)
+        .post('/api/v1/user')
+        .send({ id: '2', name: 'Jane Smith' })
+        .set('Accept', 'application/json');
     expect(response.statusCode).toEqual(200);
-    expect(response.body).toEqual({ id: 2, name: 'Jane Smith' })
-
+    expect(response.body).toEqual({ id: 2, name: 'Jane Smith' });
 });
