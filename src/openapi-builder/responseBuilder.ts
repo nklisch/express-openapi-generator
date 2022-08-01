@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { OpenAPIV3 } from 'openapi-types';
-
+import clone from '../utl'
 export type ResponseDefaults = {
     headers?: { [header: string]: OpenAPIV3.ReferenceObject | OpenAPIV3.HeaderObject };
     content?: { [media: string]: OpenAPIV3.MediaTypeObject };
@@ -17,7 +17,7 @@ export default class ResponseBuilder {
      * @param defaults The defaults to set - these are global to the ResponseBuilder class
      */
     public static defaults(defaults: ResponseDefaults): void {
-        ResponseBuilder._defaults = structuredClone(defaults);
+        ResponseBuilder._defaults = clone(defaults);
     }
     /**
      * Start building a new Response object
@@ -31,7 +31,7 @@ export default class ResponseBuilder {
     private readonly _response: OpenAPIV3.ResponseObject;
 
     private constructor(description: string) {
-        const d = structuredClone(ResponseBuilder._defaults);
+        const d = clone(ResponseBuilder._defaults);
         this._mediaType = ResponseBuilder._defaults?.mimeType;
         delete d?.mimeType;
         this._response = { description, ...d };
@@ -42,7 +42,7 @@ export default class ResponseBuilder {
      * @returns A deep copy of the built response object
      */
     public build(): OpenAPIV3.ResponseObject {
-        return structuredClone(this._response);
+        return clone(this._response);
     }
     /**
      * Add a header field to the Response object
@@ -53,7 +53,7 @@ export default class ResponseBuilder {
     public headers = (headers: {
         [header: string]: OpenAPIV3.ReferenceObject | OpenAPIV3.HeaderObject;
     }): ResponseBuilder => {
-        this._response.headers = structuredClone(headers);
+        this._response.headers = clone(headers);
         return this;
     };
     /**
@@ -63,7 +63,7 @@ export default class ResponseBuilder {
      * @returns ResponseBuilder instances for method chaining
      */
     public content = (content: { [media: string]: OpenAPIV3.MediaTypeObject }): ResponseBuilder => {
-        this._response.content = structuredClone(content);
+        this._response.content = clone(content);
         return this;
     };
     /**
@@ -93,7 +93,7 @@ export default class ResponseBuilder {
      * @returns ResponseBuilder instances for method chaining
      */
     public links = (links: { [link: string]: OpenAPIV3.ReferenceObject | OpenAPIV3.LinkObject }): ResponseBuilder => {
-        this._response.links = structuredClone(links);
+        this._response.links = clone(links);
         return this;
     };
 }

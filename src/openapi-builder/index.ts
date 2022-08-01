@@ -6,13 +6,14 @@ import { ComponentFieldNames, CompositeSchemaTypes, Component, ComponentParamete
 import { Parameter, parseExpressApp } from 'express-route-parser';
 import { RouteMetaData } from '../types';
 import { Express } from 'express';
+import clone from '../utl'
 export default class DocumentBuilder {
     private static instance?: DocumentBuilder;
     private readonly _document: OpenAPIV3.Document;
     private readonly components: Map<string, Component>;
 
     private constructor(documentStub: OpenAPIV3.Document) {
-        documentStub = structuredClone(documentStub);
+        documentStub = clone(documentStub);
         const missingFields = verifyBasicOpenApiReqs(documentStub);
         if (missingFields) {
             throw new Error('Provided Open Api stub document is missing the following fields: ' + missingFields);
@@ -79,7 +80,7 @@ export default class DocumentBuilder {
      * @returns A deep copy of the current OpenApi v3 document
      */
     public build(): OpenAPIV3.Document {
-        return structuredClone(this._document);
+        return clone(this._document);
     }
 
     private processComponents(): void {
@@ -172,7 +173,7 @@ export default class DocumentBuilder {
             if (!this._document.components[field]) {
                 this._document.components[field] = {};
             }
-            params.component = structuredClone(params.component);
+            params.component = clone(params.component);
             this.components.set(`${field}-${name}`, params.component);
             (this._document.components as any)[field][name] = params.component;
         }
@@ -180,7 +181,7 @@ export default class DocumentBuilder {
         if (!this.components.has(key)) {
             return undefined;
         }
-        return params?.copy ? structuredClone(this.components.get(key)) : { $ref: `#/components/${field}/${name}` };
+        return params?.copy ? clone(this.components.get(key)) : { $ref: `#/components/${field}/${name}` };
     };
     /**
      * A method for adding and retrieving schema components from the document

@@ -6,10 +6,11 @@ import { DocumentBuilder } from '../index';
 import swaggerExampleSchema from '../../resources/swaggerio-example.json';
 import { ComponentFieldNames } from '../types';
 import { RouteMetaData } from 'express-route-parser';
+import clone from '../utl'
 
 const document: OpenAPIV3.Document = swaggerExampleSchema as OpenAPIV3.Document;
 
-const stub = structuredClone({
+const stub = clone({
     openapi: document.openapi,
     info: document.info,
     externalDocs: document.externalDocs,
@@ -157,7 +158,7 @@ const securityObject: OpenAPIV3.SecuritySchemeObject = {
 
 describe('OpenApiDocumentBuilder', () => {
     it('attaches document components', () => {
-        const doc = structuredClone(stub);
+        const doc = clone(stub);
         doc.components = swaggerExampleSchema.components as OpenAPIV3.ComponentsObject;
         const builder = DocumentBuilder.initializeDocument(doc);
         expect(builder.schema('user')).toEqual({ $ref: '#/components/schemas/user' });
@@ -167,9 +168,9 @@ describe('OpenApiDocumentBuilder', () => {
     });
 
     it('saves a component to the document', () => {
-        const schema = structuredClone(swaggerExampleSchema.components.schemas.pullrequest);
-        const link = structuredClone(swaggerExampleSchema.components.links.PullRequestMerge);
-        const builder = DocumentBuilder.initializeDocument(structuredClone(stub));
+        const schema = clone(swaggerExampleSchema.components.schemas.pullrequest);
+        const link = clone(swaggerExampleSchema.components.links.PullRequestMerge);
+        const builder = DocumentBuilder.initializeDocument(clone(stub));
         builder.schema('pullrequest', { component: schema as OpenAPIV3.SchemaObject });
         builder.link('PullRequestMerge', { component: link });
         expect(builder.schema('pullrequest')).toEqual({ $ref: '#/components/schemas/pullrequest' });
@@ -211,7 +212,7 @@ describe('OpenApiDocumentBuilder', () => {
     it('gets a document instance', () => {
         DocumentBuilder.initializeDocument(stub);
         DocumentBuilder.documentBuilder.schema('testing', {
-            component: structuredClone(swaggerExampleSchema.components.schemas.pullrequest) as OpenAPIV3.SchemaObject,
+            component: clone(swaggerExampleSchema.components.schemas.pullrequest) as OpenAPIV3.SchemaObject,
         });
         expect(DocumentBuilder.documentBuilder.schema('testing')).toEqual({
             $ref: '#/components/schemas/testing',

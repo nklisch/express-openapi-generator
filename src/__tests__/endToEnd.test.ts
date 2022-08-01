@@ -4,8 +4,8 @@
 import express, { Express, Router, Request, Response } from 'express';
 import OpenApiSchemaValidator from 'openapi-schema-validator';
 import { OpenAPIV3 } from 'openapi-types';
-import supertest from 'supertest';
 import { DocumentBuilder, PathMiddleware } from '../index';
+import clone from '../utl'
 
 const validator = new OpenApiSchemaValidator({ version: 3 });
 const successResponse = (req: Request, res: Response) => {
@@ -106,7 +106,7 @@ describe('it parses an Express application and ', () => {
         });
 
         test('with references for parameters', () => {
-            const operation = structuredClone(simpleOperation);
+            const operation = clone(simpleOperation);
             documentBuilder.parameter('year', {
                 component: { name: 'year', in: 'query', schema: { type: 'integer' } },
             });
@@ -133,7 +133,7 @@ describe('it parses an Express application and ', () => {
             });
         });
         test('with attached open api documents with colliding parameters', () => {
-            const operation = structuredClone(simpleOperation);
+            const operation = clone(simpleOperation);
             operation.parameters = [{ name: 'testing', in: 'path', schema: { type: 'integer' }, required: true }];
             app.get('/test/:testing', PathMiddleware.path('test', { operationObject: operation }), successResponse);
             documentBuilder.generatePathsObject(app);

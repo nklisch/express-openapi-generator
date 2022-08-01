@@ -5,7 +5,7 @@ import { OpenAPIV3 } from 'openapi-types';
 import { middleware } from './middleware';
 import Ajv, { AnySchema, ValidateFunction } from 'ajv';
 import { RequestHandler } from 'express';
-
+import clone from '../utl'
 export default class PathMiddleware {
     private static instance: PathMiddleware;
     private validate: boolean;
@@ -113,7 +113,7 @@ const makeValidator = (operationId: string, doc: OpenAPIV3.Document, ajv: Ajv): 
     if (!operation) {
         throw new Error(`provided operationId: ${operationId} is not in provided open api document`);
     }
-    const reqSchema = { ...structuredClone(BASE_REQ_SCHEMA) };
+    const reqSchema = { ...clone(BASE_REQ_SCHEMA) };
     if (operation && operation.parameters) {
         const map: any = { path: 'params', query: 'query', header: 'header' };
         for (let p of operation?.parameters) {
@@ -121,7 +121,7 @@ const makeValidator = (operationId: string, doc: OpenAPIV3.Document, ajv: Ajv): 
                 p = resolveReference(doc, (p as OpenAPIV3.ReferenceObject).$ref);
             }
             p = p as OpenAPIV3.ParameterObject;
-            reqSchema.properties[map[p.in]].properties[p.name] = structuredClone(p.schema);
+            reqSchema.properties[map[p.in]].properties[p.name] = clone(p.schema);
             if (p.required && !reqSchema.properties[map[p.in]].required.includes(p.name)) {
                 reqSchema.properties[map[p.in]].required.push(p.name);
             }
@@ -156,7 +156,7 @@ const resolveReference = (document: any, ref: string) => {
     const selector = ref.split('/');
     try {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
-        return structuredClone(document[selector[1]][selector[2]][selector[3]]);
+        return clone(document[selector[1]][selector[2]][selector[3]]);
     } catch (e) {
         throw new Error('provided document reference is not in standard format: ' + ref);
     }
