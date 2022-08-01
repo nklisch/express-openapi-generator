@@ -52,7 +52,7 @@ router.post('/user', (req: Request, res: Response) => {
 // Generates our full open api document
 documentBuilder.generatePathsObject(app);
 
-// The final can be retrieved with the build() method. A new deep copy is created each time.
+// The final document can be retrieved with the build() method. A new deep copy is created each time.
 console.log(documentBuilder.build()); 
 
 ```
@@ -163,7 +163,7 @@ router.get(
 // Generates our full open api document
 documentBuilder.generatePathsObject(app);
 
-// The final document can be found on the read-only property 'document'. It returns a deep copy
+// The final document can be retrieved with the .build() method. . A new deep copy is created each time.
 console.log(documentBuilder.build());
 
 ```
@@ -236,19 +236,18 @@ const ajv = new Ajv({ coerceTypes: true }) // choose any Ajv options
 
 addFormats(ajv); // Apply any desired ajv plugins
 
-// build and provide the document and ajv client to the validation middlewares
+// Build and provide the document and ajv client to the validation middlewares
 PathMiddleware.initializeValidation(documentBuilder.build(), ajv);
 
 ```
 ### Important Notes
-Both DocumentBuilder and PathMiddleware use singleton patterns. This allows you to initialize the underlying objects and then import the classes in other modules directly from the package. This allows the required state to be maintained throughout the project.
+Both DocumentBuilder and PathMiddleware use singleton patterns. This allows you to initialize the underlying objects and then import the classes in other modules directly from express-openapi-generator package. This allows the required state to be maintained throughout the project.
 
-## Peer Dependencies
-These packages are required for certain functionality: 
+### Peer Dependencies
 - [ajv](https://www.npmjs.com/package/ajv): *Required* package for the provided validation structure. It is not a package dependency, instead build a Ajv instance for use with the validator. This allows direct customization of the Ajv client.
+
 ### Recommended npm packages
 These packages may integrate well into this eco-system/philosophy of documentation/validation generated from code. 
-
 *This package has no direct affiliation with any of these packages.*
 - [swagger-ui-express](https://www.npmjs.com/package/swagger-ui-express): provides a web-served GUI for Swagger UI. 
 - [redoc-express](https://www.npmjs.com/package/redoc-express): provides a web-served GUI for Redoc UI.
