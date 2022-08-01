@@ -1,7 +1,7 @@
 let clone = (obj: any): any => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    if (obj === undefined) {
-        return undefined;
+    if (obj === undefined || obj === null) {
+        return obj;
     }
     return JSON.parse(JSON.stringify(obj));
 };
