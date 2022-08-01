@@ -13,7 +13,7 @@ export default class DocumentBuilder {
     private readonly components: Map<string, Component>;
 
     private constructor(documentStub: OpenAPIV3.Document) {
-        documentStub = clone(documentStub);
+        documentStub = clone(documentStub) as OpenAPIV3.Document;
         const missingFields = verifyBasicOpenApiReqs(documentStub);
         if (missingFields) {
             throw new Error('Provided Open Api stub document is missing the following fields: ' + missingFields);
@@ -80,7 +80,7 @@ export default class DocumentBuilder {
      * @returns A deep copy of the current OpenApi v3 document
      */
     public build(): OpenAPIV3.Document {
-        return clone(this._document);
+        return clone(this._document) as OpenAPIV3.Document;
     }
 
     private processComponents(): void {
@@ -173,7 +173,7 @@ export default class DocumentBuilder {
             if (!this._document.components[field]) {
                 this._document.components[field] = {};
             }
-            params.component = clone(params.component);
+            params.component = clone(params.component) as Component;
             this.components.set(`${field}-${name}`, params.component);
             (this._document.components as any)[field][name] = params.component;
         }
@@ -181,7 +181,7 @@ export default class DocumentBuilder {
         if (!this.components.has(key)) {
             return undefined;
         }
-        return params?.copy ? clone(this.components.get(key)) : { $ref: `#/components/${field}/${name}` };
+        return params?.copy ? clone(this.components.get(key)) as Component | undefined : { $ref: `#/components/${field}/${name}` };
     };
     /**
      * A method for adding and retrieving schema components from the document

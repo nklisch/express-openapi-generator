@@ -1,7 +1,8 @@
-let clone = structuredClone || undefined;
-if (!clone) {
-    clone = (obj: any): any => {
-        return JSON.parse(JSON.stringify(obj))
-    }
+let clone = (obj: any): any => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return JSON.parse(JSON.stringify(obj));
+};
+if (parseInt(process.versions.node.split('.')[0], 10) >= 18) {
+    clone = structuredClone;
 }
 export default clone;
