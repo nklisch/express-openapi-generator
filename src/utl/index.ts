@@ -1,5 +1,5 @@
-let clone = structuredClone;
-if (parseInt(process.versions.node.split('.')[0], 10) < 16) {
+let clone = structuredClone || undefined;
+if (!clone) {
     clone = (obj: any): any => {
         return JSON.parse(JSON.stringify(obj))
     }
