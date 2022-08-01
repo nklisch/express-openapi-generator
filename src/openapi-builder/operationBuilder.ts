@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { OpenAPIV3 } from 'openapi-types';
-
+import clone from '../utl'
 export type OperationDefaults = {
     tags?: string[];
     summary?: string;
@@ -21,7 +21,7 @@ export default class OperationBuilder {
      * @param defaults The defaults to set - these are global to the OperationBuilder class
      */
     public static defaults(defaults: OperationDefaults) {
-        OperationBuilder._defaults = structuredClone(defaults);
+        OperationBuilder._defaults = clone(defaults);
     }
     /**
      * Start building a new Operation object
@@ -36,7 +36,7 @@ export default class OperationBuilder {
     private readonly _operation: OpenAPIV3.OperationObject;
 
     private constructor(responses: OpenAPIV3.ResponsesObject) {
-        this._operation = { responses: structuredClone(responses), ...structuredClone(OperationBuilder._defaults) };
+        this._operation = { responses: clone(responses), ...clone(OperationBuilder._defaults) };
     }
 
     /**
@@ -45,7 +45,7 @@ export default class OperationBuilder {
      * @returns A deep copy of the built operation object
      */
     public build(): OpenAPIV3.OperationObject {
-        return structuredClone(this._operation);
+        return clone(this._operation);
     }
 
     /**
@@ -55,7 +55,7 @@ export default class OperationBuilder {
      * @returns OperationBuilder instances for method chaining
      */
     public tags = (tags: string[]): OperationBuilder => {
-        this._operation.tags = structuredClone(tags);
+        this._operation.tags = clone(tags);
         return this;
     };
 
@@ -88,7 +88,7 @@ export default class OperationBuilder {
      * @returns OperationBuilder instances for method chaining
      */
     public externalDocs = (externalDocObject: OpenAPIV3.ExternalDocumentationObject): OperationBuilder => {
-        this._operation.externalDocs = structuredClone(externalDocObject);
+        this._operation.externalDocs = clone(externalDocObject);
         return this;
     };
 
@@ -112,7 +112,7 @@ export default class OperationBuilder {
      * @returns OperationBuilder instances for method chaining
      */
     public parameters = (parameters: (OpenAPIV3.ParameterObject | OpenAPIV3.ReferenceObject)[]): OperationBuilder => {
-        this._operation.parameters = structuredClone(parameters);
+        this._operation.parameters = clone(parameters);
         return this;
     };
 
@@ -123,7 +123,7 @@ export default class OperationBuilder {
      * @returns OperationBuilder instances for method chaining
      */
     public requestBody = (requestBody: OpenAPIV3.RequestBodyObject | OpenAPIV3.ReferenceObject): OperationBuilder => {
-        this._operation.requestBody = structuredClone(requestBody);
+        this._operation.requestBody = clone(requestBody);
         return this;
     };
 
@@ -136,7 +136,7 @@ export default class OperationBuilder {
     public callbacks = (callbacks: {
         [callback: string]: OpenAPIV3.ReferenceObject | OpenAPIV3.CallbackObject;
     }): OperationBuilder => {
-        this._operation.callbacks = structuredClone(callbacks);
+        this._operation.callbacks = clone(callbacks);
         return this;
     };
 
@@ -158,7 +158,7 @@ export default class OperationBuilder {
      * @returns OperationBuilder instances for method chaining
      */
     public security = (security: OpenAPIV3.SecurityRequirementObject[]): OperationBuilder => {
-        this._operation.security = structuredClone(security);
+        this._operation.security = clone(security);
         return this;
     };
 
@@ -169,7 +169,7 @@ export default class OperationBuilder {
      * @returns OperationBuilder instances for method chaining
      */
     public servers = (servers: OpenAPIV3.ServerObject[]): OperationBuilder => {
-        this._operation.servers = structuredClone(servers);
+        this._operation.servers = clone(servers);
         return this;
     };
 }
