@@ -6,7 +6,7 @@ import { DocumentBuilder } from '../index';
 import swaggerExampleSchema from '../../resources/swaggerio-example.json';
 import { ComponentFieldNames } from '../types';
 import { RouteMetaData } from 'express-route-parser';
-import clone from '../utl'
+import clone from '../utl';
 
 const document: OpenAPIV3.Document = swaggerExampleSchema as OpenAPIV3.Document;
 
@@ -168,10 +168,10 @@ describe('OpenApiDocumentBuilder', () => {
     });
 
     it('saves a component to the document', () => {
-        const schema = clone(swaggerExampleSchema.components.schemas.pullrequest);
-        const link = clone(swaggerExampleSchema.components.links.PullRequestMerge);
+        const schema = clone(swaggerExampleSchema.components.schemas.pullrequest) as OpenAPIV3.SchemaObject;
+        const link = clone(swaggerExampleSchema.components.links.PullRequestMerge) as OpenAPIV3.LinkObject;
         const builder = DocumentBuilder.initializeDocument(clone(stub));
-        builder.schema('pullrequest', { component: schema as OpenAPIV3.SchemaObject });
+        builder.schema('pullrequest', { component: schema });
         builder.link('PullRequestMerge', { component: link });
         expect(builder.schema('pullrequest')).toEqual({ $ref: '#/components/schemas/pullrequest' });
         expect(builder.schema('pullrequest', { copy: true })).toEqual(schema);

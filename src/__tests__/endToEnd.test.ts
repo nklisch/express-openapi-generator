@@ -5,7 +5,7 @@ import express, { Express, Router, Request, Response } from 'express';
 import OpenApiSchemaValidator from 'openapi-schema-validator';
 import { OpenAPIV3 } from 'openapi-types';
 import { DocumentBuilder, PathMiddleware } from '../index';
-import clone from '../utl'
+import clone from '../utl';
 
 const validator = new OpenApiSchemaValidator({ version: 3 });
 const successResponse = (req: Request, res: Response) => {

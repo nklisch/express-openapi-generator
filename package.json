@@ -1,6 +1,6 @@
 {
   "name": "express-openapi-generator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "An Express plugin that can parse an app and generate a OpenApiv3 document.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -12,8 +12,8 @@
     "lint-fix": "eslint -c .eslintrc.js --ext .ts src --fix",
     "gen-docs": "typedoc",
     "prepare": "npm run build",
-    "prepublishOnly": "npm test && npm run gen-docs && npm run lint",
-    "preversion": "npm run lint",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint && npm run gen-docs",
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags"
   },

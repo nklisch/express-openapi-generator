@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { OpenAPIV3 } from 'openapi-types';
-import clone from '../utl'
+import clone from '../utl';
 export type OperationDefaults = {
     tags?: string[];
     summary?: string;
@@ -36,7 +36,7 @@ export default class OperationBuilder {
     private readonly _operation: OpenAPIV3.OperationObject;
 
     private constructor(responses: OpenAPIV3.ResponsesObject) {
-        this._operation = { responses: clone(responses), ...clone(OperationBuilder._defaults) };
+        this._operation = { responses: clone(responses), ...(clone(OperationBuilder._defaults) as OperationDefaults) };
     }
 
     /**

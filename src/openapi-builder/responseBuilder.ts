@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { OpenAPIV3 } from 'openapi-types';
-import clone from '../utl'
+import clone from '../utl';
 export type ResponseDefaults = {
     headers?: { [header: string]: OpenAPIV3.ReferenceObject | OpenAPIV3.HeaderObject };
     content?: { [media: string]: OpenAPIV3.MediaTypeObject };
