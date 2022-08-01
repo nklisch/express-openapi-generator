@@ -21,7 +21,7 @@ export default class OperationBuilder {
      * @param defaults The defaults to set - these are global to the OperationBuilder class
      */
     public static defaults(defaults: OperationDefaults) {
-        OperationBuilder._defaults = clone(defaults);
+        OperationBuilder._defaults = clone(defaults) ;
     }
     /**
      * Start building a new Operation object
@@ -36,7 +36,7 @@ export default class OperationBuilder {
     private readonly _operation: OpenAPIV3.OperationObject;
 
     private constructor(responses: OpenAPIV3.ResponsesObject) {
-        this._operation = { responses: clone(responses), ...clone(OperationBuilder._defaults) };
+        this._operation = { responses: (clone(responses) ), ...(clone(OperationBuilder._defaults) as OperationDefaults) };
     }
 
     /**
