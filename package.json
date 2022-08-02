@@ -1,6 +1,6 @@
 {
   "name": "express-openapi-generator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "An Express plugin that can parse an app and generate a OpenApiv3 document.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
