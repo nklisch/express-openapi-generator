@@ -78,7 +78,10 @@ export default class ResponseBuilder {
      * @returns ResponseBuilder instances for method chaining
      * @throws A error if there is no default MIME and a mimeType wasn't included locally
      */
-    public schema = (schema: OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject, mimeType?: string): ResponseBuilder => {
+    public schema = (
+        schema: OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject,
+        mimeType?: string,
+    ): ResponseBuilder => {
         if (!mimeType && !this._mediaType) {
             throw new Error('A media type must either be select as a default or provided - e.g. application/json');
         }

@@ -88,7 +88,11 @@ describe('ResponseBuilder', () => {
 
     it('uses defaults', () => {
         ResponseBuilder.defaults({ mimeType: 'application/json' });
-        expect(ResponseBuilder.new('testing').schema(contentObject['*/*'].schema as OpenAPIV3.SchemaObject).build()).toEqual({
+        expect(
+            ResponseBuilder.new('testing')
+                .schema(contentObject['*/*'].schema as OpenAPIV3.SchemaObject)
+                .build(),
+        ).toEqual({
             description: 'testing',
             content: { 'application/json': contentObject['*/*'] },
         });
@@ -96,6 +100,8 @@ describe('ResponseBuilder', () => {
 
     it('throws error if mediaType is not provided', () => {
         ResponseBuilder.defaults({});
-        expect(() => ResponseBuilder.new('testing').schema(contentObject['*/*'].schema as OpenAPIV3.SchemaObject)).toThrow();
+        expect(() =>
+            ResponseBuilder.new('testing').schema(contentObject['*/*'].schema as OpenAPIV3.SchemaObject),
+        ).toThrow();
     });
 });
