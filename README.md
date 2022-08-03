@@ -151,7 +151,7 @@ ResponseBuilder.defaults({ mimeType: 'application/json' });
 // Build our open api operation object for this route, using the builder method
 const getUserOperation: OpenAPIV3.OperationObject = OperationBuilder.new({
     '200': ResponseBuilder.new('Get user by id')
-        .mediaType({ schema: documentBuilder.schema('user') })
+        .schema(documentBuilder.schema('user') as OpenAPIV3.ReferenceObject)
         .build(),
 })
     .operationId('getUsers')

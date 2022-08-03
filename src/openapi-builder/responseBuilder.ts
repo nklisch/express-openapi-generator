@@ -6,11 +6,13 @@ export type ResponseDefaults = {
     content?: { [media: string]: OpenAPIV3.MediaTypeObject };
     links?: { [link: string]: OpenAPIV3.ReferenceObject | OpenAPIV3.LinkObject };
     mimeType?: string;
+    status?: number;
 };
 
 export default class ResponseBuilder {
     private _mediaType?: string;
     private static _defaults?: ResponseDefaults;
+    private _schema?: OpenAPIV3.SchemaObject;
     /**
      * Sets defaults for the response object when using the build interface
      *
@@ -56,6 +58,7 @@ export default class ResponseBuilder {
         this._response.headers = clone(headers);
         return this;
     };
+
     /**
      * Add a content field to the Response object
      *
@@ -67,15 +70,15 @@ export default class ResponseBuilder {
         return this;
     };
     /**
-     * Add the mediaType object to the response object.
-     * Allows for defining the type of media, or inheriting a global default.
+     * Add the schema object to the response object.
+     * Allows for defining the type of in place media, or inheriting a global default.
      *
      * @param media The MediaType object per OpenApiv3 spec
      * @param mimeType The string of a valid MIME type
      * @returns ResponseBuilder instances for method chaining
      * @throws A error if there is no default MIME and a mimeType wasn't included locally
      */
-    public mediaType = (media: OpenAPIV3.MediaTypeObject, mimeType?: string): ResponseBuilder => {
+    public schema = (schema: OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject, mimeType?: string): ResponseBuilder => {
         if (!mimeType && !this._mediaType) {
             throw new Error('A media type must either be select as a default or provided - e.g. application/json');
         }
@@ -83,9 +86,10 @@ export default class ResponseBuilder {
         if (!this._response.content) {
             this._response.content = {};
         }
-        this._response.content[mimeType as string] = media;
+        this._response.content[mimeType as string] = { schema };
         return this;
     };
+
     /**
      * Add a links field to the Response object
      *
