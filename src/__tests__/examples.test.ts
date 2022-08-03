@@ -25,11 +25,13 @@ const exampleDocumentOutput = {
                 responses: {
                     default: { description: 'Responses object not provided for this route' },
                 },
-                parameters: [{
-                    "in": "path",
-                    "name": "id",
-                    "required": true,
-                }],
+                parameters: [
+                    {
+                        in: 'path',
+                        name: 'id',
+                        required: true,
+                    },
+                ],
             },
         },
     },
@@ -96,11 +98,13 @@ const exampleOutputSchema = {
                         },
                     },
                 },
-                parameters: [{
-                    "in": "path",
-                    "name": "id",
-                    "required": true,
-                }],
+                parameters: [
+                    {
+                        in: 'path',
+                        name: 'id',
+                        required: true,
+                    },
+                ],
                 operationId: 'getUser',
                 tags: ['users'],
             },
