@@ -19,10 +19,17 @@ const exampleDocumentOutput = {
                     default: { description: 'Responses object not provided for this route' },
                 },
             },
+        },
+        '/api/v1/user/{id}': {
             get: {
                 responses: {
                     default: { description: 'Responses object not provided for this route' },
                 },
+                parameters: [{
+                    "in": "path",
+                    "name": "id",
+                    "required": true,
+                }],
             },
         },
     },
@@ -41,8 +48,8 @@ test('simple example works', () => {
     });
     app.use('/api/v1', router);
 
-    router.get('/user', (req: Request, res: Response) => {
-        res.status(200).json([{ id: '1', name: 'John Smith' }]);
+    router.get('/user/:id', (req: Request, res: Response) => {
+        res.status(200).json({ id: '1', name: 'John Smith' });
     });
     router.post('/user', (req: Request, res: Response) => {
         const save = req.body;
@@ -78,16 +85,23 @@ const exampleOutputSchema = {
                     },
                 },
             },
+        },
+        '/api/v1/user/{id}': {
             get: {
                 responses: {
                     '200': {
-                        description: 'Gets all users',
+                        description: 'Get user by id',
                         content: {
                             'application/json': { schema: { $ref: '#/components/schemas/user' } },
                         },
                     },
                 },
-                operationId: 'getUsers',
+                parameters: [{
+                    "in": "path",
+                    "name": "id",
+                    "required": true,
+                }],
+                operationId: 'getUser',
                 tags: ['users'],
             },
         },
@@ -161,18 +175,18 @@ test('example with added documentation works', () => {
 
     // Build our open api operation object for this route, using the builder method
     const getUserOperation: OpenAPIV3.OperationObject = OperationBuilder.new({
-        '200': ResponseBuilder.new('Gets all users')
+        '200': ResponseBuilder.new('Get user by id')
             .mediaType({ schema: documentBuilder.schema('user') })
             .build(),
     })
-        .operationId('getUsers')
+        .operationId('getUser')
         .tags(['users'])
         .build();
 
     // Attach our operation object to the route with the path middleware
     router.get(
-        '/user',
-        PathMiddleware.path('getUsers', { operationObject: getUserOperation }),
+        '/user/:id',
+        PathMiddleware.path('getUser', { operationObject: getUserOperation }),
         (req: Request, res: Response) => {
             res.json([{ id: '1', name: 'John Smith' }]);
         },
@@ -186,7 +200,7 @@ test('example with added documentation works', () => {
     expect(documentBuilder.build()).toEqual(exampleOutputSchema);
 });
 
-test('example with added documentation works', async () => {
+test('example with validation works', async () => {
     const app = express();
     const router = express.Router();
     // This initializes and creates our document builder interface
@@ -244,18 +258,18 @@ test('example with added documentation works', async () => {
 
     // Build our open api operation object for this route, using the builder method
     const getUserOperation: OpenAPIV3.OperationObject = OperationBuilder.new({
-        '200': ResponseBuilder.new('Gets all users')
+        '200': ResponseBuilder.new('Get user by id')
             .mediaType({ schema: documentBuilder.schema('user') })
             .build(),
     })
-        .operationId('getUsers')
+        .operationId('getUser')
         .tags(['users'])
         .build();
 
     // Attach our operation object to the route with the path middleware
     router.get(
-        '/user',
-        PathMiddleware.path('getUsers', { operationObject: getUserOperation }),
+        '/user/:id',
+        PathMiddleware.path('getUser', { operationObject: getUserOperation }),
         (req: Request, res: Response) => {
             res.json([{ id: '1', name: 'John Smith' }]);
         },
