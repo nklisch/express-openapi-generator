@@ -41,8 +41,8 @@ const documentBuilder = DocumentBuilder.initializeDocument({
 app.use(express.json())
 app.use('/api/v1', router);
 
-router.get('/user', (req: Request, res: Response) => {
-    res.json([{ id: '1', name: 'John Smith' }]);
+router.get('/user/:id', (req: Request, res: Response) => {
+    res.json({ id: '1', name: 'John Smith' });
 });
 router.post('/user', (req: Request, res: Response) => {
     const save = req.body;
@@ -60,7 +60,7 @@ console.log(documentBuilder.build());
 ```typescript
 const exampleDocumentOutput = {
     openapi: '3.0.1',
-    info: { title: 'An example document', version: '1' },
+    info: { title: 'A example document', version: '1' },
     paths: {
         '/api/v1/user': {
             post: {
@@ -68,11 +68,18 @@ const exampleDocumentOutput = {
                     default: { description: 'Responses object not provided for this route' },
                 },
             },
+        },
+        '/api/v1/user/{id}': {
             get: {
                 responses: {
-                    default: { description: 'Responses object not provided for this route' }
-                }
-            }
+                    default: { description: 'Responses object not provided for this route' },
+                },
+                parameters: [{
+                    "in": "path",
+                    "name": "id",
+                    "required": true,
+                }],
+            },
         },
     },
 };
@@ -139,11 +146,11 @@ router.post(
 
 // Setup re-usable defaults for our ResponseBuilder object, 
 // useful if your application sends mostly json
-ResponseBuilder.defaults({ mediaType: 'application/json' });
+ResponseBuilder.defaults({ mimeType: 'application/json' });
 
 // Build our open api operation object for this route, using the builder method
 const getUserOperation: OpenAPIV3.OperationObject = OperationBuilder.new({
-    '200': ResponseBuilder.new('Gets all users')
+    '200': ResponseBuilder.new('Get user by id')
         .mediaType({ schema: documentBuilder.schema('user') })
         .build(),
 })
@@ -153,10 +160,10 @@ const getUserOperation: OpenAPIV3.OperationObject = OperationBuilder.new({
 
 // Attach our operation object to the route with the path middleware
 router.get(
-    '/user',
-    PathMiddleware.path('getUsers', { operationObject: getUserOperation }),
+    '/user/:id',
+    PathMiddleware.path('getUser', { operationObject: getUserOperation }),
     (req: Request, res: Response) => {
-        res.json([{ id: '1', name: 'John Smith' }]);
+        res.json({ id: '1', name: 'John Smith' });
     },
 );
 
@@ -194,16 +201,23 @@ const exampleOutputSchema = {
                     },
                 },
             },
+        },
+        '/api/v1/user/{id}': {
             get: {
                 responses: {
                     '200': {
-                        description: 'Gets all users',
+                        description: 'Get user by id',
                         content: {
                             'application/json': { schema: { $ref: '#/components/schemas/user' } },
                         },
                     },
                 },
-                operationId: 'getUsers',
+                parameters: [{
+                    "in": "path",
+                    "name": "id",
+                    "required": true,
+                }],
+                operationId: 'getUser',
                 tags: ['users'],
             },
         },
