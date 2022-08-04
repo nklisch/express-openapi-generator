@@ -50,7 +50,7 @@ export default class OperationBuilder {
 
     /**
      * Shorthand for build() method
-     * 
+     *
      * @returns A deep copy of the built operation object
      */
     public b(): OpenAPIV3.OperationObject {

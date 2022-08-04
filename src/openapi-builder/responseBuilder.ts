@@ -48,7 +48,7 @@ export default class ResponseBuilder {
 
     /**
      * Shorthand for build() method
-     * 
+     *
      * @returns A deep copy of the built response object
      */
     public b(): OpenAPIV3.ResponseObject {

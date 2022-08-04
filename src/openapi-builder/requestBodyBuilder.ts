@@ -30,7 +30,6 @@ export default class RequestBodyBuilder {
         return new RequestBodyBuilder(description);
     }
 
-
     private constructor(description?: string) {
         this._mimeType = RequestBodyBuilder._defaults?.mimeType;
         this._description = description;
@@ -42,7 +41,7 @@ export default class RequestBodyBuilder {
      */
     public build(): OpenAPIV3.RequestBodyObject {
         if (!this._requestBody) {
-            throw new Error('content/schema object required to be set to build a RequestBody.')
+            throw new Error('content/schema object required to be set to build a RequestBody.');
         }
         this._requestBody.description = this._description;
         return clone(this._requestBody);
@@ -50,7 +49,7 @@ export default class RequestBodyBuilder {
 
     /**
      * Short hand for build()
-     * 
+     *
      * @returns A deep copy of the built request body object
      */
     public b(): OpenAPIV3.RequestBodyObject {
@@ -86,12 +85,12 @@ export default class RequestBodyBuilder {
             throw new Error('A media type must either be select as a default or provided - e.g. application/json');
         }
         mimeType = mimeType || this._mimeType;
-        const content: any = {}
-        content[mimeType as string] = { schema }
+        const content: any = {};
+        content[mimeType as string] = { schema };
         this._requestBody = {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            content
-        }
+            content,
+        };
         return this;
     };
     /**
@@ -110,7 +109,4 @@ export default class RequestBodyBuilder {
         this.schema({ type: 'array', items: schema }, mimeType);
         return this;
     };
-
-
 }
-

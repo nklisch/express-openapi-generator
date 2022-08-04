@@ -40,7 +40,9 @@ describe('ResponseBuilder', () => {
         ).toThrow();
     });
     it('create response object with an array schema', () => {
-        expect(ResponseBuilder.new('testing').schemaArray({ type: 'string' }, 'application/json').b())
-            .toEqual({ description: 'testing', content: { 'application/json': { schema: { type: 'array', items: { type: 'string' } } } } });
-    })
+        expect(ResponseBuilder.new('testing').schemaArray({ type: 'string' }, 'application/json').b()).toEqual({
+            description: 'testing',
+            content: { 'application/json': { schema: { type: 'array', items: { type: 'string' } } } },
+        });
+    });
 });
