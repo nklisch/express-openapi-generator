@@ -49,6 +49,15 @@ export default class OperationBuilder {
     }
 
     /**
+     * Shorthand for build() method
+     * 
+     * @returns A deep copy of the built operation object
+     */
+    public b(): OpenAPIV3.OperationObject {
+        return this.build();
+    }
+
+    /**
      * Add a tags field to the Operation object
      *
      * @param tags The tags object per OpenApiv3 spec

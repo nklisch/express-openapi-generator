@@ -11,71 +11,6 @@ const contentObject: { [media: string]: OpenAPIV3.MediaTypeObject } = {
         },
     },
 };
-
-const requestBody: OpenAPIV3.RequestBodyObject = {
-    description: 'user to add to the system',
-    content: {
-        'application/json': {
-            schema: {
-                $ref: '#/components/schemas/User',
-            },
-            examples: {
-                user: {
-                    summary: 'User Example',
-                    externalValue: 'http://foo.bar/examples/user-example.json',
-                },
-            },
-        },
-        'application/xml': {
-            schema: {
-                $ref: '#/components/schemas/User',
-            },
-            examples: {
-                user: {
-                    summary: 'User example in XML',
-                    externalValue: 'http://foo.bar/examples/user-example.xml',
-                },
-            },
-        },
-        'text/plain': {
-            examples: {
-                user: {
-                    summary: 'User example in Plain text',
-                    externalValue: 'http://foo.bar/examples/user-example.txt',
-                },
-            },
-        },
-        '*/*': {
-            examples: {
-                user: {
-                    summary: 'User example in other format',
-                    externalValue: 'http://foo.bar/examples/user-example.whatever',
-                },
-            },
-        },
-    },
-};
-
-const parameterObject: OpenAPIV3.ParameterObject = {
-    name: 'id',
-    in: 'query',
-    description: 'ID of the object to fetch',
-    required: false,
-    schema: {
-        type: 'array',
-        items: {
-            type: 'string',
-        },
-    },
-    style: 'form',
-    explode: true,
-};
-
-const securityObject: OpenAPIV3.SecuritySchemeObject = {
-    type: 'apiKey',
-    name: 'api_key',
-    in: 'header',
-};
 describe('ResponseBuilder', () => {
     it('builds an operation', () => {
         expect(ResponseBuilder.new('testing').content(contentObject).headers({}).links({}).build()).toEqual({
@@ -91,7 +26,7 @@ describe('ResponseBuilder', () => {
         expect(
             ResponseBuilder.new('testing')
                 .schema(contentObject['*/*'].schema as OpenAPIV3.SchemaObject)
-                .build(),
+                .b(),
         ).toEqual({
             description: 'testing',
             content: { 'application/json': contentObject['*/*'] },
@@ -104,4 +39,8 @@ describe('ResponseBuilder', () => {
             ResponseBuilder.new('testing').schema(contentObject['*/*'].schema as OpenAPIV3.SchemaObject),
         ).toThrow();
     });
+    it('create response object with an array schema', () => {
+        expect(ResponseBuilder.new('testing').schemaArray({ type: 'string' }, 'application/json').b())
+            .toEqual({ description: 'testing', content: { 'application/json': { schema: { type: 'array', items: { type: 'string' } } } } });
+    })
 });

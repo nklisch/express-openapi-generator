@@ -116,5 +116,5 @@ it('builds an operation', () => {
 
 it('uses defaults', () => {
     OperationBuilder.defaults({ tags: ['testing'] });
-    expect(OperationBuilder.new(responsesObject).build()).toEqual({ responses: responsesObject, tags: ['testing'] });
+    expect(OperationBuilder.new(responsesObject).b()).toEqual({ responses: responsesObject, tags: ['testing'] });
 });

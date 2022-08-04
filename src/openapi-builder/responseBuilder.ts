@@ -10,9 +10,8 @@ export type ResponseDefaults = {
 };
 
 export default class ResponseBuilder {
-    private _mediaType?: string;
+    private _mimeType?: string;
     private static _defaults?: ResponseDefaults;
-    private _schema?: OpenAPIV3.SchemaObject;
     /**
      * Sets defaults for the response object when using the build interface
      *
@@ -34,7 +33,7 @@ export default class ResponseBuilder {
 
     private constructor(description: string) {
         const d = clone(ResponseBuilder._defaults);
-        this._mediaType = ResponseBuilder._defaults?.mimeType;
+        this._mimeType = ResponseBuilder._defaults?.mimeType;
         delete d?.mimeType;
         this._response = { description, ...d };
     }
@@ -45,6 +44,15 @@ export default class ResponseBuilder {
      */
     public build(): OpenAPIV3.ResponseObject {
         return clone(this._response);
+    }
+
+    /**
+     * Shorthand for build() method
+     * 
+     * @returns A deep copy of the built response object
+     */
+    public b(): OpenAPIV3.ResponseObject {
+        return this.build();
     }
     /**
      * Add a header field to the Response object
@@ -71,9 +79,9 @@ export default class ResponseBuilder {
     };
     /**
      * Add the schema object to the response object.
-     * Allows for defining the type of in place media, or inheriting a global default.
+     * Allows for defining the type of media in place, or inheriting a global default.
      *
-     * @param media The MediaType object per OpenApiv3 spec
+     * @param schema The MediaType object per OpenApiv3 spec
      * @param mimeType The string of a valid MIME type
      * @returns ResponseBuilder instances for method chaining
      * @throws A error if there is no default MIME and a mimeType wasn't included locally
@@ -82,14 +90,30 @@ export default class ResponseBuilder {
         schema: OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject,
         mimeType?: string,
     ): ResponseBuilder => {
-        if (!mimeType && !this._mediaType) {
+        if (!mimeType && !this._mimeType) {
             throw new Error('A media type must either be select as a default or provided - e.g. application/json');
         }
-        mimeType = mimeType || this._mediaType;
+        mimeType = mimeType || this._mimeType;
         if (!this._response.content) {
             this._response.content = {};
         }
         this._response.content[mimeType as string] = { schema };
+        return this;
+    };
+    /**
+     * Add the schema object to the response object as an array.
+     * Allows for defining the type of media in place, or inheriting a global default.
+     *
+     * @param schema The MediaType object per OpenApiv3 spec
+     * @param mimeType The string of a valid MIME type
+     * @returns ResponseBuilder instances for method chaining
+     * @throws A error if there is no default MIME and a mimeType wasn't included locally
+     */
+    public schemaArray = (
+        schema: OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject,
+        mimeType?: string,
+    ): ResponseBuilder => {
+        this.schema({ type: 'array', items: schema }, mimeType);
         return this;
     };
 
