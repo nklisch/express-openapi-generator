@@ -30,6 +30,9 @@ const exampleDocumentOutput = {
                         in: 'path',
                         name: 'id',
                         required: true,
+                        schema: {
+                            type: 'string',
+                        },
                     },
                 ],
             },
@@ -103,6 +106,7 @@ const exampleOutputSchema = {
                         in: 'path',
                         name: 'id',
                         required: true,
+                        schema: { type: 'string' }
                     },
                 ],
                 operationId: 'getUser',
@@ -199,7 +203,7 @@ test('example with added documentation works', () => {
     // Generates our full open api document
     documentBuilder.generatePathsObject(app);
 
-    // The final document can be found on the read-only property 'document'. It returns a deep copy
+    // The final document can be obtained with the build() method. It returns a deep copy
     console.log(documentBuilder.build());
     expect(documentBuilder.build()).toEqual(exampleOutputSchema);
 });
