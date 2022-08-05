@@ -106,7 +106,7 @@ const exampleOutputSchema = {
                         in: 'path',
                         name: 'id',
                         required: true,
-                        schema: { type: 'string' }
+                        schema: { type: 'string' },
                     },
                 ],
                 operationId: 'getUser',

@@ -418,7 +418,7 @@ export default class DocumentBuilder {
         const params = path.pathParams.map((p) => {
             (p as OpenAPIV3.ParameterObject).schema = { type: 'string' };
             return p;
-        })
+        });
         return [...parameters, ...(params as (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[])] as (
             | OpenAPIV3.ParameterObject
             | OpenAPIV3.ReferenceObject
