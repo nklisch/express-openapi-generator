@@ -115,7 +115,7 @@ const makeValidator = (operationId: string, doc: OpenAPIV3.Document, ajv: Ajv): 
     }
     const reqSchema = { ...clone(BASE_REQ_SCHEMA) };
     if (operation && operation.parameters) {
-        const map: any = { path: 'params', query: 'query', header: 'header' };
+        const map: any = { path: 'params', query: 'query', header: 'headers' };
         for (let p of operation?.parameters) {
             if ((p as OpenAPIV3.ReferenceObject)?.$ref) {
                 p = resolveReference(doc, (p as OpenAPIV3.ReferenceObject).$ref);
