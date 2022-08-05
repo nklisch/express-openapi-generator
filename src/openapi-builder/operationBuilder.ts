@@ -120,10 +120,13 @@ export default class OperationBuilder {
      * @param parameters The parameters object per OpenApiv3 spec
      * @returns OperationBuilder instances for method chaining
      */
-    public parameters = (parameters: (OpenAPIV3.ParameterObject | OpenAPIV3.ReferenceObject)[], excludeDefault = false): OperationBuilder => {
-        let p = clone(parameters)
+    public parameters = (
+        parameters: (OpenAPIV3.ParameterObject | OpenAPIV3.ReferenceObject)[],
+        excludeDefault = false,
+    ): OperationBuilder => {
+        let p = clone(parameters);
         if (this._operation.parameters && !excludeDefault) {
-            p = [...this._operation.parameters, ...p]
+            p = [...this._operation.parameters, ...p];
         }
         this._operation.parameters = p;
         return this;
