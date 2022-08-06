@@ -47,6 +47,19 @@ export default class DocumentBuilder {
         return DocumentBuilder.instance;
     }
     /**
+     * Initializes and returns an instance of a DocumentBuilder that is not attached to the 
+     * static reference of DocumentBuilder.
+     * Allows you to create a second document builder object, export it and use however desired.
+     * 
+     * **Does NOT** override the underlying singleton instance
+     * 
+     * @param documentStub The minimum required OpenApiv3 skeleton spec
+     * @returns The newly created document builder object
+     */
+    public static initializeDetachedDocument(documentStub: OpenAPIV3.Document): DocumentBuilder {
+        return new DocumentBuilder(documentStub);
+    }
+    /**
      * Retrieves the current document builder instance.
      * Used to retrieve references across modules.
      */
